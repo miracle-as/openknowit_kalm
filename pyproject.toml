@@ -1,0 +1,49 @@
+[project]
+name = "sampleproject"  
+version = "0.0.1" 
+description = "" 
+readme = "README.md" # Optional
+requires-python = ">=3.7"
+license = {file = "LICENSE.txt"}
+keywords = ["kalm", "awx", "ansible", "automation"]  
+authors = [
+  {name = "Jakob Holst", email = "jho@miracle.dk" }
+]
+maintainers = [
+  {name = "Jakob Holst", email = "jho@miracle.dk" }
+]
+
+classifiers = [  # Optional
+  # How mature is this project? Common values are
+  #   3 - Alpha
+  #   4 - Beta
+  #   5 - Production/Stable
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Sysadm",
+  "Topic :: Automation :: automationtools",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+]
+
+dependencies = [ # Optional
+  "peppercorn"
+]
+
+[project.optional-dependencies] # Optional
+dev = ["check-manifest"]
+test = ["coverage"]
+
+[project.urls]  # Optional
+"Homepage" = "https://github.com/JakobHolstDK/kalm"
+"Bug Reports" = "https://github.com/JakobHolstDK/kalm/issues"
+"Source" = "https://github.com/JakobHolstDK/kalm"
+
+[project.scripts]  # Optional
+kalm = "kalm:main"
+
+[tool.setuptools]
+package-data = {"kalm" = ["*.dat"]}
+
+[build-system]
+requires = ["setuptools>=43.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
