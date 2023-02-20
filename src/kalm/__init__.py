@@ -1,9 +1,15 @@
 from kalm import kalm
+import os
+import redis
+
 
 def main():
-    """Entry point for the application script"""
-    print("Call your main application code here")
-    print(kalm.kalm())
+    r = redis.Redis()
+    r.flushdb()
+    ansibletoken = os.getenv("ANSIBLE_TOKEN")
+    print(ansibletoken)
+    print("Running ansible automation daemonm")
+    print(kalm.kalm(ansibletoken, r))
 
 
 
