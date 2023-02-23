@@ -702,6 +702,7 @@ def kalm(mytoken, r):
     try:
       projects = org['projects']
       for project in projects:
+        print(project)
         projectname = project['name']
         projectdesc = project['description']
         projecttype = project['scm_type']
