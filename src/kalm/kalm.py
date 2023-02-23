@@ -189,9 +189,6 @@ def readthefile(filename):
   f = open(filename)
   fileval = f.read()
   f.close
-  print("############################################################################################################################")
-  print(fileval)
-  print("############################################################################################################################")
   return fileval
 
 
@@ -199,11 +196,7 @@ def readthefile(filename):
 # update ansible vault
 ############################################################################################################################
 def awx_update_vault(ansiblevault, organization, mytoken, r):
-  print("----------------------------------------------------------------------")
-  print(ansiblevault[organization]['vault'])
-  print("----------------------------------------------------------------------")
   for vault in ansiblevault[organization]['vault']:
-    print(vault)
     credential = { 
       "name": vault['name'], 
       "description": vault['description'], 
@@ -213,9 +206,6 @@ def awx_update_vault(ansiblevault, organization, mytoken, r):
       "kind": "vault" }
     awx_create_credential(credential, organization, mytoken, r)
 
-  print("----------------------------------------------------------------------")
-  print(ansiblevault)
-  print("----------------------------------------------------------------------")
   for ssh in ansiblevault[organization]['ssh']:
     sshkeyval = readthefile(ssh['ssh_private_key'])
     credential = { 
@@ -248,12 +238,6 @@ def awx_update_vault(ansiblevault, organization, mytoken, r):
     awx_create_credential(credential, organization, mytoken, r)
 
 
-  print("############################################################################################################################")
-
-
-
-
-
 
 ############################################################################################################################
 # Create organization
@@ -273,9 +257,7 @@ def awx_create_organization(name, description, max_hosts, DEE, realm, mytoken, r
          }
     url ="https://ansible.openknowit.com/api/v2/organizations/"
     resp = requests.post(url,headers=headers, json=data)
-    print(resp)
     response = json.loads(resp.content)
-    print(response)
     try:
       orgid=response['id']
       prettyllog("manage", "organization", name, realm, resp.status_code, "organization %s created with id %s" % (orgid))
@@ -385,7 +367,8 @@ def awx_create_template(name, description, job_type, inventory,project,ee, crede
   getawxdata("job_templates", mytoken, r)
   tmplid = awx_get_id("job_templates", name ,r )
   getawxdata("credentials", mytoken, r)
-  credid = (awx_get_id("credentials", credential, mytoken, r))
+  credid = (awx_get_id("credentials", credential, r))
+  
   associatecommand = "awx job_template associate %s --credential %s >/dev/null 2>/dev/null " % ( tmplid, credid)
   os.system(associatecommand)
   ############################################################################### end of create job template ##########################################
@@ -490,13 +473,11 @@ def awx_create_credential( credential , organization, mytoken, r):
           },
         "kind": credential['kind']
         }
-    print(data)
 
   if ( credid == ""):
     url = "https://ansible.openknowit.com/api/v2/credentials/"
     resp = requests.post(url,headers=headers, json=data)
     response = json.loads(resp.content)
-    print(response)
     try:
       credid=response['id']
       prettyllog("manage", "credential", credential['name'], organization, resp.status_code, credid)
@@ -520,9 +501,7 @@ def awx_create_credential( credential , organization, mytoken, r):
 def awx_get_organization(orgid, mytoken, r):
   headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
   url ="https://ansible.openknowit.com/api/v2/organizations/%s" % orgid
-  print(mytoken)
   resp = requests.get(url,headers=headers)
-  print(resp)
   return   json.loads(resp.content)
 
 ######################################
@@ -541,9 +520,6 @@ def awx_get_project(projid, organization, mytoken, r):
 # function: Create Project 
 ######################################
 def awx_create_project(name, description, scm_type, scm_url, scm_branch, credential, organization, mytoken, r):
-  print("------------------------------------------------")
-  print(name)
-  print("------------------------------------------------")
   getawxdata("projects", mytoken, r)
   try:  
     projid = (awx_get_id("projects", name, r))
@@ -561,7 +537,6 @@ def awx_create_project(name, description, scm_type, scm_url, scm_branch, credent
         "scm_branch": scm_branch,
         "credential": credid
        }
-
   if (projid == ""):
     url ="https://ansible.openknowit.com/api/v2/projects/"
     resp = requests.post(url,headers=headers, json=data)
@@ -600,7 +575,7 @@ def awx_create_project(name, description, scm_type, scm_url, scm_branch, credent
         projid = (awx_get_id("projects", name, r ))
     except:
         print("Unexpected error")
-    projectinfo = awx_get_project(projid, organization)
+    projectinfo = awx_get_project(projid, organization, mytoken, r)
     if( projectinfo['status'] == "successful"):
       prettyllog("manage", "project", name, organization, "000", "Project is ready")
     else:    
@@ -660,7 +635,7 @@ def kalm(mytoken, r):
   # organizations
   ########################################################################################################################
   for org in (config['organization']):
-    prettyllog("loop","org", "config", org, "000", "create organization")
+    prettyllog("loop","org", "config", org['name'], "000", "create organization")
     orgname = org['name']
     key = "ansible.openknowit.com:organizations:orphan:" + orgname
     r.delete(key)
@@ -702,7 +677,6 @@ def kalm(mytoken, r):
     try:
       projects = org['projects']
       for project in projects:
-        print(project)
         projectname = project['name']
         projectdesc = project['description']
         projecttype = project['scm_type']
@@ -741,7 +715,7 @@ def kalm(mytoken, r):
         hostdesc = host['description']
         hostinventories = host['inventories']
         for hostinventory in hostinventories: 
-          awx_create_host(hostname, hostdesc, hostinventory, orgname)
+          awx_create_host(hostname, hostdesc, hostinventory, orgname, mytoken, r)
     except:
       prettyllog("config", "initialize", "hosts", orgname, "000",  "No hosts found")
 
@@ -760,7 +734,7 @@ def kalm(mytoken, r):
       labels = org['labels']
       for label in labels:
         labelname = label['name']
-        awx_create_label(labelname, orgname)
+        awx_create_label(labelname, orgname, mytoken, r)
     except:
       prettyllog("config", "initialize", "labels", orgname, "000",  "No labels found")
 
@@ -778,7 +752,7 @@ def kalm(mytoken, r):
         templateEE = template['EE']
         templatecredential = template['credentials']  
         templateplaybook = template['playbook']
-        awx_create_template(templatename, templatedescription, templatejob_type, templateinventory, templateproject, templateEE, templatecredential, templateplaybook, orgname)
+        awx_create_template(templatename, templatedescription, templatejob_type, templateinventory, templateproject, templateEE, templatecredential, templateplaybook, orgname, mytoken, r)
     except:
       prettyllog("config", "initialize", "templates", orgname, "000",  "No templates found")
 
@@ -811,7 +785,7 @@ def kalm(mytoken, r):
           run_every = "MINUTELY"
         if ( schedule ['end'] == "never" ):
           dtend = "null"
-        awx_create_schedule(schedulename, unified_job_template_id, description,tz, dtstart, run_frequency, run_every, dtend, scheduletype, orgname)
+        awx_create_schedule(schedulename, unified_job_template_id, description,tz, dtstart, run_frequency, run_every, dtend, scheduletype, orgname, mytoken, r)
     except:
       prettyllog("config", "initialize", "schedules", orgname, "000",  "No schedules found")
 ### The end
