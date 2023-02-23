@@ -368,8 +368,9 @@ def awx_create_template(name, description, job_type, inventory,project,ee, crede
   tmplid = awx_get_id("job_templates", name ,r )
   getawxdata("credentials", mytoken, r)
   credid = (awx_get_id("credentials", credential, r))
-  
+  print("DIRTYHACK") 
   associatecommand = "awx job_template associate %s --credential %s >/dev/null 2>/dev/null " % ( tmplid, credid)
+  print("DIRTYHACK") 
   os.system(associatecommand)
   ############################################################################### end of create job template ##########################################
 
