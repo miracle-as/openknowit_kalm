@@ -7,6 +7,7 @@ def setupkalm():
     print("We need to setup kalm - Do you with to continue (y/N)? ")
     answer = input()
     if answer.upper == "Y":
+        os.system("sudo touch /tmp/kalm")
         os.system("sudo mkdir /etc/kalm")
         setup  = True
     return setup
