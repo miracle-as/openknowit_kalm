@@ -1,14 +1,18 @@
 from kalm import kalm
 import os
 import redis
+import subprocess
+
+def runasroot(command):
+  subprocess.Popen('sudo -S' , shell=True,stdout=subprocess.PIPE)
+  subprocess.Popen(command , shell=True,stdout=subprocess.PIPE)
 
 def setupkalm():
     setup = False
     print("We need to setup kalm - Do you with to continue (y/N)? ")
     answer = input()
     if answer.upper == "Y":
-        os.system("sudo touch /tmp/kalm")
-        os.system("sudo mkdir /etc/kalm")
+        runasroot("sudo mkdir /etc/kalm")
         setup  = True
     return setup
 
