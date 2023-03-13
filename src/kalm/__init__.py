@@ -2,6 +2,7 @@ from kalm import kalm
 import os
 import sys
 import redis
+import time
 import subprocess
 
 def runme(command):
@@ -49,9 +50,10 @@ def main():
             kalm.kalm(ansibletoken, r)
             first = False
             if loop:
-               print("---------------------------Sleeeping half a minute----------------------------")
+               print("---------------------------Sleeeping half a minute----------------------------") 
+               time.sleep(30)
+               print("---------------------------Finished sleeping----------------------------") 
 
-               runme("sleep 30")
 
 
 
