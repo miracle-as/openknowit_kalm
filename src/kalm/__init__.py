@@ -44,7 +44,7 @@ def main():
         if str(sys.argv[1]) == '-d': 
             loop = True 
         print("loop %s " % str(loop))
-        if first == True or loop == True:
+        while first == True or loop == True:
             print("Running ansible automation daemon")
             kalm.kalm(ansibletoken, r)
             first = False
