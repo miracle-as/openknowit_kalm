@@ -1,10 +1,10 @@
 from kalm import kalm
 import os
+import sys
 import redis
 import subprocess
 
-def runasroot(command):
-  subprocess.Popen('sudo -S' , shell=True,stdout=subprocess.PIPE)
+def runme(command):
   subprocess.Popen(command , shell=True,stdout=subprocess.PIPE)
 
 def setupkalm():
@@ -13,7 +13,8 @@ def setupkalm():
     answer = input()
     if answer == "Y" or answer == "y" or answer == "Yes" or answer == "yes":
         print("Initializing")
-        runasroot("mkdir /etc/kalm")
+        runme("sudo mkdir /etc/kalm")
+
         setup  = True
     return setup
 
@@ -26,15 +27,20 @@ def etcready():
         return setupkalm()
 
 def main():
+    print( "This is the name of the script: ", sys.argv[0])
+    print( "Number of arguments: ", len(sys.argv))
+    print( "The arguments are: " , str(sys.argv))
     ready = False
     setup = False
     ready  = etcready()
 
     if ready:
+
         r = redis.Redis()
         r.flushdb()
         ansibletoken = os.getenv("ANSIBLE_TOKEN")
-        print("Running ansible automation daemonm")
+
+        print("Running ansible automation daemon")
         kalm.kalm(ansibletoken, r)
 
 
