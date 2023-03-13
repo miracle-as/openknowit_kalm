@@ -12,6 +12,7 @@ def setupkalm():
     print("We need to setup kalm - Do you with to continue (y/N)? ")
     answer = input()
     if answer.upper == "Y":
+        print("Initializing")
         runasroot("sudo mkdir /etc/kalm")
         setup  = True
     return setup
