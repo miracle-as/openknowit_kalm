@@ -48,6 +48,9 @@ def main():
             print("Running ansible automation daemon")
             kalm.kalm(ansibletoken, r)
             first = False
+            if loop:
+                os.sleep(30)
+
 
 
 
