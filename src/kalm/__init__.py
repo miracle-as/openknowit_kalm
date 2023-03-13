@@ -4,7 +4,12 @@ import redis
 
 
 def main():
-    print(os.path.isdir("/etc/kalm"))
+    if os.path.isdir("/etc/kalm"):
+        print("Ready to proceed, /etc/kalm is a directory")
+    else:
+        print("We need to setup kalm")
+        exit
+
 
     r = redis.Redis()
     r.flushdb()
