@@ -3,10 +3,12 @@ import os
 import redis
 
 def setupkalm():
+    setup = False
     print("We need to setup kalm - Do you with to continue (y/N)? ")
     answer = input()
-    print(answer)
-    return False
+    if answer.upper == "Y":
+        os.makedirs("/etc/kalm")
+    return setup
 
 def etcready():
     if os.path.isdir("/etc/kalm"):
