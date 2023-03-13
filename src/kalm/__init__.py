@@ -49,7 +49,7 @@ def main():
             kalm.kalm(ansibletoken, r)
             first = False
             if loop:
-                os.sleep(30)
+               runme("sleep 30")
 
 
 
