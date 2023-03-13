@@ -2,14 +2,23 @@ from kalm import kalm
 import os
 import redis
 
+def setupkalm():
+    print("We need to setup kalm - Do you with to continue (y/N)? ")
+    answer = input()
+    print(answer)
+    return False
+
+def etcready():
+    if os.path.isdir("/etc/kalm"):
+        print("Ready to proceed, /etc/kalm is a directory")
+        ready = True
+    else:
+        print("We need to setup kalm")
+        return setupkalm()
 
 def main():
     ready = False
-    if os.path.isdir("/etc/kalm"):
-        print("Ready to proceed, /etc/kalm is a directory")
-    else:
-        print("We need to setup kalm")
-        exit
+    setup = False
 
     if ready:
         r = redis.Redis()
