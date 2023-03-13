@@ -49,6 +49,7 @@ def main():
             kalm.kalm(ansibletoken, r)
             first = False
             if loop:
+               print("Sleeeping half a minute")
                runme("sleep 30")
 
 
