@@ -45,11 +45,12 @@ def main():
             loop = True 
         print("loop %s " % str(loop))
         while first == True or loop == True:
-            print("Running ansible automation daemon")
+            print("-----------------------------Running ansible automation daemon-------------------------------")
             kalm.kalm(ansibletoken, r)
             first = False
             if loop:
-               print("Sleeeping half a minute")
+               print("---------------------------Sleeeping half a minute----------------------------")
+
                runme("sleep 30")
 
 
