@@ -50,9 +50,9 @@ def main():
             kalm.kalm(ansibletoken, r)
             first = False
             if loop:
-               print("---------------------------Sleeeping half a minute----------------------------") 
+               print("-----------------------------Sleeeping half a minute----------------------------") 
                time.sleep(30)
-               print("---------------------------Finished sleeping----------------------------") 
+               print("-----------------------------Finished sleeping----------------------------") 
 
 
 
