@@ -11,7 +11,7 @@ def setupkalm():
 def etcready():
     if os.path.isdir("/etc/kalm"):
         print("Ready to proceed, /etc/kalm is a directory")
-        ready = True
+        return True
     else:
         print("We need to setup kalm")
         return setupkalm()
@@ -19,6 +19,7 @@ def etcready():
 def main():
     ready = False
     setup = False
+    ready  = etcready()
 
     if ready:
         r = redis.Redis()
