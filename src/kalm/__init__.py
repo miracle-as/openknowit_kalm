@@ -39,9 +39,14 @@ def main():
         r = redis.Redis()
         r.flushdb()
         ansibletoken = os.getenv("ANSIBLE_TOKEN")
-
-        print("Running ansible automation daemon")
-        kalm.kalm(ansibletoken, r)
+        loop = False
+        first = True
+        if str(sys.argv[1]) == '-d': 
+            loop = True 
+        if first == True or loop == True:
+            print("Running ansible automation daemon")
+            kalm.kalm(ansibletoken, r)
+            first = False
 
 
 
