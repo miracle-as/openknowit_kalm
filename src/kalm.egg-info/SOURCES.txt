@@ -3,6 +3,7 @@ README.md
 pyproject.toml
 src/kalm/__init__.py
 src/kalm/kalm.py
+src/kalm/netbox.py
 src/kalm/package_data.dat
 src/kalm.egg-info/PKG-INFO
 src/kalm.egg-info/SOURCES.txt

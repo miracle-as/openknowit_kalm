@@ -26,7 +26,9 @@ classifiers = [  # Optional
 ]
 
 dependencies = [ # Optional
-  "peppercorn"
+  "redis",
+  "hvac",
+  "pynetbox",
 ]
 
 [project.optional-dependencies] # Optional

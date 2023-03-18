@@ -1,4 +1,6 @@
-peppercorn
+redis
+hvac
+pynetbox
 
 [dev]
 check-manifest
