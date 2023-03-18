@@ -55,7 +55,16 @@ def connectiontest():
         KALM_CONFIG = { "set": True, "value": os.getenv("KALM_CONFIG")  , "status": "unknown"} 
     else:
         # fall back to default if not set
-        KALM_CONFIG = { "set": False, "value": "/env/kalm/kalm.json"  , "status": "unknown"} 
+        KALM_CONFIG = { "set": False, "value": "/etc/kalm/kalm.json"  , "status": "unknown"} 
+
+    KALM_SECRET = { "set": False, "value": "", "status": "unknown"} 
+    if os.getenv("KALM_SECRET") != None:
+        KALM_SECRET = { "set": True, "value": os.getenv("KALM_SECRET")  , "status": "unknown"} 
+    else:
+        # fall back to default if not set
+        KALM_SECRET = { "set": False, "value": "/etc/kalm/secret.json"  , "status": "unknown"} 
+
+
 
     if os.path.isfile(KALM_CONFIG['value']):
       with open(KALM_CONFIG['value']) as user_file:
@@ -69,11 +78,24 @@ def connectiontest():
     else:
         errors.append("004: File not found")
         # BAIL OUT WHEN config is not existing
-        print("file error")
+        return False
+
+    if os.path.isfile(KALM_SECRET['value']):
+      with open(KALM_SECRET['value']) as user_file:
+        try:
+          parsed_json = json.load(user_file)
+        except:
+          errors.append("003: error in json format")
+          print("003: error in json file")
+          # BAIL OUT WHEN config is not json
+          return False
+    else:
+        errors.append("004: File not found")
+        # BAIL OUT WHEN config is not existing
+        return False
 
 
     result = runme("awx --version")
-    print(result)
     if result['returncode'] == 0:
         checks.append("004: awx is installed")
         TOWERCLI["installed"] =True
@@ -104,10 +126,21 @@ def connectiontest():
         ANSIBLE_TOKEN['status']  = "failed"
 
     if ANSIBLE_TOKEN["status"] != "ready" and  TOWERCLI["status"] == "ready":
-        print("We need a token")
-
-
-
+        result = runme("awx --conf.color False tokens create |jq '{'id': .id, 'token': .token }")
+        parsed_json = json.loads(result["stdout"])
+        newtoken = parsed_json['token']
+        if result['returncode'] == 0:
+          checks.append("004: awx token created")
+          headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(newtoken)}
+          url = TOWERCLI['env_host'] + "/api/v2/ping/"
+          resp = requests.get(url,headers=headers)
+          if resp.status_code == 200:
+            ANSIBLE_TOKEN['status']  = "ready"
+            os.environ["ANSIBLE_TOKEN"] = newtoken
+            ANSIBLE_TOKEN = { "set": True, "value": os.getenv("ANSIBLE_TOKEN")   , "status": "ready"} 
+          else:
+            ANSIBLE_TOKEN['status']  = "failed"
+            return False
 
 
     if len(errors) > 0:

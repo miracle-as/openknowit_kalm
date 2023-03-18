@@ -11,7 +11,6 @@ def prettyllog(function, action, item, organization, statuscode, text):
   d_date = datetime.datetime.now()
   reg_format_date = d_date.strftime("%Y-%m-%d %I:%M:%S %p")
   print("%-20s: %-12s %-20s %-50s %-20s %-4s %-50s " %( reg_format_date, function,action,item,organization,statuscode, text))
-########################################################################################################################
 
 class Hvac:
   def __init__(self):
@@ -58,7 +57,7 @@ class Hvac:
 
 def getawxdata(item, mytoken, r):
   headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
-  url ="https://ansible.openknowit.com/api/v2/" + item
+  url = os.getenv("TOWER_HOST") + "/api/v2/" + item
   intheloop = "first"
   while ( intheloop == "first" or intheloop != "out" ):
     try:
@@ -70,7 +69,7 @@ def getawxdata(item, mytoken, r):
     except:
       intheloop = "out"
     try:
-      url = "https://ansible.openknowit.com/" + (mydata['next'])
+      url = os.getenv("TOWER_HOST") + "/api/v2/" + (mydata['next'])
     except: 
       intheloop = "out"
     savedata = True
@@ -80,20 +79,20 @@ def getawxdata(item, mytoken, r):
       savedata = False
     if ( savedata == True ):
       for result in mydata['results']:
-        key = "ansible.openknowit.com:" + item +":id:" + str(result['id'])
+        key = os.getenv("TOWER_HOST") + item +":id:" + str(result['id'])
         r.set(key, str(result), 600)
-        key = "ansible.openknowit.com:" + item +":name:" + result['name']
+        key = os.getenv("TOWER_HOST") + item +":name:" + result['name']
         r.set(key, str(result['id']), 600 )
-        key = "ansible.openknowit.com:" + item +":orphan:" + result['name']
+        key = os.getenv("TOWER_HOST") + item +":orphan:" + result['name']
         r.set(key, str(result), 600)
 
-def vault_get_secret(path):
+def vault_get_secret(path, vault):
   secret = vault.read_secret(engine_name="secret", secret=path)['data']['data']
   return secret
 
 
 def awx_get_id(item,name, r):
-  key = "ansible.openknowit.com:" + item +":name:" + name
+  key = os.getenv("TOWER_HOST") + item +":name:" + name
   myvalue =  r.get(key)
   mydevode = ""
   try: 
@@ -107,7 +106,7 @@ def awx_get_id(item,name, r):
 def awx_delete(item, name, mytoken, r):
   headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
   itemid = (awx_get_id(item, name, r))
-  url ="https://ansible.openknowit.com/api/v2/" + item + "/" + itemid
+  url = os.getenv("TOWER_HOST") + "/api/v2/" + item + "/" + itemid
   resp = requests.delete(url,headers=headers)
 
 def awx_purge_orphans():
@@ -124,7 +123,7 @@ def awx_create_label(name, organization, mytoken, r):
        "organization": orgid
        }
     headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
-    url ="https://ansible.openknowit.com/api/v2/labels/"
+    url = os.getenv("TOWER_HOST") + "/api/v2/labels"
     resp = requests.post(url,headers=headers, json=data)
       
 
@@ -143,9 +142,8 @@ def awx_create_inventory(name, description, organization, inventorytype, variabl
           "organization": orgid
          }
     headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
-    url ="https://ansible.openknowit.com/api/v2/inventories/"
-    resp = requests.post(url,headers=headers, json=data)
-    response = json.loads(resp.content)
+    url = os.getenv("TOWER_HOST") + "/api/v2/inventories/"
+
     prettyllog("manage", "inventories", name, organization, resp.status_code, response)
     loop = True
     while ( loop ):
