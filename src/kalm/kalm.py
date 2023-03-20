@@ -169,6 +169,7 @@ def awx_create_inventory(name, description, organization, inventorytype, variabl
 
 
 def awx_create_host(name, description, inventory, organization, mytoken, r):
+  print("------------------------------------------------------------------------------- AWX CREATE HOST -------------------------------------------------------------")
   try:  
     invid = (awx_get_id("inventories", inventory, r))
   except:
