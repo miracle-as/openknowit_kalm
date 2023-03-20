@@ -146,6 +146,9 @@ def awx_create_inventory(name, description, organization, inventorytype, variabl
          }
     headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
     url = os.getenv("TOWER_HOST") + "/api/v2/inventories/"
+    print("-------------------------------")
+    print(url)
+    print("-------------------------------")
 
     prettyllog("manage", "inventories", name, organization, resp.status_code, response)
     loop = True
