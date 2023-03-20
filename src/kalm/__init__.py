@@ -124,6 +124,7 @@ def connectiontest():
         ANSIBLE_TOKEN['status']  = "ready"
       else:
         ANSIBLE_TOKEN['status']  = "failed"
+        return False
 
     if ANSIBLE_TOKEN["status"] != "ready" and  TOWERCLI["status"] == "ready":
         result = runme("awx --conf.color False tokens create |jq '{'id': .id, 'token': .token }")
