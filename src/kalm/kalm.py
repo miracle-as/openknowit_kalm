@@ -129,6 +129,9 @@ def awx_create_label(name, organization, mytoken, r):
 
 
 def awx_create_inventory(name, description, organization, inventorytype, variables, mytoken, r):
+  print("-------------------------------")
+  print(name)
+  print("-------------------------------")
   try:  
     invid = (awx_get_id("inventories", name, r))
   except:
