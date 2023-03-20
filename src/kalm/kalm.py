@@ -153,6 +153,7 @@ def awx_create_inventory(name, description, organization, inventorytype, variabl
     prettyllog("manage", "inventories", name, organization, resp.status_code, response)
     loop = True
     while ( loop ):
+        print("looop")
         getawxdata("inventories", mytoken, r)
         try:
             invid = (awx_get_id("inventories", name, r))
