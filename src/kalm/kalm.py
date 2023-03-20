@@ -129,9 +129,9 @@ def awx_create_label(name, organization, mytoken, r):
 
 
 def awx_create_inventory(name, description, organization, inventorytype, variables, mytoken, r):
-  print("-------------------------------")
+  print("1-------------------------------")
   print(name)
-  print("-------------------------------")
+  print("2-------------------------------")
   try:  
     invid = (awx_get_id("inventories", name, r))
   except:
@@ -146,9 +146,9 @@ def awx_create_inventory(name, description, organization, inventorytype, variabl
          }
     headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
     url = os.getenv("TOWER_HOST") + "/api/v2/inventories/"
-    print("-------------------------------")
+    print("3-------------------------------")
     print(url)
-    print("-------------------------------")
+    print("4-------------------------------")
 
     prettyllog("manage", "inventories", name, organization, resp.status_code, response)
     loop = True
@@ -164,7 +164,7 @@ def awx_create_inventory(name, description, organization, inventorytype, variabl
   headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
   print("--------------HGER")
   print(invid)
-  
+
   url ="https://ansible.openknowit.com/api/v2/inventories/%s/variable_data/" % invid
   print(url)
 
