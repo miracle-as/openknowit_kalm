@@ -714,6 +714,7 @@ def kalm(mytoken, r):
     try:
       inventories = org['inventories']
       for inventory in inventories:
+        print("loooooooop")
         inventoryname = inventory['name']
         inventorydesc = inventory['description']
         inventorytype = inventory['type']
