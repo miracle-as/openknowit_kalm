@@ -163,6 +163,8 @@ def awx_create_inventory(name, description, organization, inventorytype, variabl
           loop = False
   headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
   url ="https://ansible.openknowit.com/api/v2/inventories/%s/variable_data/" % invid
+  print(url)
+  
   resp = requests.put(url,headers=headers, json=variables)
   response = json.loads(resp.content)
   prettyllog("manage", "inventories", name, organization, resp.status_code, response)
