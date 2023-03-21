@@ -714,6 +714,7 @@ def kalm(mytoken, r):
       prettyllog("config", "initialize", "inventories", orgname, "000",  "No inventories found")
 
     for inventory in inventories:
+      valid=True
       print(inventory)
       inventoryname = inventory['name']
       inventorydesc = inventory['description']
