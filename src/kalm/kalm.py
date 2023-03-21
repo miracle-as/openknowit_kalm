@@ -716,13 +716,29 @@ def kalm(mytoken, r):
     for inventory in inventories:
       valid=True
       print(inventory)
-      inventoryname = inventory['name']
-      inventorydesc = inventory['description']
-      inventorytype = inventory['type']
-      inventoryvariables = inventory['variables']
-      print(inventoryvariables)
-      print("Create %s" % inventoryname)
-      awx_create_inventory(inventoryname, inventorydesc, orgname, inventorytype, inventoryvariables, mytoken, r)
+      try:
+        inventoryname = inventory['name']
+      except:
+        inventoryname = "Missing"
+        valid = False
+      try: 
+        inventorydesc = inventory['description']
+      except:
+        inventorydesc = ""
+      try: 
+        inventorytype = inventory['type']
+      except:
+        inventorytype = "static"
+      try:
+        inventoryvariables = inventory['variables']
+      except:
+        inventoryvariables = {}
+
+      if valid:
+        awx_create_inventory(inventoryname, inventorydesc, orgname, inventorytype, inventoryvariables, mytoken, r)
+      else:
+        prettyllog("config", "initialize", "inventories", inventory, "000",  "Inventory is invalid")
+
 
 
   ######################################
