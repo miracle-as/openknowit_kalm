@@ -157,9 +157,6 @@ def awx_create_inventory(name, description, organization, inventorytype, variabl
         if (invid != "" ):
           loop = False
   headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
-  print("--------------HGER")
-  print(invid)
-
   url ="https://ansible.openknowit.com/api/v2/inventories/%s/variable_data/" % invid
   print(url)
 
@@ -378,7 +375,7 @@ def awx_create_template(name, description, job_type, inventory,project,ee, crede
   print('associatecommand = "awx job_template associate %s --credential %s >/dev/null 2>/dev/null " % ( tmplid, credid)')
   print("We should not use any awx cli commands, but the API is not consisten and sometimes fails to set the credentials")
   print("---------------------------------------------------------------DIRTYHACK---------------------------------------") 
-  associatecommand = "awx job_template associate %s --credential %s >/dev/null 2>/dev/null " % ( tmplid, credid)
+  associatecommand = "~/.local/bin/awx job_template associate %s --credential %s >/dev/null 2>/dev/null " % ( tmplid, credid)
   os.system(associatecommand)
   ############################################################################### end of create job template ##########################################
 
