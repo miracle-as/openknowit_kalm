@@ -708,9 +708,6 @@ def kalm(mytoken, r):
   ######################################
   # inventories
   ######################################
-    print("-------------------------------------------------------------------------")
-    print(org['inventories'])
-    print("-------------------------------------------------------------------------")
     try:
       inventories = org['inventories']
       for inventory in inventories:
@@ -720,6 +717,7 @@ def kalm(mytoken, r):
         inventorytype = inventory['type']
         inventoryvariables = inventory['variables']
         print(inventoryvariables)
+        print("Create %s" % inventoryname)
         awx_create_inventory(inventoryname, inventorydesc, orgname, inventorytype, inventoryvariables, mytoken, r)
     except:
       prettyllog("config", "initialize", "inventories", orgname, "000",  "No inventories found")
