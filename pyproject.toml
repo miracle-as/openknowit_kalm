@@ -1,6 +1,6 @@
 [project]
 name = "kalm"  
-version = "0.0.1" 
+version = "0.1.0" 
 description = "" 
 readme = "README.md" # Optional
 requires-python = ">=3.7"
