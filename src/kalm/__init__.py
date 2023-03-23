@@ -204,7 +204,7 @@ def main():
         mycofig = open("/etc/kalm/kalm.service.json", "w")
         try:
           newtoken = parsed_json['token']
-          print(newtoken, mycofig)
+          mycofig.write(newtoken)
         except:
           print("Service not ready")
         ready = False
