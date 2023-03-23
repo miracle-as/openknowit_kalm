@@ -200,7 +200,7 @@ def main():
         parsed_json = json.loads(result["stdout"])
         runme("sudo touch /etc/kalm/kalm.service.token")
         runme("sudo touch /etc/systemd/system/kalm.service")
-        runme("sudo chown knowit:knowit /etc/kalm/kalm.service.json")
+        runme("sudo chown knowit:knowit /etc/kalm/kalm.service.token")
         runme("sudo chown knowit:knowit /etc/systemd/system/kalm.service")
         mycofig = open("/etc/kalm/kalm.service.token", "w")
         myservice = open("/etc/systemd/system/kalm.service", "w")
