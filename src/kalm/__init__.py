@@ -196,7 +196,9 @@ def main():
         servicefile = open("/etc/kalm/kalm.service.token", mode="r")
         token = servicefile.read()
         while True:
+            print("Daemon running")
             kalm.kalm(token, r)
+            print("Daemon sleeping")
             time.sleep(60)
             
 
@@ -224,7 +226,7 @@ def main():
         myservice.write("Description=Ansible Automation on Ansible Automation\n")
         myservice.write("After=network.target\n")
         myservice.write("[Service]\n")
-        myservice.write("Environment=\"TOWER_FORMAT=json\"")
+        myservice.write("Environment=\"TOWER_FORMAT=json\n\"")
         myservice.write("Environment=\"TOWER_HOST=%s\"\n" % os.getenv("TOWER_HOST"))
         myservice.write("ExecStart=/usr/local/bin/kalm service\n")
         myservice.write("User=knowit\n")
