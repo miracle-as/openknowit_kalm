@@ -161,6 +161,8 @@ def main():
                                      netbox        Run kalm to update netbox configured in /etc/kalm/netbox.json \n  \
                                      service       Run kalm from systemd service \n  \
                                      initservice   setup kalm systemd service \n  \
+                                     stopservice   setup kalm systemd service \n  \
+                                     startservice   setup kalm systemd service \n  \
                                      git           Run kalm using /etc/kalm.json and /etc/kalm.d/ \n \
                                      ")
     parser.add_argument('action', metavar='<action>', type=str, nargs='+', help='setup netbox')
