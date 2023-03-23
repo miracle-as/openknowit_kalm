@@ -198,29 +198,31 @@ def main():
         r.flushdb()
         result = runme("awx --conf.color False tokens create |jq '{'id': .id, 'token': .token }")
         parsed_json = json.loads(result["stdout"])
-        print("Cange the owner")
         runme("sudo touch /etc/kalm/kalm.service.json")
+        runme("sudo touch /etc/systemd/system/kalm.service")
         runme("sudo chown knowit:knowit /etc/kalm/kalm.service.json")
+        runme("sudo chown knowit:knowit /etc/systemd/system/kalm.service")
         mycofig = open("/etc/kalm/kalm.service.json", "w")
+        myservice = open("/etc/systemd/system/kalm.service", "w")
         try:
           newtoken = parsed_json['token']
           mycofig.write(newtoken)
         except:
           print("Service not ready")
-        ready = False
+        myservice.write("[Unit]\n")
+        myservice.write("Description=Ansible Automation on Ansible Automation\n")
+        myservice.write("After=network.target\n")
+        myservice.write("[Service]\n")
+        myservice.write("Environment=\"TOWER_FORMAT=json\"")
+        myservice.write("Environment=\"TOWER_HOST=%s\"\n" % os.getenv("TOWER_HOST"))
+        myservice.write("ExecStart=/home/knowit/.local/bin/kalm service\n")
+        myservice.write("User=knowit\n")
+        myservice.write("Restart=always\n")
+        myservice.write("[Install]\n")
+        myservice.write("WantedBy=default.target\n")
+        myservice.write("RequiredBy=network.target\n")
+        myservice.close
 
-          
-          
-
-
-
-
-        
-
-
-
-
-        
 
     if ready and ( args.action[0] == "reset" or args.action[0] == "init"):
         r = redis.Redis()
