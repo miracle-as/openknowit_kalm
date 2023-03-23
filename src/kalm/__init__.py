@@ -153,7 +153,7 @@ def connectiontest():
 
 def main():
     parser = argparse.ArgumentParser(description="Keep kalm and automate", usage="kalm <action> \n\n \
-                                     version : 0.1.2   \
+                                     version : 0.1.2 \n  \
                                      options:\n  \
                                      main          Run kalm using the main/initial process to ensure the basic environment in /etc/kalm/kalm.json\n  \
                                      check         check access to services defined\n  \
