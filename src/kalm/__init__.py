@@ -8,15 +8,11 @@ import json
 import argparse
 import requests
 
-
-
-
 def runme(command):
   commandlist = command.split(" ")
   result = subprocess.run(commandlist, capture_output=True)
   payload = {"returncode": result.returncode, "stdout": result.stdout.decode(), "stderr": result.stderr }
   return payload
-
 
 def setupkalm(force):
     if not force:
@@ -28,10 +24,18 @@ def setupkalm(force):
         print("Initializing")
         runme("sudo mkdir /etc/kalm >/dev/null 2>&1")
 
+def checktoken(host, token):
+      headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(token)}
+      url = host + "/api/v2/ping/"
+      resp = requests.get(url,headers=headers)
+      if resp.status_code == 200:
+        return True
+      else:
+        return False
+
 def connectiontest():
     checks=[]
     errors=[]
-    
     TOWERCLI = { 
         "installed": False, 
         "version": "unknown",
@@ -94,13 +98,11 @@ def connectiontest():
         # BAIL OUT WHEN config is not existing
         return False
 
-
     result = runme("awx --version")
     if result['returncode'] == 0:
         checks.append("004: awx is installed")
         TOWERCLI["installed"] =True
         TOWERCLI["version"] =  result['stdout']
-        
 
     result = runme("awx me | jq .results[].is_superuser |grep true")
     if result['returncode'] == 0:
@@ -142,18 +144,11 @@ def connectiontest():
           else:
             ANSIBLE_TOKEN['status']  = "failed"
             return False
-    
-
-
-
 
     if len(errors) > 0:
         return False
     else:
         return True
-
-
-
 
 
 def main():
@@ -191,13 +186,33 @@ def main():
             force = False
         setupkalm(force)
 
-
-
     if ready and args.action[0] == "service":
         r = redis.Redis()
         r.flushdb()
         servicefile = open("/etc/kalm/kalm.service.token", mode="r")
         print(servicefile.read())
+
+    if ready and args.action[0] == "initservice":
+        r = redis.Redis()
+        r.flushdb()
+        result = runme("awx --conf.color False tokens create |jq '{'id': .id, 'token': .token }")
+        parsed_json = json.loads(result["stdout"])
+        mycofig = open("/etc/kalm/kalm.service.json", "w")
+        try:
+          newtoken = parsed_json['token']
+          print(newtoken, mycofig)
+        except:
+          print("Service not ready")
+        ready = False
+
+          
+          
+
+
+
+
+        
+
 
 
 
