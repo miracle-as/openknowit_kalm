@@ -193,6 +193,7 @@ def main():
         print(servicefile.read())
 
     if ready and args.action[0] == "initservice":
+        print("Init service")
         r = redis.Redis()
         r.flushdb()
         result = runme("awx --conf.color False tokens create |jq '{'id': .id, 'token': .token }")
