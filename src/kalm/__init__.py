@@ -222,6 +222,20 @@ def main():
         myservice.write("WantedBy=default.target\n")
         myservice.write("RequiredBy=network.target\n")
         myservice.close
+        runme("sudo systemctl daemon-reload")
+        ready  = False
+
+    if ready and ( args.action[0] == "reset" or args.action[0] == "stopservice"):
+        runme("sudo systemctl daemon-reload")
+        runme("sudo systemctl enable kalm.service")
+        runme("sudo systemctl start kalm.service")
+        ready  = False
+
+    if ready and ( args.action[0] == "reset" or args.action[0] == "startservice"):
+        runme("sudo systemctl daemon-reload")
+        runme("sudo systemctl enable kalm.service")
+        runme("sudo systemctl start kalm.service")
+        ready  = False
 
 
     if ready and ( args.action[0] == "reset" or args.action[0] == "init"):
