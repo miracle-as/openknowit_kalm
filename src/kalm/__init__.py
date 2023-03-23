@@ -142,6 +142,9 @@ def connectiontest():
           else:
             ANSIBLE_TOKEN['status']  = "failed"
             return False
+    
+
+
 
 
     if len(errors) > 0:
@@ -156,11 +159,13 @@ def connectiontest():
 def main():
     parser = argparse.ArgumentParser(description="Keep kalm and automate", usage="kalm <action> \n\n \
                                      options:\n  \
-                                     main      Run kalm using the main/initial process to ensure the basic environment in /etc/kalm/kalm.json\n  \
-                                     check     check access to services defined\n  \
-                                     setup     setup access to services defined\n  \
-                                     netbox    Run kalm to update netbox configured in /etc/kalm/netbox.json \n  \
-                                     git       Run kalm using /etc/kalm.json and /etc/kalm.d/ \n \
+                                     main          Run kalm using the main/initial process to ensure the basic environment in /etc/kalm/kalm.json\n  \
+                                     check         check access to services defined\n  \
+                                     setup         setup access to services defined\n  \
+                                     netbox        Run kalm to update netbox configured in /etc/kalm/netbox.json \n  \
+                                     service       Run kalm from systemd service \n  \
+                                     initservice   setup kalm systemd service \n  \
+                                     git           Run kalm using /etc/kalm.json and /etc/kalm.d/ \n \
                                      ")
     parser.add_argument('action', metavar='<action>', type=str, nargs='+', help='setup netbox')
     args = parser.parse_args()
@@ -188,7 +193,17 @@ def main():
 
 
 
-    if ready and args.action[0] == "main":
+    if ready and args.action[0] == "service":
+        r = redis.Redis()
+        r.flushdb()
+        servicefile = open("/etc/kalm/kalm.service.token", mode="r")
+        print(servicefile.read())
+
+
+
+        
+
+    if ready and ( args.action[0] == "reset" or args.action[0] == "init"):
         r = redis.Redis()
         r.flushdb()
         ansibletoken = os.getenv("ANSIBLE_TOKEN")
