@@ -191,7 +191,11 @@ def main():
         r.flushdb()
         servicefile = open("/etc/kalm/kalm.service.token", mode="r")
         token = servicefile.read()
-        kalm.kalm(token, r)
+        while True:
+            kalm.kalm(token, r)
+            time.sleep(60)
+            
+
             
 
 
