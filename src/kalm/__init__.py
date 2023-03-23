@@ -198,6 +198,7 @@ def main():
         r.flushdb()
         result = runme("awx --conf.color False tokens create |jq '{'id': .id, 'token': .token }")
         parsed_json = json.loads(result["stdout"])
+        runme("sudo chown knowit:knowit /etc/kalm/kalm.service.json")
         mycofig = open("/etc/kalm/kalm.service.json", "w")
         try:
           newtoken = parsed_json['token']
