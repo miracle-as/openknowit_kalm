@@ -165,7 +165,6 @@ def main():
     parser.add_argument('action', metavar='<action>', type=str, nargs='+', help='setup netbox')
     args = parser.parse_args()
     ready = False
-    ready  = connectiontest()
 
     if args.action[0] == "check":
         if ready:
@@ -194,7 +193,7 @@ def main():
         while True:
             kalm.kalm(token, r)
             time.sleep(60)
-            
+
 
             
 
