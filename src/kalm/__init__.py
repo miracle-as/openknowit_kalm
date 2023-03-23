@@ -98,13 +98,13 @@ def connectiontest():
         # BAIL OUT WHEN config is not existing
         return False
 
-    result = runme("awx --version")
+    result = runme("/usr/local/bin/awx --version")
     if result['returncode'] == 0:
         checks.append("004: awx is installed")
         TOWERCLI["installed"] =True
         TOWERCLI["version"] =  result['stdout']
 
-    result = runme("awx me | jq .results[].is_superuser |grep true")
+    result = runme("/usr/local/bin/awx me | jq .results[].is_superuser |grep true")
     if result['returncode'] == 0:
         checks.append("006: we are superuser on awx")
         TOWERCLI["status"] =  "ready"
@@ -129,7 +129,7 @@ def connectiontest():
         return False
 
     if ANSIBLE_TOKEN["status"] != "ready" and  TOWERCLI["status"] == "ready":
-        result = runme("awx --conf.color False tokens create |jq '{'id': .id, 'token': .token }")
+        result = runme("/usr/local/bin/awx --conf.color False tokens create |jq '{'id': .id, 'token': .token }")
         parsed_json = json.loads(result["stdout"])
         newtoken = parsed_json['token']
         if result['returncode'] == 0:
@@ -165,6 +165,7 @@ def main():
     parser.add_argument('action', metavar='<action>', type=str, nargs='+', help='setup netbox')
     args = parser.parse_args()
     ready = False
+    ready  = connectiontest()
 
     if args.action[0] == "check":
         if ready:
@@ -193,7 +194,7 @@ def main():
         while True:
             kalm.kalm(token, r)
             time.sleep(60)
-
+            
 
             
 
@@ -202,7 +203,7 @@ def main():
         print("Init service")
         r = redis.Redis()
         r.flushdb()
-        result = runme("awx --conf.color False tokens create |jq '{'id': .id, 'token': .token }")
+        result = runme("/usr/local/bin/awx --conf.color False tokens create |jq '{'id': .id, 'token': .token }")
         parsed_json = json.loads(result["stdout"])
         runme("sudo touch /etc/kalm/kalm.service.token")
         runme("sudo touch /etc/systemd/system/kalm.service")
@@ -221,7 +222,7 @@ def main():
         myservice.write("[Service]\n")
         myservice.write("Environment=\"TOWER_FORMAT=json\"")
         myservice.write("Environment=\"TOWER_HOST=%s\"\n" % os.getenv("TOWER_HOST"))
-        myservice.write("ExecStart=/home/knowit/.local/bin/kalm service\n")
+        myservice.write("ExecStart=/usr/local/bin/kalm service\n")
         myservice.write("User=knowit\n")
         myservice.write("Restart=always\n")
         myservice.write("[Install]\n")

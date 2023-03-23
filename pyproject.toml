@@ -27,7 +27,6 @@ classifiers = [  # Optional
 
 dependencies = [ # Optional
   "redis",
-  "hvac",
   "pynetbox",
 ]
 
