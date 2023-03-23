@@ -190,7 +190,10 @@ def main():
         r = redis.Redis()
         r.flushdb()
         servicefile = open("/etc/kalm/kalm.service.token", mode="r")
-        print(servicefile.read())
+        token = servicefile.read()
+        kalm.kalm(token, r)
+            
+
 
     if ready and args.action[0] == "initservice":
         print("Init service")
@@ -237,30 +240,11 @@ def main():
         runme("sudo systemctl start kalm.service")
         ready  = False
 
-
     if ready and ( args.action[0] == "reset" or args.action[0] == "init"):
         r = redis.Redis()
         r.flushdb()
         ansibletoken = os.getenv("ANSIBLE_TOKEN")
-        loop = False
-        sleep = 0
-        first = True
-        for arg in args.action:
-            if arg == "loop":
-                loop = True
-            if arg == "sleep=60":
-                sleep = arg.split("=")[1]
-
-
-
-        while first == True or loop == True:
-            print("-----------------------------Running ansible automation daemon-------------------------------")
-            kalm.kalm(ansibletoken, r)
-            first = False
-            if loop:
-               print("-----------------------------Sleeeping half a minute----------------------------") 
-               time.sleep(sleep)
-               print("-----------------------------Finished sleeping----------------------------") 
+        kalm.kalm(ansibletoken, r)
 
     
 
