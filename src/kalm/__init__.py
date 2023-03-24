@@ -153,18 +153,23 @@ def connectiontest():
 
 def main():
     parser = argparse.ArgumentParser(description="Keep kalm and automate", usage="kalm <action> \n\n \
-                                     version : 0.1.2 \n  \
-                                     options:\n  \
-                                     main          Run kalm using the main/initial process to ensure the basic environment in /etc/kalm/kalm.json\n  \
-                                     check         check access to services defined\n  \
-                                     setup         setup access to services defined\n  \
-                                     netbox        Run kalm to update netbox configured in /etc/kalm/netbox.json \n  \
-                                     service       Run kalm from systemd service \n  \
-                                     initservice   setup kalm systemd service \n  \
-                                     stopservice   setup kalm systemd service \n  \
-                                     startservice   setup kalm systemd service \n  \
-                                     git           Run kalm using /etc/kalm.json and /etc/kalm.d/ \n \
-                                     ")
+               \
+               version : 0.1.2 BETA \n                                              \
+               actions:\n                                                      \
+               core           Run kalm using the core/initial process to ensure the core environment is intact (/etc/kalm/kalm.json)\n  \
+               seeder         Run kalm using the config files in (/etc/kalm.d)\n  \
+               seed           Run kalm using the config specific configuration\n  \
+               check          check access to core services defined\n  \
+               setup          setup access to core services defined\n  \
+               netbox         Run kalm to update netbox configured in /etc/kalm/netbox.json \n  \
+               service        Run kalm from systemd service \n  \
+               initservice    setup kalm systemd service \n  \
+               stopservice    disable and cleanup kalm systemd service \n  \
+               startservice   setup and enable kalm systemd service \n  \
+               deploy         deploy an ansible tower, awx, awxrpm \n  \
+               \
+               2023 Knowit Miracle\
+               ")
     parser.add_argument('action', metavar='<action>', type=str, nargs='+', help='setup netbox')
     args = parser.parse_args()
     ready = False
@@ -227,6 +232,7 @@ def main():
         myservice.write("After=network.target\n")
         myservice.write("[Service]\n")
         myservice.write("Environment=\"TOWER_FORMAT=json\n\"")
+        myservice.write("Environment=\"TOWER_PASSWORD=%s\"\n" % os.getenv("TOWER_PASSWORD"))
         myservice.write("Environment=\"TOWER_HOST=%s\"\n" % os.getenv("TOWER_HOST"))
         myservice.write("ExecStart=/usr/local/bin/kalm service\n")
         myservice.write("User=knowit\n")
