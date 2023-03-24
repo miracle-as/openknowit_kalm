@@ -494,6 +494,9 @@ def awx_create_credential( credential , organization, mytoken, r):
     url = "https://ansible.openknowit.com/api/v2/credentials/%s/" % credid
     resp = requests.put(url,headers=headers, json=data)
     response = json.loads(resp.content)
+    print("-------------------------------------------------")
+    print(resp.content)
+    print("-------------------------------------------------")
     try:
       credid=response['id']
       prettyllog("manage", "credential", credential['name'], organization, resp.status_code, credid)
