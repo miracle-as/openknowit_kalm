@@ -170,6 +170,7 @@ def awx_create_inventory(name, description, organization, inventorytype, variabl
     vms = nb.virtualization.virtual_machines.all()
     for vm in vms:
       pri_ip = str(vm.primary_ip)
+      print(vm)
       print(pri_ip)
 
 
