@@ -169,7 +169,7 @@ def awx_create_inventory(name, description, organization, inventorytype, variabl
     ipaddresses = nb.ipam.ip_addresses.all()
     vms = nb.virtualization.virtual_machines.all()
     for vm in vms:
-      pri_ip = str(vm.primary_ip)
+      pri_ip = str(vm.primary_ip).split('/')[0]
       awx_create_host(pri_ip, str(vm.name), name,organization, mytoken, r)
 
   prettyllog("manage", "inventories", name, organization, resp.status_code, response)
