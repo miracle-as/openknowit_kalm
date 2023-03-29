@@ -6,6 +6,7 @@ import hvac
 import os
 import sys
 import datetime
+import pynetbox
 
 def prettyllog(function, action, item, organization, statuscode, text):
   d_date = datetime.datetime.now()
@@ -158,13 +159,20 @@ def awx_create_inventory(name, description, organization, inventorytype, variabl
           loop = False
   headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
   url ="https://ansible.openknowit.com/api/v2/inventories/%s/variable_data/" % invid
-  print(url)
-
   resp = requests.put(url,headers=headers, json=variables)
   response = json.loads(resp.content)
-  print(inventorytype)
   if (inventorytype == "netbox"):
     print("Create hosts in netbox")
+    nbtoken = os.getenv("NBTOKEN")
+    nburl = os.getenv("NBURL")
+    nb = pynetbox.api(nburl, nbtoken=nbtoken)
+    ipaddresses = nb.ipam.ip_addresses.all()
+    for ipaddr in ipaddresses:
+      print(ipaddr)
+
+
+
+
   prettyllog("manage", "inventories", name, organization, resp.status_code, response)
 
 
@@ -189,23 +197,6 @@ def awx_create_host(name, description, inventory, organization, mytoken, r):
     prettyllog("manage", "host", name, organization, resp.status_code, "Host %s created with id: %s" % (name, hostid ))
   except:
     prettyllog("manage", "host", name, organization, resp.status_code, response)
-
-def create_hosts_from_netbox(inventory, organization, mytoken, r):
-  try:  
-    invid = (awx_get_id("inventories", inventory, r))
-  except:
-    print("Unexcpetede error")
-  nburl = os.getenv("NBURL")
-  nbtoken = os.getenv("NBTOKEN")
-  nb = pynetbox.api(
-  nburl,
-  nbtoken=token
-  )
-
-  nb.close()
-
-
-
 
 
 
