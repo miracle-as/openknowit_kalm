@@ -162,6 +162,9 @@ def awx_create_inventory(name, description, organization, inventorytype, variabl
 
   resp = requests.put(url,headers=headers, json=variables)
   response = json.loads(resp.content)
+  print(inventorytype)
+  if (inventorytype == "netbox"):
+    print("Create hosts in netbox")
   prettyllog("manage", "inventories", name, organization, resp.status_code, response)
 
 
@@ -187,6 +190,26 @@ def awx_create_host(name, description, inventory, organization, mytoken, r):
     prettyllog("manage", "host", name, organization, resp.status_code, "Host %s created with id: %s" % (name, hostid ))
   except:
     prettyllog("manage", "host", name, organization, resp.status_code, response)
+
+def create_hosts_from_netbox(inventory, organization, mytoken, r):
+  print("------------------------------------------------------------------------------- AWX CREATE HOST FROM NETBOX-------------------------------------------------------------")
+  try:  
+    invid = (awx_get_id("inventories", inventory, r))
+  except:
+    print("Unexcpetede error")
+  nburl = os.getenv("NBURL")
+  nbtoken = os.getenv("NBTOKEN")
+  nb = pynetbox.api(
+  nburl,
+  nbtoken=token
+  )
+
+  nb.close()
+
+
+
+
+
 
 def readthefile(filename):
   f = open(filename)
