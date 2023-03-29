@@ -172,11 +172,6 @@ def awx_create_inventory(name, description, organization, inventorytype, variabl
       pri_ip = str(vm.primary_ip)
       print(pri_ip)
 
-    for vm in vms:
-      print(vm)
-
-
-
 
 
   prettyllog("manage", "inventories", name, organization, resp.status_code, response)
