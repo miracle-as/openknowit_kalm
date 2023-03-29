@@ -165,7 +165,7 @@ def awx_create_inventory(name, description, organization, inventorytype, variabl
     print("Create hosts in netbox")
     nbtoken = os.getenv("NBTOKEN")
     nburl = os.getenv("NBURL")
-    nb = pynetbox.api(nburl, nbtoken=nbtoken)
+    nb = pynetbox.api(nburl, token=nbtoken)
     ipaddresses = nb.ipam.ip_addresses.all()
     for ipaddr in ipaddresses:
       print(ipaddr)
