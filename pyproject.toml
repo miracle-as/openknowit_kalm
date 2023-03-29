@@ -1,6 +1,6 @@
 [project]
 name = "kalm"  
-version = "0.1.1" 
+version = "0.1.2" 
 description = "" 
 readme = "README.md" # Optional
 requires-python = ">=3.7"
@@ -27,7 +27,6 @@ classifiers = [  # Optional
 
 dependencies = [ # Optional
   "redis",
-  "hvac",
   "pynetbox",
 ]
 

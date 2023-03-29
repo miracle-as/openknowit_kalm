@@ -398,7 +398,8 @@ def awx_create_template(name, description, job_type, inventory,project,ee, crede
   print('associatecommand = "awx job_template associate %s --credential %s >/dev/null 2>/dev/null " % ( tmplid, credid)')
   print("We should not use any awx cli commands, but the API is not consisten and sometimes fails to set the credentials")
   print("---------------------------------------------------------------DIRTYHACK---------------------------------------") 
-  associatecommand = "~/.local/bin/awx job_template associate %s --credential %s >/dev/null 2>/dev/null " % ( tmplid, credid)
+  associatecommand = "/usr/local/bin/awx job_template associate %s --credential %s >/dev/null 2>/dev/null " % ( tmplid, credid)
+  print(associatecommand)
   os.system(associatecommand)
   ############################################################################### end of create job template ##########################################
 
@@ -516,6 +517,9 @@ def awx_create_credential( credential , organization, mytoken, r):
     url = "https://ansible.openknowit.com/api/v2/credentials/%s/" % credid
     resp = requests.put(url,headers=headers, json=data)
     response = json.loads(resp.content)
+    print("-------------------------------------------------")
+    print(resp.content)
+    print("-------------------------------------------------")
     try:
       credid=response['id']
       prettyllog("manage", "credential", credential['name'], organization, resp.status_code, credid)
