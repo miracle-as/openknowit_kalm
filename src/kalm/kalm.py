@@ -172,7 +172,8 @@ def awx_create_inventory(name, description, organization, inventorytype, variabl
     for vm in vms:
       print(vm)
       ipadd = nb.ipam.ip_addresses.filter(name=vm)
-      print(ipadd[0])
+      
+      print(len(ipadd))
 
 
 
