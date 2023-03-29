@@ -169,12 +169,10 @@ def awx_create_inventory(name, description, organization, inventorytype, variabl
     ipaddresses = nb.ipam.ip_addresses.all()
     vms = nb.virtualization.virtual_machines.all()
 
-    ipaddresses = nb.ipam.ip_addresses.all()
-    for ipaddr in ipaddresses:
-      print(ipaddr)
-
     for vm in vms:
       print(vm)
+      ipadd = nb.ipam.ip_addresses.get(name=vm)
+      print(ipadd)
 
 
 
