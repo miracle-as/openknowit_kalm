@@ -168,12 +168,9 @@ def awx_create_inventory(name, description, organization, inventorytype, variabl
     nb = pynetbox.api(nburl, token=nbtoken)
     ipaddresses = nb.ipam.ip_addresses.all()
     vms = nb.virtualization.virtual_machines.all()
-
+    print(vms)
     for vm in vms:
       print(vm)
-      ipadd = nb.ipam.ip_addresses.filter(name=vm)
-      
-      print(len(ipadd))
 
 
 
