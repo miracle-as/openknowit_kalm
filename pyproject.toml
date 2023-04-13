@@ -28,6 +28,9 @@ classifiers = [  # Optional
 dependencies = [ # Optional
   "redis",
   "pynetbox",
+  "wheel",
+  "1password-sdk",
+  "netbox"
 ]
 
 [project.optional-dependencies] # Optional
