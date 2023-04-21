@@ -1,5 +1,4 @@
 from kalm import kalm
-from kalm import prettyllog
 import os
 import sys
 import redis
