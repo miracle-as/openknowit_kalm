@@ -7,6 +7,7 @@ import os
 import sys
 import datetime
 import pynetbox
+from kalm import prettyllog
 
 
 
