@@ -8,7 +8,6 @@ import sys
 import datetime
 import pynetbox
 
-from kalm import prettyllog
 
 
 #def prettyllog(function, action, item, organization, statuscode, text):
