@@ -29,7 +29,6 @@ dependencies = [ # Optional
   "redis",
   "pynetbox",
   "wheel",
-  "1password-sdk",
   "netbox"
 ]
 
