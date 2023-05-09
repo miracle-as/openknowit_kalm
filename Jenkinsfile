@@ -21,7 +21,7 @@ pipeline {
         stage('Upload') {
             steps {
                 sh 'echo "${COMMIT_ID}"'
-                sh 'poetry run twine upload dist/*'
+                sh 'poetry run twine upload dist/* || echo'
             }
         }
     }
