@@ -1,3 +1,2 @@
-def main():
+def jenkins():
     print("main")
-    
