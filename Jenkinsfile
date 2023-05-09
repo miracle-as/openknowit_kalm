@@ -14,7 +14,7 @@ pipeline {
             steps {
                 sh 'echo "${COMMIT_ID}"'
                 sh 'pip install poetry'
-                sh 'rm -r dist'
+                sh 'rm -r dist || echo '
                 sh 'poetry build'
             }
         }
