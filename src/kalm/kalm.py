@@ -402,7 +402,11 @@ def awx_create_template(name, description, job_type, inventory,project,ee, crede
   credid = (awx_get_id("credentials", credential, r))
   print('associatecommand = "awx job_template associate %s --credential %s >/dev/null 2>/dev/null " % ( tmplid, credid)')
   print("We should not use any awx cli commands, but the API is not consisten and sometimes fails to set the credentials")
-  associatecommand = "/usr/local/bin/awx job_template associate %s --credential %s >/dev/null 2>/dev/null " % ( tmplid, credid)
+  if TLSVERIFY == False:
+    associatecommand = "/usr/local/bin/awx job_template associate %s --credential %s -k >/dev/null 2>/dev/null " % ( tmplid, credid)  
+  else:
+    associatecommand = "/usr/local/bin/awx job_template associate %s --credential %s >/dev/null 2>/dev/null " % ( tmplid, credid)
+    
   print(associatecommand)
   os.system(associatecommand)
   ############################################################################### end of create job template ##########################################
@@ -797,6 +801,8 @@ def kalm(mytoken, r):
     ######################################
     # Templates
     ######################################
+    print("Templates")
+    print("============================DEBUG==============================YY")
     try:
       templates = org['templates']
       for template in templates:
@@ -811,6 +817,7 @@ def kalm(mytoken, r):
         awx_create_template(templatename, templatedescription, templatejob_type, templateinventory, templateproject, templateEE, templatecredential, templateplaybook, orgname, mytoken, r)
     except:
       prettyllog("config", "initialize", "templates", orgname, "000",  "No templates found")
+    print("============================DEBUG==============================YY")
 
     ######################################
     # Schedules
