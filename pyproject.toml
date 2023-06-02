@@ -60,7 +60,7 @@ dependencies = [ # Optional
   "wheel",
   "hvac",
   "netbox",
-  "urllib3
+  "urllib3"
 ]
 
 [project.optional-dependencies] # Optional
