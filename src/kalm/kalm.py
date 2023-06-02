@@ -347,7 +347,7 @@ def awx_create_template(name, description, job_type, inventory,project,ee, crede
     "job_type": "run",
     "inventory": invid,
     "project": projid,
-    "playbook": playbook,
+    "playbook": "playbooks/" + playbook,
     "scm_branch": "",
     "credential": credid,
     "forks": 0,
