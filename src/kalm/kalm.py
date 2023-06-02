@@ -177,7 +177,7 @@ def awx_create_inventory(name, description, organization, inventorytype, variabl
         if (invid != "" ):
           loop = False
   headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
-  url = os.getenv("TOWER_HOST") + "/api/v2/inventories/%s/" % invid
+  u
   resp = requests.put(url,headers=headers, json=variables, verify=VERIFY_SSL)
   response = json.loads(resp.content)
   if (inventorytype == "netbox"):
@@ -402,7 +402,7 @@ def awx_create_template(name, description, job_type, inventory,project,ee, crede
   credid = (awx_get_id("credentials", credential, r))
   print('associatecommand = "awx job_template associate %s --credential %s >/dev/null 2>/dev/null " % ( tmplid, credid)')
   print("We should not use any awx cli commands, but the API is not consisten and sometimes fails to set the credentials")
-  if TLSVERIFY == False:
+  if VERIFY_SSL == False:
     associatecommand = "/usr/local/bin/awx job_template associate %s --credential %s -k >/dev/null 2>/dev/null " % ( tmplid, credid)  
   else:
     associatecommand = "/usr/local/bin/awx job_template associate %s --credential %s >/dev/null 2>/dev/null " % ( tmplid, credid)
@@ -757,7 +757,7 @@ def kalm(mytoken, r):
         inventoryvariables = inventory['variables']
       except:
         inventoryvariables = {}
-
+      print(inventoryvariables)
       if valid:
         awx_create_inventory(inventoryname, inventorydesc, orgname, inventorytype, inventoryvariables, mytoken, r)
       else:
