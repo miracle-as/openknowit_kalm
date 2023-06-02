@@ -167,7 +167,7 @@ def awx_create_inventory(name, description, organization, inventorytype, variabl
         if (invid != "" ):
           loop = False
   headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
-  url ="https://ansible.openknowit.com/api/v2/inventories/%s/variable_data/" % invid
+  url = os.getenv("TOWER_HOST") + "/api/v2/inventories/%s/" % invid
   resp = requests.put(url,headers=headers, json=variables)
   response = json.loads(resp.content)
   if (inventorytype == "netbox"):
@@ -197,7 +197,7 @@ def awx_create_host(name, description, inventory, organization, mytoken, r):
         "inventory": invid
        }
   headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
-  url ="https://ansible.openknowit.com/api/v2/hosts/"
+  url = os.getenv("TOWER_HOST") + "/api/v2/hosts/"
   resp = requests.post(url,headers=headers, json=data)
   response = json.loads(resp.content)
   try:
@@ -278,7 +278,7 @@ def awx_create_organization(name, description, max_hosts, DEE, realm, mytoken, r
           "description": description,
           "max_hosts": max_hosts
          }
-    url ="https://ansible.openknowit.com/api/v2/organizations/"
+    url = os.getenv("TOWER_HOST") + "/api/v2/organizations/"
     resp = requests.post(url,headers=headers, json=data)
     response = json.loads(resp.content)
     try:
@@ -293,7 +293,7 @@ def awx_create_organization(name, description, max_hosts, DEE, realm, mytoken, r
           "description": description,
           "max_hosts": max_hosts
          }
-    url ="https://ansible.openknowit.com/api/v2/organizations/%s" % orgid
+    url = os.getenv("TOWER_HOST") + "/api/v2/organizations/%s" % orgid
     resp = requests.put(url,headers=headers, json=data)
     response = json.loads(resp.content)
     prettyllog("manage", "organization", name, realm, resp.status_code, response)
@@ -315,8 +315,7 @@ def awx_create_schedule(name, unified_job_template,  description, tz, start, run
       "dtstart": start['year'] + "-" + start['month'] + "-" + start['day'] + "T" + start['hour'] + ":" + start['minute'] + ":" + start['second']  + "Z",
       "rrule": "DTSTART;TZID=" + tz + ":" + start['year'] + start['month'] + start['day'] + "T" + start['hour'] + start['minute'] + start['second'] +" RRULE:INTERVAL=" + run_frequency + ";FREQ=" + run_every
     }
-
-  url ="https://ansible.openknowit.com/api/v2/schedules/"
+  url = os.getenv("TOWER_HOST") + "/api/v2/schedules/"
   resp = requests.post(url,headers=headers, json=data)
   response = json.loads(resp.content)
   try:
@@ -373,13 +372,13 @@ def awx_create_template(name, description, job_type, inventory,project,ee, crede
     "job_slice_count": 1
 }
   headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
-  url = "https://ansible.openknowit.com/api/v2/job_templates/"
+  url = os.getenv("TOWER_HOST") + "/api/v2/job_templates/"
   resp = requests.post(url,headers=headers, json=data)
   response = json.loads(resp.content)
   getawxdata("job_templates", mytoken, r)
   tmplid = awx_get_id("job_templates", name, r )
   if ( tmplid != "" ):
-    url = "https://ansible.openknowit.com/api/v2/job_templates/%s/" % tmplid
+    url = os.getenv("TOWER_HOST") + "/api/v2/job_templates/%s/" % tmplid
     resp = requests.put(url,headers=headers, json=data)
     response = json.loads(resp.content)
     try:
@@ -500,7 +499,7 @@ def awx_create_credential( credential , organization, mytoken, r):
         }
 
   if ( credid == ""):
-    url = "https://ansible.openknowit.com/api/v2/credentials/"
+    url = os.getenv("TOWER_HOST") + "/api/v2/credentials/"
     resp = requests.post(url,headers=headers, json=data)
     response = json.loads(resp.content)
     try:
@@ -509,7 +508,7 @@ def awx_create_credential( credential , organization, mytoken, r):
     except:
       prettyllog("manage", "credential", credential['name'], organization, resp.status_code, response)
   else:
-    url = "https://ansible.openknowit.com/api/v2/credentials/%s/" % credid
+    url = os.getenv("TOWER_HOST") + "/api/v2/credentials/%s/" % credid
     resp = requests.put(url,headers=headers, json=data)
     response = json.loads(resp.content)
     try:
@@ -525,7 +524,7 @@ def awx_create_credential( credential , organization, mytoken, r):
 ######################################
 def awx_get_organization(orgid, mytoken, r):
   headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
-  url ="https://ansible.openknowit.com/api/v2/organizations/%s" % orgid
+  url = os.getenv("TOWER_HOST") + "/api/v2/organizations/%s" % orgid
   resp = requests.get(url,headers=headers)
   return   json.loads(resp.content)
 
@@ -535,7 +534,7 @@ def awx_get_organization(orgid, mytoken, r):
 def awx_get_project(projid, organization, mytoken, r):
   headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
   orgid = (awx_get_id("organizations", organization, r))
-  url ="https://ansible.openknowit.com/api/v2/projects/%s" % projid
+  url = os.getenv("TOWER_HOST") + "/api/v2/projects/%s" % projid
   resp = requests.get(url,headers=headers)
   return   json.loads(resp.content)
 
@@ -563,7 +562,7 @@ def awx_create_project(name, description, scm_type, scm_url, scm_branch, credent
         "credential": credid
        }
   if (projid == ""):
-    url ="https://ansible.openknowit.com/api/v2/projects/"
+    url = os.getenv("TOWER_HOST") + "/api/v2/projects/"
     resp = requests.post(url,headers=headers, json=data)
     response = json.loads(resp.content)
     try:
@@ -587,7 +586,7 @@ def awx_create_project(name, description, scm_type, scm_url, scm_branch, credent
           print("Project status unknown")
 
   else:
-    url ="https://ansible.openknowit.com/api/v2/projects/%s/" % projid
+    url = os.getenv("TOWER_HOST") + "/api/v2/projects/%s/" % projid
     resp = requests.put(url,headers=headers, json=data)
     response = json.loads(resp.content)
     try:  
@@ -662,7 +661,7 @@ def kalm(mytoken, r):
   for org in (config['organization']):
     prettyllog("loop","org", "config", org['name'], "000", "create organization")
     orgname = org['name']
-    key = "ansible.openknowit.com:organizations:orphan:" + orgname
+    key = os.getenv("TOWER_HOST") + ":organizations:name:" + orgname
     r.delete(key)
     max_hosts = org['meta']['max_hosts']
     default_environment = org['meta']['default_environment']
@@ -685,7 +684,7 @@ def kalm(mytoken, r):
     #try:
      # credentials = org['credentials']
      # for credential in credentials:
-      #  key = "ansible.openknowit.com:credentials:orphan:" + credential['name']
+      #  key = os.getenv("TOWER_HOST") +":credentials:orphan:" + credential['name']
     #   r.delete(key)
       #awx_create_credential( credential, orgname)
       #loop = True
@@ -708,7 +707,7 @@ def kalm(mytoken, r):
         projecturl  = project['scm_url']
         projectbrnc = project['scm_branch']
         projectcred = project['credential']
-        key = "ansible.openknowit.com:projects:orphan:" + projectname
+        key = os.getenv("TOWER_HOST") +":projects:orphan:" + projectname
         r.delete(key)
         awx_create_project(projectname, projectdesc, projecttype, projecturl, projectbrnc, projectcred, orgname, mytoken, r)
         awx_get_id("projects", projectname, r)
