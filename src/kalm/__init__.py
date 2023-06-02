@@ -200,6 +200,7 @@ def main():
         r.flushdb()
         servicefile = open("/etc/kalm/kalm.service.token", mode="r")
         token = servicefile.read()
+        token = token.replace("\n", "")
         while True:
             print("Daemon running")
             kalm.kalm(token, r)
