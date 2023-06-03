@@ -1,4 +1,4 @@
-from . import inabox
+from inabox import inabox
 import argparse
 
 def main():
