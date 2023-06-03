@@ -1,4 +1,4 @@
-from inabox import inabox
+from . import inabox
 import argparse
 
 def main():
@@ -7,6 +7,7 @@ def main():
                version : 0.1.2 BETA \n                                              \
                actions:\n                                                      \
                list        list inabox \n  \
+               rancher     activate rancher in a box\n  \
                \
                2023 Knowit Miracle\
                ")
@@ -18,6 +19,10 @@ def main():
     if args.action[0] == "list":
         print("list inabox")
         inabox.list_inabox()
+        
+    if args.action[0] == "rancher":
+        print("Start rancher in a boc")
+        inabox.ranher_inabox()
         
 
 
