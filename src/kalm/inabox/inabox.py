@@ -256,6 +256,7 @@ def start_vm(vm_name):
 
    
 def rancher_inabox():
+  print("Starting rancher in a box")
   get_servers()
   
   print("Starting inabox")
