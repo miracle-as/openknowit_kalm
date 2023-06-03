@@ -10,7 +10,7 @@ repository = "https://github.com/miracle-as/openknowit_kalm.git"
 [tool.poetry.scripts]
 kalm = 'kalm:main'
 kalm_jenkins = 'kalm:jenkins'
-kalm_inabox = 'kalm:kalm_inabox'
+kalm_inabox = 'kalm:inabox'
 
 
 [tool.poetry.dependencies]
