@@ -20,9 +20,7 @@ def get_servers():
   for domain in domains:
     name = domain.name()
     state, _ = domain.state()
-    state_str = libvirt.virDomainState(state).get_name()
-    
-    print(f'Name: {name}, State: {state_str}')
+    print(f'Name: {name}, State: {state}')
   conn.close()
   return domains
 
