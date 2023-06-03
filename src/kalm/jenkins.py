@@ -1,2 +1,0 @@
-def jenkins():
-    print("main")
