@@ -22,7 +22,7 @@ def main():
         
     if args.action[0] == "rancher":
         print("Start rancher in a boc")
-        inabox.ranher_inabox()
+        inabox.rancher_inabox()
         
 
 
