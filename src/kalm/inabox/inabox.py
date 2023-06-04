@@ -85,7 +85,7 @@ def checkservice(hostname, ip):
      print(f"The DNS resolution for {hostname} is incorrect or unavailable.")
      setupdns('inabox', ip)
      os.sleep(5)
-     if check_dns_resolution(hostname, ip)):
+     if check_dns_resolution(hostname, ip):
        print(f"The DNS resolution for {hostname} is correct.")
      else:
        print(f"The DNS resolution for {hostname} is incorrect or unavailable.")
