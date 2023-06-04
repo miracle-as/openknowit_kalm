@@ -297,8 +297,12 @@ def rancher_inabox():
 
   
   print("Starting inabox")
-  checkservice("rancher.inabox.openknowit.com")
   myconf = read_config()
+  print(myconf)
+  myfqdn = myconf['service']+ '.' + myconf['domain']
+
+  checkservice(myfqdn, myconf['ip4']
+               )
   print(myconf['domain'])
   hosts  = myconf['hosts']
   try:
