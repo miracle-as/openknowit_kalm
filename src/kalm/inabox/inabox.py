@@ -2,14 +2,36 @@ import requests
 import subprocess
 import json
 import os
+import redis
 import sys
 import libvirt
 
-conn = libvirt.open()
+def init_redis():
+  r = redis.Redis()
+  r.set('foo', 'bar')
+  value = r.get('foo')
+  if value == b'bar':
+    print("Redis is working")
+    return r
+  else:
+    print("Redis is not working")
+    exit(1)
 
-if conn is None:
+  
+  
+    
+
+
+def init_connection():
+  conn = libvirt.open()
+  if conn is None:
     print('Failed to open connection to the hypervisor.')
     exit(1)
+  else:
+    print('Successfully connected to the hypervisor.')
+    return conn
+
+
 
 def list_inabox():
     print("list inabox")
@@ -52,15 +74,17 @@ def setupdns(hostname, ip4):
     print(f"Failed to add DNS entry. Status code: {response.status_code}")
     return False
 
-def checkservice():
-  hostname = 'inabox.openknowit.com'
-  if check_dns_resolution(hostname):
+
+
+
+def checkservice(hostname, ip):
+  if check_dns_resolution(hostname, ip):
     print(f"The DNS resolution for {hostname} is correct.")
   else:
      print(f"The DNS resolution for {hostname} is incorrect or unavailable.")
-     setupdns('inabox', '88.99.58.240')
+     setupdns('inabox', ip)
      os.sleep(5)
-     if check_dns_resolution(hostname):
+     if check_dns_resolution(hostname, ip)):
        print(f"The DNS resolution for {hostname} is correct.")
      else:
        print(f"The DNS resolution for {hostname} is incorrect or unavailable.")
@@ -255,11 +279,15 @@ def start_vm(vm_name):
 
    
 def rancher_inabox():
+  r = init_redis()
+  conn = init_connection()
+
   print("Starting rancher in a box")
-  get_servers()
+  get_servers(r, conn)
+
   
   print("Starting inabox")
-  checkservice()
+  checkservice("rancher.inabox.openknowit.com")
   myconf = read_config()
   print(myconf['domain'])
   hosts  = myconf['hosts']
@@ -269,9 +297,6 @@ def rancher_inabox():
     print("Failed to check the hosts")
     exit(1)
   print_status()
-
-
-  
   return 0
 
 
