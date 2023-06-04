@@ -36,13 +36,22 @@ def init_connection():
 def list_inabox():
     print("list inabox")
 
-def get_servers():
+def get_servers(r, conn):
+  states = {
+    "0": "no state",
+    "1": "running",
+    "2": "blocked on resource",
+    "3": "paused by user",
+    "4": "being shut down",
+    "5": "shut off",
+    "6": "crashed"
+  }
   domains = conn.listAllDomains()
   print('List of KVM virtual machines:')
   for domain in domains:
     name = domain.name()
     state, _ = domain.state()
-    print(f'Name: {name}, State: {state}')
+    print(f'Name: {name}, State: states[{state}]')
   conn.close()
   return domains
 
