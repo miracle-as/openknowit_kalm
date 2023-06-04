@@ -5,6 +5,7 @@ import os
 import redis
 import sys
 import libvirt
+import time 
 
 def init_redis():
   r = redis.Redis()
@@ -93,7 +94,7 @@ def checkservice(hostname, ip):
   else:
      print(f"The DNS resolution for {hostname} is incorrect or unavailable.")
      setupdns('inabox', ip)
-     os.sleep(5)
+     time.sleep(5)
      if check_dns_resolution(hostname, ip):
        print(f"The DNS resolution for {hostname} is correct.")
      else:
