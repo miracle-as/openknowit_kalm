@@ -49,12 +49,13 @@ def get_servers():
 
 
 
-def check_dns_resolution(hostname):
+def check_dns_resolution(hostname, ip4):
     command = ['dig', '+short', hostname]
     try:
         result = subprocess.run(command, capture_output=True, text=True, check=True)
         dns_output = result.stdout.strip()
         if dns_output:
+            print(dns_output)
             return True
         else:
             return False
