@@ -299,8 +299,9 @@ def rancher_inabox():
   
   print("Starting inabox")
   myconf = read_config()
-  print(myconf)
   myfqdn = myconf['service']+ '.' + myconf['domain']
+  print("Checking DNS resolution for " + myfqdn + " and " + myconf['ip4'])
+        
 
   checkservice(myfqdn, myconf['ip4']
                )
