@@ -6,11 +6,31 @@ import hvac
 import os
 import sys
 import datetime
+import pynetbox
+import urllib3
+import datetime
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+VERIFY_SSL = os.getenv("VERIFY_SSL", "false")
+if VERIFY_SSL == "false" or VERIFY_SSL == "False" or VERIFY_SSL == "FALSE" or VERIFY_SSL == "no" or VERIFY_SSL == "NO" or VERIFY_SSL == "No":
+  VERIFY_SSL = False
+else:
+  VERIFY_SSL = True
+
 
 def prettyllog(function, action, item, organization, statuscode, text):
   d_date = datetime.datetime.now()
   reg_format_date = d_date.strftime("%Y-%m-%d %I:%M:%S %p")
   print("%-20s: %-12s %20s %-50s %-20s %-4s %-50s " %( reg_format_date, function,action,item,organization,statuscode, text))
+
+  
+
+
+#def prettyllog(function, action, item, organization, statuscode, text):
+ # d_date = datetime.datetime.now()
+ # reg_format_date = d_date.strftime("%Y-%m-%d %I:%M:%S %p")
+ # print("%-20s: %-12s %20s %-50s %-20s %-4s %-50s " %( reg_format_date, function,action,item,organization,statuscode, text))
 
 class Hvac:
   def __init__(self):
@@ -61,7 +81,7 @@ def getawxdata(item, mytoken, r):
   intheloop = "first"
   while ( intheloop == "first" or intheloop != "out" ):
     try:
-      resp = requests.get(url,headers=headers)
+      resp = requests.get(url,headers=headers, verify=VERIFY_SSL)
     except:
       intheloop = "out"
     try:
@@ -107,7 +127,7 @@ def awx_delete(item, name, mytoken, r):
   headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
   itemid = (awx_get_id(item, name, r))
   url = os.getenv("TOWER_HOST") + "/api/v2/" + item + "/" + itemid
-  resp = requests.delete(url,headers=headers)
+  resp = requests.delete(url,headers=headers, verify=VERIFY_SSL)
 
 def awx_purge_orphans():
   orphans = r.keys("*:orphan:*")
@@ -124,7 +144,7 @@ def awx_create_label(name, organization, mytoken, r):
        }
     headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
     url = os.getenv("TOWER_HOST") + "/api/v2/labels"
-    resp = requests.post(url,headers=headers, json=data)
+    resp = requests.post(url,headers=headers, json=data, verify=VERIFY_SSL)
       
 
 
@@ -143,10 +163,12 @@ def awx_create_inventory(name, description, organization, inventorytype, variabl
          }
     headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
     url = os.getenv("TOWER_HOST") + "/api/v2/inventories/"
-
+    resp = requests.post(url,headers=headers, json=data, verify=VERIFY_SSL)
+    response = json.loads(resp.content)
     prettyllog("manage", "inventories", name, organization, resp.status_code, response)
     loop = True
     while ( loop ):
+        print("looop")
         getawxdata("inventories", mytoken, r)
         try:
             invid = (awx_get_id("inventories", name, r))
@@ -155,9 +177,20 @@ def awx_create_inventory(name, description, organization, inventorytype, variabl
         if (invid != "" ):
           loop = False
   headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
-  url ="https://ansible.openknowit.com/api/v2/inventories/%s/variable_data/" % invid
-  resp = requests.put(url,headers=headers, json=variables)
+  u
+  resp = requests.put(url,headers=headers, json=variables, verify=VERIFY_SSL)
   response = json.loads(resp.content)
+  if (inventorytype == "netbox"):
+    print("Create hosts in netbox")
+    nbtoken = os.getenv("NBTOKEN")
+    nburl = os.getenv("NBURL")
+    nb = pynetbox.api(nburl, token=nbtoken)
+    ipaddresses = nb.ipam.ip_addresses.all()
+    vms = nb.virtualization.virtual_machines.all()
+    for vm in vms:
+      pri_ip = str(vm.primary_ip).split('/')[0]
+      awx_create_host(pri_ip, str(vm.name), name,organization, mytoken, r)
+
   prettyllog("manage", "inventories", name, organization, resp.status_code, response)
 
 
@@ -174,14 +207,16 @@ def awx_create_host(name, description, inventory, organization, mytoken, r):
         "inventory": invid
        }
   headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
-  url ="https://ansible.openknowit.com/api/v2/hosts/"
-  resp = requests.post(url,headers=headers, json=data)
+  url = os.getenv("TOWER_HOST") + "/api/v2/hosts/"
+  resp = requests.post(url,headers=headers, json=data, verify=VERIFY_SSL)
   response = json.loads(resp.content)
   try:
     hostid=response['id']
     prettyllog("manage", "host", name, organization, resp.status_code, "Host %s created with id: %s" % (name, hostid ))
   except:
     prettyllog("manage", "host", name, organization, resp.status_code, response)
+
+
 
 def readthefile(filename):
   f = open(filename)
@@ -253,8 +288,8 @@ def awx_create_organization(name, description, max_hosts, DEE, realm, mytoken, r
           "description": description,
           "max_hosts": max_hosts
          }
-    url ="https://ansible.openknowit.com/api/v2/organizations/"
-    resp = requests.post(url,headers=headers, json=data)
+    url = os.getenv("TOWER_HOST") + "/api/v2/organizations/"
+    resp = requests.post(url,headers=headers, json=data, verify=VERIFY_SSL)
     response = json.loads(resp.content)
     try:
       orgid=response['id']
@@ -268,8 +303,8 @@ def awx_create_organization(name, description, max_hosts, DEE, realm, mytoken, r
           "description": description,
           "max_hosts": max_hosts
          }
-    url ="https://ansible.openknowit.com/api/v2/organizations/%s" % orgid
-    resp = requests.put(url,headers=headers, json=data)
+    url = os.getenv("TOWER_HOST") + "/api/v2/organizations/%s" % orgid
+    resp = requests.put(url,headers=headers, json=data, verify=VERIFY_SSL)
     response = json.loads(resp.content)
     prettyllog("manage", "organization", name, realm, resp.status_code, response)
   getawxdata("organizations", mytoken, r)
@@ -290,9 +325,8 @@ def awx_create_schedule(name, unified_job_template,  description, tz, start, run
       "dtstart": start['year'] + "-" + start['month'] + "-" + start['day'] + "T" + start['hour'] + ":" + start['minute'] + ":" + start['second']  + "Z",
       "rrule": "DTSTART;TZID=" + tz + ":" + start['year'] + start['month'] + start['day'] + "T" + start['hour'] + start['minute'] + start['second'] +" RRULE:INTERVAL=" + run_frequency + ";FREQ=" + run_every
     }
-
-  url ="https://ansible.openknowit.com/api/v2/schedules/"
-  resp = requests.post(url,headers=headers, json=data)
+  url = os.getenv("TOWER_HOST") + "/api/v2/schedules/"
+  resp = requests.post(url,headers=headers, json=data, verify=VERIFY_SSL)
   response = json.loads(resp.content)
   try:
     schedid=response['id']
@@ -348,14 +382,14 @@ def awx_create_template(name, description, job_type, inventory,project,ee, crede
     "job_slice_count": 1
 }
   headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
-  url = "https://ansible.openknowit.com/api/v2/job_templates/"
-  resp = requests.post(url,headers=headers, json=data)
+  url = os.getenv("TOWER_HOST") + "/api/v2/job_templates/"
+  resp = requests.post(url,headers=headers, json=data, verify=VERIFY_SSL)
   response = json.loads(resp.content)
   getawxdata("job_templates", mytoken, r)
   tmplid = awx_get_id("job_templates", name, r )
   if ( tmplid != "" ):
-    url = "https://ansible.openknowit.com/api/v2/job_templates/%s/" % tmplid
-    resp = requests.put(url,headers=headers, json=data)
+    url = os.getenv("TOWER_HOST") + "/api/v2/job_templates/%s/" % tmplid
+    resp = requests.put(url,headers=headers, json=data, verify=VERIFY_SSL)
     response = json.loads(resp.content)
     try:
       tmplid=response['id']
@@ -366,11 +400,14 @@ def awx_create_template(name, description, job_type, inventory,project,ee, crede
   tmplid = awx_get_id("job_templates", name ,r )
   getawxdata("credentials", mytoken, r)
   credid = (awx_get_id("credentials", credential, r))
-  print("---------------------------------------------------------------DIRTYHACK---------------------------------------") 
   print('associatecommand = "awx job_template associate %s --credential %s >/dev/null 2>/dev/null " % ( tmplid, credid)')
   print("We should not use any awx cli commands, but the API is not consisten and sometimes fails to set the credentials")
-  print("---------------------------------------------------------------DIRTYHACK---------------------------------------") 
-  associatecommand = "awx job_template associate %s --credential %s >/dev/null 2>/dev/null " % ( tmplid, credid)
+  if VERIFY_SSL == False:
+    associatecommand = "/usr/local/bin/awx job_template associate %s --credential %s -k >/dev/null 2>/dev/null " % ( tmplid, credid)  
+  else:
+    associatecommand = "/usr/local/bin/awx job_template associate %s --credential %s >/dev/null 2>/dev/null " % ( tmplid, credid)
+    
+  print(associatecommand)
   os.system(associatecommand)
   ############################################################################### end of create job template ##########################################
 
@@ -476,8 +513,8 @@ def awx_create_credential( credential , organization, mytoken, r):
         }
 
   if ( credid == ""):
-    url = "https://ansible.openknowit.com/api/v2/credentials/"
-    resp = requests.post(url,headers=headers, json=data)
+    url = os.getenv("TOWER_HOST") + "/api/v2/credentials/"
+    resp = requests.post(url,headers=headers, json=data, verify=VERIFY_SSL)
     response = json.loads(resp.content)
     try:
       credid=response['id']
@@ -485,8 +522,8 @@ def awx_create_credential( credential , organization, mytoken, r):
     except:
       prettyllog("manage", "credential", credential['name'], organization, resp.status_code, response)
   else:
-    url = "https://ansible.openknowit.com/api/v2/credentials/%s/" % credid
-    resp = requests.put(url,headers=headers, json=data)
+    url = os.getenv("TOWER_HOST") + "/api/v2/credentials/%s/" % credid
+    resp = requests.put(url,headers=headers, json=data, verify=VERIFY_SSL)
     response = json.loads(resp.content)
     try:
       credid=response['id']
@@ -501,8 +538,8 @@ def awx_create_credential( credential , organization, mytoken, r):
 ######################################
 def awx_get_organization(orgid, mytoken, r):
   headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
-  url ="https://ansible.openknowit.com/api/v2/organizations/%s" % orgid
-  resp = requests.get(url,headers=headers)
+  url = os.getenv("TOWER_HOST") + "/api/v2/organizations/%s" % orgid
+  resp = requests.get(url,headers=headers, verify=VERIFY_SSL)
   return   json.loads(resp.content)
 
 ######################################
@@ -511,8 +548,8 @@ def awx_get_organization(orgid, mytoken, r):
 def awx_get_project(projid, organization, mytoken, r):
   headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
   orgid = (awx_get_id("organizations", organization, r))
-  url ="https://ansible.openknowit.com/api/v2/projects/%s" % projid
-  resp = requests.get(url,headers=headers)
+  url = os.getenv("TOWER_HOST") + "/api/v2/projects/%s" % projid
+  resp = requests.get(url,headers=headers,  verify=VERIFY_SSL)
   return   json.loads(resp.content)
 
 
@@ -539,8 +576,8 @@ def awx_create_project(name, description, scm_type, scm_url, scm_branch, credent
         "credential": credid
        }
   if (projid == ""):
-    url ="https://ansible.openknowit.com/api/v2/projects/"
-    resp = requests.post(url,headers=headers, json=data)
+    url = os.getenv("TOWER_HOST") + "/api/v2/projects/"
+    resp = requests.post(url,headers=headers, json=data, verify=VERIFY_SSL)
     response = json.loads(resp.content)
     try:
       projid=response['id']
@@ -563,8 +600,8 @@ def awx_create_project(name, description, scm_type, scm_url, scm_branch, credent
           print("Project status unknown")
 
   else:
-    url ="https://ansible.openknowit.com/api/v2/projects/%s/" % projid
-    resp = requests.put(url,headers=headers, json=data)
+    url = os.getenv("TOWER_HOST") + "/api/v2/projects/%s/" % projid
+    resp = requests.put(url,headers=headers, json=data, verify=VERIFY_SSL)
     response = json.loads(resp.content)
     try:  
       projid = (awx_get_id("projects", name,r ))
@@ -638,7 +675,7 @@ def kalm(mytoken, r):
   for org in (config['organization']):
     prettyllog("loop","org", "config", org['name'], "000", "create organization")
     orgname = org['name']
-    key = "ansible.openknowit.com:organizations:orphan:" + orgname
+    key = os.getenv("TOWER_HOST") + ":organizations:name:" + orgname
     r.delete(key)
     max_hosts = org['meta']['max_hosts']
     default_environment = org['meta']['default_environment']
@@ -661,7 +698,7 @@ def kalm(mytoken, r):
     #try:
      # credentials = org['credentials']
      # for credential in credentials:
-      #  key = "ansible.openknowit.com:credentials:orphan:" + credential['name']
+      #  key = os.getenv("TOWER_HOST") +":credentials:orphan:" + credential['name']
     #   r.delete(key)
       #awx_create_credential( credential, orgname)
       #loop = True
@@ -684,7 +721,7 @@ def kalm(mytoken, r):
         projecturl  = project['scm_url']
         projectbrnc = project['scm_branch']
         projectcred = project['credential']
-        key = "ansible.openknowit.com:projects:orphan:" + projectname
+        key = os.getenv("TOWER_HOST") +":projects:orphan:" + projectname
         r.delete(key)
         awx_create_project(projectname, projectdesc, projecttype, projecturl, projectbrnc, projectcred, orgname, mytoken, r)
         awx_get_id("projects", projectname, r)
@@ -695,16 +732,38 @@ def kalm(mytoken, r):
   ######################################
   # inventories
   ######################################
-    try:
+    try: 
       inventories = org['inventories']
-      for inventory in inventories:
-        inventoryname = inventory['name']
-        inventorydesc = inventory['description']
-        inventorytype = inventory['type']
-        inventoryvariables = inventory['variables']
-        awx_create_inventory(inventoryname, inventorydesc, orgname, inventorytype, inventoryvariables, mytoken, r)
     except:
       prettyllog("config", "initialize", "inventories", orgname, "000",  "No inventories found")
+
+    for inventory in inventories:
+      valid=True
+      print(inventory)
+      try:
+        inventoryname = inventory['name']
+      except:
+        inventoryname = "Missing"
+        valid = False
+      try: 
+        inventorydesc = inventory['description']
+      except:
+        inventorydesc = ""
+      try: 
+        inventorytype = inventory['type']
+      except:
+        inventorytype = "static"
+      try:
+        inventoryvariables = inventory['variables']
+      except:
+        inventoryvariables = {}
+      print(inventoryvariables)
+      if valid:
+        awx_create_inventory(inventoryname, inventorydesc, orgname, inventorytype, inventoryvariables, mytoken, r)
+      else:
+        prettyllog("config", "initialize", "inventories", inventory, "000",  "Inventory is invalid")
+
+
 
   ######################################
   # hosts
@@ -742,6 +801,8 @@ def kalm(mytoken, r):
     ######################################
     # Templates
     ######################################
+    print("Templates")
+    print("============================DEBUG==============================YY")
     try:
       templates = org['templates']
       for template in templates:
@@ -756,6 +817,7 @@ def kalm(mytoken, r):
         awx_create_template(templatename, templatedescription, templatejob_type, templateinventory, templateproject, templateEE, templatecredential, templateplaybook, orgname, mytoken, r)
     except:
       prettyllog("config", "initialize", "templates", orgname, "000",  "No templates found")
+    print("============================DEBUG==============================YY")
 
     ######################################
     # Schedules
