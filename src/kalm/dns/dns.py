@@ -27,4 +27,6 @@ def list_dns():
     token=os.getenv('KALM_DNS_TOKEN')
     url = url + "/api/v1/dnsrecords" 
 
-def sync_dns(args)
+def sync_dns(args):
+   print("sync dns")
+   
