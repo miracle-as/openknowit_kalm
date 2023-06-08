@@ -1,4 +1,4 @@
-from . import inabox
+from . import dns
 import argparse
 
 def main():
@@ -18,11 +18,11 @@ def main():
 
     if args.action[0] == "list":
         print("list dns")
-        inabox.list_dns()
+        dns.list_dns()
         
-    if args.action[0] == "rancher":
+    if args.action[0] == "sync":
         print("sync dns")
-        inabox.rancher_inabox(args)
+        dns.rancher_inabox(args)
         
 
 
