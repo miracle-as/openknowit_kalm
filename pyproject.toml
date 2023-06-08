@@ -11,6 +11,7 @@ repository = "https://github.com/miracle-as/openknowit_kalm.git"
 kalm = 'kalm:main'
 jenkins = 'kalm.jenkins:main'
 inabox = 'kalm.inabox:main'
+kalm_dns = 'kalm.dns:main'
 
 
 [tool.poetry.dependencies]
