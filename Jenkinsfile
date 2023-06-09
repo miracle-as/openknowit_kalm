@@ -34,9 +34,9 @@ pipeline {
                 sh 'git add pyproject.toml'
                 sh 'git commit -m "Bump version"'
                 sh 'git push'
+            }
         }
-    }
-    
+    }    
 
     post {
         success {
