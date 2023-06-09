@@ -41,7 +41,8 @@ def env_check():
   print("KALM_DNS_URL: " + url)
   print("KALM_DNS_TYPE: " + dns_type)
   print("KALM_DNS_TOKEN: " + token)
-   
+  
+
 def list_dns():
     print("list dns")
     domain = os.getenv('KALM_DNS_DOMAIN')
