@@ -33,7 +33,7 @@ pipeline {
                 sh 'git config --global user.name "Jenkins"'
                 sh 'git add pyproject.toml'
                 sh 'git commit -m "Bump version"'
-                sh "pwd |awk -F'_' '{ print $2 }' | grep 'main' &&  git push origin main"
+                sh 'pwd | grep "main" &&  git push origin main'
             }
         }
     }    
