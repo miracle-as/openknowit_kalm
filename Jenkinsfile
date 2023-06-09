@@ -35,6 +35,7 @@ pipeline {
                 sh 'git commit -m "Bump version"'
                 sh 'git push'
         }
+    }
     
 
     post {
