@@ -28,5 +28,43 @@ def list_dns():
     url = url + "/api/v1/dnsrecords" 
 
 def sync_dns(args):
-   print("sync dns")
+  print("sync dns")
+  domain = os.getenv('KALM_DNS_DOMAIN')
+  url=os.getenv('KALM_DNS_URL')
+  dns_type=os.getenv('KALM_DNS_TYPE')
+  token=os.getenv('KALM_DNS_TOKEN')
+  url = url + "/dns"
+  r = requests.get(url, headers={'Authorization': 'Bearer ' + token})
+  if r.status_code != 200:
+    print("Error: " + str(r.status_code))
+    exit(1)
+  data = r.json()
+  for record in data:
+    print(record)
+    if record['type'] == 'A':
+      print("A record")
+    if record['name'] == '@':
+      print("root record")
+
+def add_dns(args):
+  print("add dns")
+  domain = os.getenv('KALM_DNS_DOMAIN')
+  url=os.getenv('KALM_DNS_URL')
+  dns_type=os.getenv('KALM_DNS_TYPE')
+  token=os.getenv('KALM_DNS_TOKEN')
+  url = url + "/dns"
+  r = requests.get(url, headers={'Authorization': 'Bearer ' + token})
+  if r.status_code != 200:
+    print("Error: " + str(r.status_code))
+    exit(1)
+  data = r.json()
+  for record in data:
+    print(record)
+    if record['type'] == 'A':
+      print("A record")
+    if record['name'] == '@':
+      print("root record")
+
+   
+   
    
