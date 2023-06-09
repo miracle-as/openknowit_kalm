@@ -1,9 +1,5 @@
 pipeline {
     agent any
-    environment {
-         BRANCH_NAME = "${GIT_BRANCH.split("/")[1]}"
-    }
-
 
     stages {
         stage('Set Commit ID') {
@@ -37,7 +33,7 @@ pipeline {
                 sh 'git config --global user.name "Jenkins"'
                 sh 'git add pyproject.toml'
                 sh 'git commit -m "Bump version"'
-                sh "echo ${BRANCH_NAME} | grep 'main' &&  git push origin main"
+                sh "pwd |awk -F'_' '{ print $2 }' | grep 'main' &&  git push origin main"
             }
         }
     }    
