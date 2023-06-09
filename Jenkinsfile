@@ -25,6 +25,7 @@ pipeline {
                 sh 'echo "${COMMIT_ID}"'
                 sh 'poetry run twine upload dist/* || echo'
             }
+        }
         stage('Commit version change') {
             steps {
                 sh 'echo "${COMMIT_ID}"'
@@ -34,7 +35,7 @@ pipeline {
                 sh 'git commit -m "Bump version"'
                 sh 'git push'
         }
-    }
+    
 
     post {
         success {
