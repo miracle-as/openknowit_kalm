@@ -75,12 +75,12 @@ def list_dns():
     token=os.getenv('KALM_DNS_TOKEN')
     url = url + "/dns" 
     r = requests.get(url, headers={'Authorization': 'Bearer ' + token})
+    records = r.json()
     if r.status_code != 200:
       print("Error: " + str(r.status_code))
       exit(1)
-    data = r.json()
-    for record in data['data']:
-      print(record['attributes']['name'] + " " + record['attributes']['type'] + " " + record['attributes']['value'])
+    for record in records:
+      print(record)
 
 
 
