@@ -64,7 +64,7 @@ def set_env(args):
   os.environ['KALM_DNS_URL'] = url
   os.environ['KALM_DNS_TYPE'] = dns_type
   os.environ['KALM_DNS_TOKEN'] = token
-  
+
 
 
 def list_dns():
@@ -73,7 +73,16 @@ def list_dns():
     url=os.getenv('KALM_DNS_URL')
     dns_type=os.getenv('KALM_DNS_TYPE')
     token=os.getenv('KALM_DNS_TOKEN')
-    url = url + "/api/v1/dnsrecords" 
+    url = url + "/dns" 
+    r = requests.get(url, headers={'Authorization': 'Bearer ' + token})
+    if r.status_code != 200:
+      print("Error: " + str(r.status_code))
+      exit(1)
+    data = r.json()
+    for record in data['data']:
+      print(record['attributes']['name'] + " " + record['attributes']['type'] + " " + record['attributes']['value'])
+
+
 
 def sync_dns(args):
   print("sync dns")
