@@ -15,6 +15,8 @@ pipeline {
                 sh 'echo "${COMMIT_ID}"'
                 sh 'pip install poetry'
                 sh 'rm -r dist || echo '
+                sh 'poetry update'
+                sh 'poetry version patch'
                 sh 'poetry build'
             }
         }
@@ -23,6 +25,14 @@ pipeline {
                 sh 'echo "${COMMIT_ID}"'
                 sh 'poetry run twine upload dist/* || echo'
             }
+        stage('Commit version change') {
+            steps {
+                sh 'echo "${COMMIT_ID}"'
+                sh 'git config --global user.email "
+                sh 'git config --global user.name " '
+                sh 'git add pyproject.toml'
+                sh 'git commit -m "Bump version"'
+                sh 'git push'
         }
     }
 
