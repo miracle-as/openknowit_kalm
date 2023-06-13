@@ -12,6 +12,7 @@ kalm = 'kalm:main'
 jenkins = 'kalm.jenkins:main'
 inabox = 'kalm.inabox:main'
 kalm_dns = 'kalm.dns:main'
+kalm_pypi = 'kalm.pypi:main'
 
 
 [tool.poetry.dependencies]
