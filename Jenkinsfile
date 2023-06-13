@@ -26,16 +26,6 @@ pipeline {
                 sh 'poetry run twine upload dist/* || echo'
             }
         }
-        #stage('Commit version change') {
-        #    steps {
-        #        sh 'echo "${COMMIT_ID}"'
-        #        sh 'git config --global user.email "jenkins@openknowit.com"'
-        #        sh 'git config --global user.name "Jenkins"'
-        #        sh 'git add pyproject.toml'
-        #        sh 'git commit -m "Bump version"'
-        #        sh 'pwd | grep "main" &&  git push origin main'
-        #    }
-        #}
     }    
 
     post {
