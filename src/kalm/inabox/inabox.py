@@ -315,5 +315,75 @@ def rancher_inabox():
   print_status()
   return 0
 
+def ansible_role_inabox():
+  import os
+
+def create_role_directory():
+    role_name = input("Enter the name of the role: ")
+    role_dir = f"roles/{role_name}"
+    os.makedirs(f"{role_dir}/tasks")
+    os.makedirs(f"{role_dir}/handlers")
+    os.makedirs(f"{role_dir}/templates")
+    os.makedirs(f"{role_dir}/vars")
+    os.makedirs(f"{role_dir}/defaults")
+    os.makedirs(f"{role_dir}/meta")
+    os.makedirs(f"{role_dir}/files")
+    os.makedirs(f"{role_dir}/tests")
+
+    readme_file = f"{role_dir}/README.md"
+    with open(readme_file, "w") as f:
+        f.write(f"# {role_name} Role")
+
+    meta_file = f"{role_dir}/meta/main.yml"
+    with open(meta_file, "w") as f:
+        f.write("---\n# Dependencies (if any)")
+
+    print(f"Directory structure for the role '{role_name}' created successfully!")
+
+
+role_name = input("Enter the name of the role: ")
+create_role_directory(role_name)
+
+
+def k3s_inabox():
+  r = init_redis()
+  conn = init_connection()
+  print("Starting k3s in a box")
+  get_servers(r, conn)
+  print("Starting inabox")
+  myconf = read_config()
+  myfqdn = myconf['service']+ '.' + myconf['domain']
+  print("Checking DNS resolution for " + myfqdn + " and " + myconf['ip4'])
+  checkservice(myfqdn, myconf['ip4'])
+  print(myconf['domain'])
+  hosts  = myconf['hosts']
+  try:
+    check_the_hosts(hosts, myconf)
+  except:
+    print("Failed to check the hosts")
+    exit(1)
+  print_status()
+  return 0
+
+def up_inabox():
+  r = init_redis()
+  conn = init_connection()
+  print("Starting up inabox")
+  get_servers(r, conn)
+  print("Starting inabox")
+  myconf = read_config()
+  myfqdn = myconf['service']+ '.' + myconf['domain']
+  print("Checking DNS resolution for " + myfqdn + " and " + myconf['ip4'])
+  checkservice(myfqdn, myconf['ip4'])
+  print(myconf['domain'])
+  hosts  = myconf['hosts']
+  try:
+    check_the_hosts(hosts, myconf)
+  except:
+    print("Failed to check the hosts")
+    exit(1)
+  print_status()
+  return 0
+
 
  

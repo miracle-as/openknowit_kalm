@@ -24,7 +24,7 @@ def main():
         
     if args.action[0] == "sync":
         print("sync dns")
-        dns.rancher_inabox(args)
+        dns.sync_dns(args)
         
     if args.action[0] == "envcheck":
         print("env check")
