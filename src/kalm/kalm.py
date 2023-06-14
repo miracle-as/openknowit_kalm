@@ -177,7 +177,7 @@ def awx_create_inventory(name, description, organization, inventorytype, variabl
         if (invid != "" ):
           loop = False
   headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
-  
+  url = os.getenv("TOWER_HOST") + "/api/v2/inventories/%s/" % invid
   resp = requests.put(url,headers=headers, json=variables, verify=VERIFY_SSL)
   response = json.loads(resp.content)
   if (inventorytype == "netbox"):
