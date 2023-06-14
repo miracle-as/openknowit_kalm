@@ -142,15 +142,69 @@ creates a basic kalm configuration
 }
 
 ```
+and the secret.jsob
+```json
+{
+  "kalm": {
+    "vault": 
+    [
+     {
+      "name": "myvault",
+      "description": "Credentials to access a hashicorp vault",
+      "vault_id": "https://vault.example.com",
+      "vault_token": "/etc/kalm/vault.token"
+    }
+    ],
+    #  Here we have a simple server credential built using a file located on the kalm server
+    "ssh": [
+     {
+      "name": "kalmserver",
+      "username": "kalm",
+      "password": "/etc/kalm/kalmserver.password",
+      "description": "Credentials to login to kalm server and setup kalm service",
+      "ssh_private_key": "/opt/kalm/kalmserver_rsa",
+      "privilege_escalation_method": "sudo",
+      "privilege_escalation_username": "root",
+      "privilege_escalation_password": "/etc/kalm/kalmserver.password"
+    },
+    {
+      "name": "productionserver",
+      "username": "root",
+      "password": "/etc/kalm/productionserver.password",
+      "description": "Credentials to login to productionservers",
+      "ssh_private_key": "/opt/kalm/prodservers_rsa",
+      "privilege_escalation_method": "sudo",
+      "privilege_escalation_username": "root",
+      "privilege_escalation_password": "xxx"
+    }
+    ],
+  "scm":[
+     {
+      "name": "github",
+      "username": "Githubuser",
+      "password": "",
+      "description": "Credential to connect to git",
+      "type": "Source Control",
+      "ssh_private_key": "/opt/kalm/github",
+      "kind": "scm"
+    }
+   ]
+  }
+}
+
+
+
+```
 
 
 
 ![Python Logo](https://www.python.org/static/community_logos/python-logo.png "Sample inline image")
 
 This is the README file for KALM
+you need this to access your ansible server
 
 export TOWER_PASSWORD="<ADMIN PAASSWORD>"
-export TOWER_HOST="https://<ANSIBLE HOST"
+export TOWER_HOST="https://<ANSIBLE HOST>"
 export TOWER_USERNAME="<ADMIN USER>"
 
 
