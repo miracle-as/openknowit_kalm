@@ -188,7 +188,8 @@ def awx_create_inventory(name, description, organization, inventorytype, variabl
       nb = pynetbox.api(nburl, token=nbtoken)
     except:
       print("Unexpected error:", sys.exc_info()[0])
-      ipaddresses = nb.ipam.ip_addresses.all()
+  
+    ipaddresses = nb.ipam.ip_addresses.all()
     vms = nb.virtualization.virtual_machines.all()
     for vm in vms:
       pri_ip = str(vm.primary_ip).split('/')[0]
