@@ -9,6 +9,11 @@ import datetime
 import pynetbox
 import urllib3
 import datetime
+from . import common
+
+kalmcfg = get_file_content = common.get_file_content(/etc/kalm/kalm.json)
+print(kalmcfg)
+
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -196,7 +201,7 @@ def awx_create_subproject(org, project, subproject, mytoken, r):
     with open("/etc/kalm.d/subproject.json") as f:
       data = json.load(f)
       print(data)
-      
+
   else:
       open("/etc/kalm/kalm.d/%s.json" % subproject, 'w').close()
       with open("/etc/kalm/kalm.d/%s.json" % subproject, 'w') as f:
