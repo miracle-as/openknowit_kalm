@@ -135,6 +135,39 @@ def awx_purge_orphans():
     mykey = orphan.decode().split(":")
     awx_delete(mykey[1],mykey[3])
 
+def awx_create_subproject(org, project, subproject, mytoken, r):
+  orgid = (awx_get_id("organizations", org, r))
+  projid = (awx_get_id("projects", project, r))
+  data = {
+    "name": subproject,
+    "description": "subproject of " + project,
+    "organization": orgid,
+    "scm_type": "git",
+    "scm_url": "",
+    "scm_branch": "",
+    "scm_clean": "false",
+    "scm_delete_on_update": "false",
+    "credential": "",
+    "scm_update_on_launch": "false",
+    "scm_update_cache_timeout": 0
+  }
+  # check if subproject etc file exists in /etc/kalm.d/subproject.json
+  # if it exists, read it and update data
+  # if it does not exist, create it
+  # if it exists, but is not the same as the one in /etc/kalm.d/subproject.json, update it
+  if os.path.exists("/etc/kalm.d/%s.json" % subproject):
+    with open("/etc/kalm.d/subproject.json") as f:
+      data = json.load(f)
+  else:
+      open("/etc/kalm.d/%s.json" % subproject, 'w').close()
+      with open("/etc/kalm.d/%s.json" % subproject, 'w') as f:
+        json.dump(data, f)
+
+    
+
+  
+
+
 def awx_create_label(name, organization, mytoken, r):
   orgid = (awx_get_id("organizations", organization, r))
   if ( orgid != "" ):
