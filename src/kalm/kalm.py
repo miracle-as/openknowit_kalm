@@ -135,9 +135,42 @@ def awx_purge_orphans():
     mykey = orphan.decode().split(":")
     awx_delete(mykey[1],mykey[3])
 
+def verify_gitkey(project):
+  if os.path.exists("/etc/kalm/keys/%s.json" % project):
+    with open("/etc/kalm/keys/%s" % project) as f:
+      #check if keys us a valid ssh key
+      return True
+  else:
+    if create_gitkey(project):
+      return True
+    else:
+      return False
+  
+def create_gitkey(project):
+  if os.path.exists("/etc/kalm/keys/%s.json" % project):
+    print("Key exists")
+  else:
+    print("Key does not exist")
+    command = "ssh-keygen -t rsa -b 4096 -C \""
+    myrun = os.comm#x(command)
+    if myrun == 0:
+      print("Key created")  
+      return True
+    else:
+      print("Key creation failed")
+      return False
+    
+
+    #save key
+
+
+
+    return data['scm_key']
 def awx_create_subproject(org, project, subproject, mytoken, r):
+  verify_gitkey(subproject)
   orgid = (awx_get_id("organizations", org, r))
   projid = (awx_get_id("projects", project, r))
+
   data = {
     "name": subproject,
     "description": "subproject of " + project,
@@ -147,20 +180,26 @@ def awx_create_subproject(org, project, subproject, mytoken, r):
     "scm_branch": "",
     "scm_clean": "false",
     "scm_delete_on_update": "false",
-    "credential": "",
+    "credential": "deploykey_%s" % subproject,
     "scm_update_on_launch": "false",
     "scm_update_cache_timeout": 0
   }
-  # check if subproject etc file exists in /etc/kalm.d/subproject.json
+  # check if subproject etc file exists in /etc/kalm/kalm.d/subproject.json
   # if it exists, read it and update data
   # if it does not exist, create it
-  # if it exists, but is not the same as the one in /etc/kalm.d/subproject.json, update it
-  if os.path.exists("/etc/kalm.d/%s.json" % subproject):
+  # if it exists, but is not the same as the one in /etc/kalm/kalm.d/subproject.json, update it
+  
+  
+
+
+  if os.path.exists("/etc/kalm/kalm.d/%s.json" % subproject):
     with open("/etc/kalm.d/subproject.json") as f:
       data = json.load(f)
+      print(data)
+      
   else:
-      open("/etc/kalm.d/%s.json" % subproject, 'w').close()
-      with open("/etc/kalm.d/%s.json" % subproject, 'w') as f:
+      open("/etc/kalm/kalm.d/%s.json" % subproject, 'w').close()
+      with open("/etc/kalm/kalm.d/%s.json" % subproject, 'w') as f:
         json.dump(data, f)
 
     
@@ -697,7 +736,7 @@ def kalm(mytoken, r):
           prettyllog("init", "runtime", "config", "master", "002",  "Running Running as daemon")
       if (sys.argv[1] == "custom" ):
           prettyllog("init", "runtime", "config", sys.argv[2], "003" , "running cusom config file")
-          cfgfile = "/etc/kalm.d/%s" % sys.argv[2]
+          cfgfile = "/etc/kalm/kalm.d/%s" % sys.argv[2]
 
   f = open(cfgfile)
   config = json.loads(f.read())
