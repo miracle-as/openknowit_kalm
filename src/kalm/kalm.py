@@ -188,7 +188,7 @@ def awx_create_inventory(name, description, organization, inventorytype, variabl
       nb = pynetbox.api(nburl, token=nbtoken)
     except:
       print("Unexpected error:", sys.exc_info()[0])
-  
+      
     ipaddresses = nb.ipam.ip_addresses.all()
     vms = nb.virtualization.virtual_machines.all()
     for vm in vms:
@@ -732,6 +732,21 @@ def kalm(mytoken, r):
         projid = (awx_get_id("projects", projectname, r))
     except:
       prettyllog("config", "initialize", "projects", orgname, "000",  "No projects found")
+    ######################################
+    # Subprojects
+    ######################################
+    try:
+      subprojects = org['subprojects']
+      for subproject in subprojects:
+        subprojectname = subproject['name']
+        key = os.getenv("TOWER_HOST") +":projects:orphan:" + subprojectname
+        r.delete(key)
+        awx_create_project(subprojectname, orgname, mytoken, r)
+        awx_get_id("projects", subprojectname, r)
+        projid = (awx_get_id("projects", subprojectname, r))
+        prettyllog("config", "initialize", "subprojects", orgname, org['name'],  "sub project %s created" % subprojectname)
+    except:
+      prettyllog("config", "initialize", "subprojects", orgname, "000",  "No subprojects found")
 
   ######################################
   # inventories
