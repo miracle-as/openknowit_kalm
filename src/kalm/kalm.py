@@ -11,9 +11,6 @@ import urllib3
 import datetime
 from . import common
 
-kalmcfg = get_file_content = common.get_file_content(/etc/kalm/kalm.json)
-print(kalmcfg)
-
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
