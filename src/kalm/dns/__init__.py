@@ -25,6 +25,7 @@ def main():
     if args.action[0] == "sync":
         print("sync dns")
         dns.sync_dns(args)
+<<<<<<< HEAD
         
     if args.action[0] == "envcheck":
         print("env check")
@@ -35,6 +36,8 @@ def main():
         print("set env")
         dns.set_env(args)
         ready = True
+=======
+>>>>>>> 581ba74 (roles)
         
 
 

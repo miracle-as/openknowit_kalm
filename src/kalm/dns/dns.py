@@ -86,6 +86,7 @@ def list_dns():
 
 def sync_dns(args):
 <<<<<<< HEAD
+<<<<<<< HEAD
   print("sync dns")
   domain = os.getenv('KALM_DNS_DOMAIN')
   url=os.getenv('KALM_DNS_URL')
@@ -126,6 +127,10 @@ def add_dns(args):
    
    
    
+=======
+   print("sync dns")
+
+>>>>>>> 581ba74 (roles)
 =======
    print("sync dns")
 
