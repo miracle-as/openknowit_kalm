@@ -1,14 +1,14 @@
-from . import gitea
+from . import jenkins
 import argparse
 
 def main():
-    parser = argparse.ArgumentParser(description="Keep kalm and automate", usage="kalm_gitea <action> \n\n \
+    parser = argparse.ArgumentParser(description="Keep kalm and automate", usage="kalm_jenkins <action> \n\n \
                \
-               version : 0.1.2 gitea  \n                                              \
+               version : 0.1.2 jenkins  \n                                              \
                actions:\n                                                      \
-               list        list gitea \n  \
-               set         set gitea times \n  \
-               plugins     get gitea plugins \n  \
+               list        list jenkins \n  \
+               set         set jenkins times \n  \
+               plugins     get jenkins plugins \n  \
                \
                2023 Knowit Miracle\
                ")
@@ -18,30 +18,30 @@ def main():
     print("check if we are ready to go")
 
     if args.action[0] == "list":
-        print("list gitea")
-        gitea.list_gitea()
+        print("list jenkins")
+        jenkins.list_jenkins()
         
 
     if args.action[0] == "set":
-        print("set gitea")
-        gitea.set_gitea(args)
+        print("set jenkins")
+        jenkins.set_jenkins(args)
 
     if args.action[0] == "get_plugins":
-        print("get gitea plugins")
-        gitea.get_plugins()
+        print("get jenkins plugins")
+        jenkins.get_plugins()
 
     if args.action[0] == "plugins":
-        print("get gitea plugins")
-        gitea.plugins()
+        print("get jenkins plugins")
+        jenkins.plugins()
 
     if args.action[0] == "install_plugin":
-        print("install gitea plugins")
+        print("install jenkins plugins")
         try:
             plugin = args.action[1]
         except:
             print("no plugin name")
             exit()
-        gitea.install_plugin(plugin)
+        jenkins.install_plugin(plugin)
 
 
 
