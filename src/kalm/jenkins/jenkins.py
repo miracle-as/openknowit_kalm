@@ -40,7 +40,7 @@ def listjobs():
 
 def get_plugins():
   headers = { 
-    "User-agent": "python-awx-client",
+    "User-agent": "python-jenkins-client",
     "Content-Type": "application/json",
     "Authorization": "Basic {}".format(credentials_base64)
   }
@@ -48,6 +48,10 @@ def get_plugins():
   url = URL + '/pluginManager/api/json?depth=1'
   resp = requests.get(url,headers=headers, verify=VERIFY_SSL)
   plugins = resp.json()["plugins"]  
+  print("-------------------------------------------------")
+  print(resp.json())
+
+  print("-------------------------------------------------")
   for plugin in plugins:
     print("%-40s, %-40s, %-40s" % (plugin["shortName"], plugin["version"], plugin["url"]))
   return resp.status_code

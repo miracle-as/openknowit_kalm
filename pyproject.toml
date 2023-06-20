@@ -77,7 +77,11 @@ test = ["coverage"]
 
 [project.scripts]  # Optional
 kalm = "kalm:main"
-inabox = "inabox:main"
+kalm_jenkins = 'kalm.jenkins:main'
+kalm_gitea = 'kalm.gitea:main'
+kalm_inabox = 'kalm.inabox:main'
+kalm_netbox = 'kalm.netbox:main'
+kalm_dns = 'kalm.dns:main'
 
 [tool.setuptools]
 package-data = {"kalm" = ["*.dat"]}
