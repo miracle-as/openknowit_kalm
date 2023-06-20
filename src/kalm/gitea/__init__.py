@@ -20,31 +20,3 @@ def main():
     if args.action[0] == "list":
         print("list gitea")
         gitea.list_gitea()
-        
-
-    if args.action[0] == "set":
-        print("set gitea")
-        gitea.set_gitea(args)
-
-    if args.action[0] == "get_plugins":
-        print("get gitea plugins")
-        gitea.get_plugins()
-
-    if args.action[0] == "plugins":
-        print("get gitea plugins")
-        gitea.plugins()
-
-    if args.action[0] == "install_plugin":
-        print("install gitea plugins")
-        try:
-            plugin = args.action[1]
-        except:
-            print("no plugin name")
-            exit()
-        gitea.install_plugin(plugin)
-
-
-
-
-
-

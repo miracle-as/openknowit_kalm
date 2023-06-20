@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "kalm"
-version = "0.6.53"
+version = "0.7.00"
 description = "Knowit Automation lifecycle management"
 authors = ["Jakob Holst <jakob.holst@knowit.dk>"]
 license = "MIT"
@@ -10,11 +10,11 @@ repository = "https://github.com/miracle-as/openknowit_kalm.git"
 [tool.poetry.scripts]
 kalm = 'kalm:main'
 kalm_jenkins = 'kalm.jenkins:main'
-kalm_github = 'kalm.jenkins:main'
 kalm_gitea = 'kalm.gitea:main'
 kalm_inabox = 'kalm.inabox:main'
+kalm_netbox = 'kalm.netbox:main'
 kalm_dns = 'kalm.dns:main'
-kalm_pypi = 'kalm.pypi:main'
+
 
 [tool.poetry.dependencies]
 python = "^3.8"
@@ -23,15 +23,16 @@ pytest = "^6.2"
 mypy = "^0.910"
 redis = "^4.5.3"
 pynetbox = "^6.6.2"
-wheel = "^0.34.2"
 hvac = "^1.1.0"
 netbox = "^0.0.2"
 python-jenkins = "^1.7.0"
 urllib3 = "^2.0.2"
 
+
+
 [project]
 name = "kalm"  
-version = "0.6.53" 
+version = "0.7.00" 
 description = "Knowit automation lifecycle management"
 readme = "README.md" # Optional
 requires-python = ">=3.7"
@@ -76,12 +77,7 @@ test = ["coverage"]
 
 [project.scripts]  # Optional
 kalm = "kalm:main"
-kalm_jenkins = 'kalm.jenkins:main'
-kalm_github = 'kalm.jenkins:main'
-kalm_gitea = 'kalm.gitea:main'
-kalm_inabox = 'kalm.inabox:main'
-kalm_dns = 'kalm.dns:main'
-kalm_pypi = 'kalm.pypi:main'
+inabox = "inabox:main"
 
 [tool.setuptools]
 package-data = {"kalm" = ["*.dat"]}
