@@ -196,7 +196,7 @@ def main():
         setupkalm(force)
 
     if args.action[0] == "service":
-        r = redis.Redis( db=999)
+        r = redis.Redis( db=15)
         r.flushdb()
         servicefile = open("/etc/kalm/kalm.service.token", mode="r")
         token = servicefile.read()
