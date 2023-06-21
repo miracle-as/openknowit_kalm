@@ -307,6 +307,11 @@ def readthefile(filename):
 # update ansible vault
 ############################################################################################################################
 def awx_update_vault(ansiblevault, organization, mytoken, r):
+  print("------------------------------------------------------------------")
+  print(ansiblevault)
+  print(organization)
+  print("------------------------------------------------------------------")
+
   for vault in ansiblevault[organization]['vault']:
     credential = { 
       "name": vault['name'], 
@@ -721,7 +726,7 @@ def kalm(mytoken, r):
   f = open(ansiblevaultfile)
   ansiblevault = json.loads(f.read())
   print(ansiblevault)
-  
+
   f.close
 
 
