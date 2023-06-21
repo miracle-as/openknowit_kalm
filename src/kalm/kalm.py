@@ -720,6 +720,8 @@ def kalm(mytoken, r):
   ansiblevaultfile = "/etc/kalm/secret.json"
   f = open(ansiblevaultfile)
   ansiblevault = json.loads(f.read())
+  print(ansiblevault)
+  
   f.close
 
 
@@ -766,6 +768,7 @@ def kalm(mytoken, r):
       orgdata = awx_get_organization(orgid, mytoken, r)
       if ( orgdata['name'] == orgname ):
         loop = False
+
     awx_update_vault(ansiblevault, orgname, mytoken, r)
     refresh_awx_data(mytoken, r)
 
