@@ -879,7 +879,8 @@ def kalm(mytoken, r):
     ######################################
     # Subprojects
     ######################################
-    try:
+    #try:
+    if True:
       subprojects = org['subprojects']
       print(subprojects)
       for subproject in subprojects:
@@ -898,8 +899,8 @@ def kalm(mytoken, r):
         awx_get_id("projects", subprojectname, r)
         projid = (awx_get_id("projects", subprojectname, r))
         prettyllog("config", "initialize", "subprojects", orgname, org['name'],  "sub project %s created" % subprojectname)
-    except:
-      prettyllog("config", "initialize", "subprojects", orgname, "000",  "No subprojects found")
+    #except:
+    #  prettyllog("config", "initialize", "subprojects", orgname, "000",  "No subprojects found")
 
   ######################################
   # inventories
