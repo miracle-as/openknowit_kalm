@@ -9,6 +9,8 @@ import datetime
 import pynetbox
 import urllib3
 import datetime
+from . import common
+
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -135,6 +137,78 @@ def awx_purge_orphans():
     mykey = orphan.decode().split(":")
     awx_delete(mykey[1],mykey[3])
 
+def verify_gitkey(project):
+  if os.path.exists("/etc/kalm/keys/%s.json" % project):
+    with open("/etc/kalm/keys/%s" % project) as f:
+      #check if keys us a valid ssh key
+      return True
+  else:
+    if create_gitkey(project):
+      return True
+    else:
+      return False
+  
+def create_gitkey(project):
+  if os.path.exists("/etc/kalm/keys/%s.json" % project):
+    print("Key exists")
+  else:
+    print("Key does not exist")
+    command = "ssh-keygen -t rsa -b 4096 -C \""
+    myrun = os.comm#x(command)
+    if myrun == 0:
+      print("Key created")  
+      return True
+    else:
+      print("Key creation failed")
+      return False
+    
+
+    #save key
+
+
+
+    return data['scm_key']
+def awx_create_subproject(org, project, subproject, mytoken, r):
+  verify_gitkey(subproject)
+  orgid = (awx_get_id("organizations", org, r))
+  projid = (awx_get_id("projects", project, r))
+
+  data = {
+    "name": subproject,
+    "description": "subproject of " + project,
+    "organization": orgid,
+    "scm_type": "git",
+    "scm_url": "",
+    "scm_branch": "",
+    "scm_clean": "false",
+    "scm_delete_on_update": "false",
+    "credential": "deploykey_%s" % subproject,
+    "scm_update_on_launch": "false",
+    "scm_update_cache_timeout": 0
+  }
+  # check if subproject etc file exists in /etc/kalm/kalm.d/subproject.json
+  # if it exists, read it and update data
+  # if it does not exist, create it
+  # if it exists, but is not the same as the one in /etc/kalm/kalm.d/subproject.json, update it
+  
+  
+
+
+  if os.path.exists("/etc/kalm/kalm.d/%s.json" % subproject):
+    with open("/etc/kalm.d/subproject.json") as f:
+      data = json.load(f)
+      print(data)
+
+  else:
+      open("/etc/kalm/kalm.d/%s.json" % subproject, 'w').close()
+      with open("/etc/kalm/kalm.d/%s.json" % subproject, 'w') as f:
+        json.dump(data, f)
+
+    
+
+  
+
+
 def awx_create_label(name, organization, mytoken, r):
   orgid = (awx_get_id("organizations", organization, r))
   if ( orgid != "" ):
@@ -177,14 +251,18 @@ def awx_create_inventory(name, description, organization, inventorytype, variabl
         if (invid != "" ):
           loop = False
   headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
-  u
+  url = os.getenv("TOWER_HOST") + "/api/v2/inventories/%s/" % invid
   resp = requests.put(url,headers=headers, json=variables, verify=VERIFY_SSL)
   response = json.loads(resp.content)
   if (inventorytype == "netbox"):
     print("Create hosts in netbox")
     nbtoken = os.getenv("NBTOKEN")
     nburl = os.getenv("NBURL")
-    nb = pynetbox.api(nburl, token=nbtoken)
+    try:
+      nb = pynetbox.api(nburl, token=nbtoken)
+    except:
+      print("Unexpected error:", sys.exc_info()[0])
+      
     ipaddresses = nb.ipam.ip_addresses.all()
     vms = nb.virtualization.virtual_machines.all()
     for vm in vms:
@@ -229,6 +307,11 @@ def readthefile(filename):
 # update ansible vault
 ############################################################################################################################
 def awx_update_vault(ansiblevault, organization, mytoken, r):
+  print("------------------------------------------------------------------")
+  print(ansiblevault)
+  print(organization)
+  print("------------------------------------------------------------------")
+
   for vault in ansiblevault[organization]['vault']:
     credential = { 
       "name": vault['name'], 
@@ -642,6 +725,8 @@ def kalm(mytoken, r):
   ansiblevaultfile = "/etc/kalm/secret.json"
   f = open(ansiblevaultfile)
   ansiblevault = json.loads(f.read())
+  print(ansiblevault)
+
   f.close
 
 
@@ -660,7 +745,7 @@ def kalm(mytoken, r):
           prettyllog("init", "runtime", "config", "master", "002",  "Running Running as daemon")
       if (sys.argv[1] == "custom" ):
           prettyllog("init", "runtime", "config", sys.argv[2], "003" , "running cusom config file")
-          cfgfile = "/etc/kalm.d/%s" % sys.argv[2]
+          cfgfile = "/etc/kalm/kalm.d/%s" % sys.argv[2]
 
   f = open(cfgfile)
   config = json.loads(f.read())
@@ -688,6 +773,7 @@ def kalm(mytoken, r):
       orgdata = awx_get_organization(orgid, mytoken, r)
       if ( orgdata['name'] == orgname ):
         loop = False
+
     awx_update_vault(ansiblevault, orgname, mytoken, r)
     refresh_awx_data(mytoken, r)
 
@@ -728,6 +814,21 @@ def kalm(mytoken, r):
         projid = (awx_get_id("projects", projectname, r))
     except:
       prettyllog("config", "initialize", "projects", orgname, "000",  "No projects found")
+    ######################################
+    # Subprojects
+    ######################################
+    try:
+      subprojects = org['subprojects']
+      for subproject in subprojects:
+        subprojectname = subproject['name']
+        key = os.getenv("TOWER_HOST") +":projects:orphan:" + subprojectname
+        r.delete(key)
+        awx_create_project(subprojectname, orgname, mytoken, r)
+        awx_get_id("projects", subprojectname, r)
+        projid = (awx_get_id("projects", subprojectname, r))
+        prettyllog("config", "initialize", "subprojects", orgname, org['name'],  "sub project %s created" % subprojectname)
+    except:
+      prettyllog("config", "initialize", "subprojects", orgname, "000",  "No subprojects found")
 
   ######################################
   # inventories

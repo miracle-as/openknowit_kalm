@@ -6,6 +6,7 @@ import hvac
 import os
 import sys
 import datetime
+import tempfile
 import pynetbox
 import urllib3
 import datetime
@@ -76,6 +77,13 @@ class Hvac:
       mount_point=engine_name,
       path=secret
     )
+def checkout_git_repo(url, branch, path):
+  #create a temporary directory
+  tmpdir = tempfile.mkdtemp()
+  #clone the repo
+  command = "cd %s && git clone -b %s %s %s" % (tmpdir, branch, url, path)
+  os.system(command)
+
 
 def getawxdata(item, mytoken, r):
   headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
@@ -197,7 +205,6 @@ def awx_create_subproject(org, project, subproject, mytoken, r):
   if os.path.exists("/etc/kalm/kalm.d/%s.json" % subproject):
     with open("/etc/kalm.d/subproject.json") as f:
       data = json.load(f)
-      print(data)
 
   else:
       open("/etc/kalm/kalm.d/%s.json" % subproject, 'w').close()
@@ -242,7 +249,6 @@ def awx_create_inventory(name, description, organization, inventorytype, variabl
     prettyllog("manage", "inventories", name, organization, resp.status_code, response)
     loop = True
     while ( loop ):
-        print("looop")
         getawxdata("inventories", mytoken, r)
         try:
             invid = (awx_get_id("inventories", name, r))
@@ -307,11 +313,6 @@ def readthefile(filename):
 # update ansible vault
 ############################################################################################################################
 def awx_update_vault(ansiblevault, organization, mytoken, r):
-  print("------------------------------------------------------------------")
-  print(ansiblevault)
-  print(organization)
-  print("------------------------------------------------------------------")
-
   for vault in ansiblevault[organization]['vault']:
     credential = { 
       "name": vault['name'], 
@@ -489,8 +490,6 @@ def awx_create_template(name, description, job_type, inventory,project,ee, crede
     associatecommand = "/usr/local/bin/awx job_template associate %s --credential %s -k >/dev/null 2>/dev/null " % ( tmplid, credid)  
   else:
     associatecommand = "/usr/local/bin/awx job_template associate %s --credential %s >/dev/null 2>/dev/null " % ( tmplid, credid)
-    
-  print(associatecommand)
   os.system(associatecommand)
   ############################################################################### end of create job template ##########################################
 
@@ -725,8 +724,6 @@ def kalm(mytoken, r):
   ansiblevaultfile = "/etc/kalm/secret.json"
   f = open(ansiblevaultfile)
   ansiblevault = json.loads(f.read())
-  print(ansiblevault)
-
   f.close
 
 
@@ -840,7 +837,6 @@ def kalm(mytoken, r):
 
     for inventory in inventories:
       valid=True
-      print(inventory)
       try:
         inventoryname = inventory['name']
       except:
@@ -858,7 +854,6 @@ def kalm(mytoken, r):
         inventoryvariables = inventory['variables']
       except:
         inventoryvariables = {}
-      print(inventoryvariables)
       if valid:
         awx_create_inventory(inventoryname, inventorydesc, orgname, inventorytype, inventoryvariables, mytoken, r)
       else:
@@ -902,8 +897,6 @@ def kalm(mytoken, r):
     ######################################
     # Templates
     ######################################
-    print("Templates")
-    print("============================DEBUG==============================YY")
     try:
       templates = org['templates']
       for template in templates:
@@ -918,7 +911,6 @@ def kalm(mytoken, r):
         awx_create_template(templatename, templatedescription, templatejob_type, templateinventory, templateproject, templateEE, templatecredential, templateplaybook, orgname, mytoken, r)
     except:
       prettyllog("config", "initialize", "templates", orgname, "000",  "No templates found")
-    print("============================DEBUG==============================YY")
 
     ######################################
     # Schedules
