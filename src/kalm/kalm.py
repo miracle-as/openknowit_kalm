@@ -715,7 +715,7 @@ def refresh_awx_data(mytoken,r ):
 ######################################
 # function: get subproject data 
 ######################################
-def awx_get_subproject(subproject, mytoken, r):
+def get_subproject(subproject, project, orginasation, mytoken, r):
   #check if file exists in /etc/kalm/kalm.d/subproject.json
   # if it exists, read it and update data
   if os.path.exists("/etc/kalm/kalm.d/%s.json" % subproject):
@@ -739,7 +739,9 @@ def awx_get_subproject(subproject, mytoken, r):
 # function: create subproject file
 ######################################
 
-def create_subprojec_file(subproject):
+def create_subprojec_file(subproject, project, organisation, token, r):
+  orgid = (awx_get_id("organizations", organisation, r))
+  projid = (awx_get_id("projects", project, r))
   data = {
     "name": subproject,
     "description": "subproject of " + project,
@@ -885,7 +887,7 @@ def kalm(mytoken, r):
         subprojectname = subproject['name']
         key = os.getenv("TOWER_HOST") +":projects:orphan:" + subprojectname
         r.delete(key)
-        subproject = read_subproject_definition(subprojectname)
+        subproject =  get_subproject(subprojectname, projectname, orgname, mytoken, r)
         projectname = subproject['name']
         projectdesc = subproject['description']
         projecttype = subproject['scm_type']
