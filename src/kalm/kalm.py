@@ -674,7 +674,7 @@ def awx_create_project(name, description, scm_type, scm_url, scm_branch, credent
             projid = (awx_get_id("projects", name, r))
         except:
             print("Unexpected error")
-        projectinfo = awx_get_project(projid, organization)
+        projectinfo = awx_get_project(projid, organization, mytoken , r)
         try:
           if( projectinfo['status'] == "successful"):
               loop = False
