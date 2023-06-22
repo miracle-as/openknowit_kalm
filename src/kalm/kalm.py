@@ -711,9 +711,72 @@ def refresh_awx_data(mytoken,r ):
     getawxdata(item, mytoken, r)
 
 
+
+######################################
+# function: get subproject data 
+######################################
+def awx_get_subproject(subproject, mytoken, r):
+  #check if file exists in /etc/kalm/kalm.d/subproject.json
+  # if it exists, read it and update data
+  if os.path.exists("/etc/kalm/kalm.d/%s.json" % subproject):
+    with open("/etc/kalm/kalm.d/%s.json" % subproject) as f:
+      data = json.load(f)
+  else:
+    print("Subproject file does not exist")
+    if create_subprojec_file(subproject):
+      if os.path.exists("/etc/kalm/kalm.d/%s.json" % subproject):
+        with open("/etc/kalm/kalm.d/%s.json" % subproject) as f:
+          data = json.load(f)
+      else:
+        print("Subproject file does not exist")
+        return False
+    else:
+      print("Subproject file does not exist")
+      return False
+  return data
+
+######################################
+# function: create subproject file
+######################################
+
+def create_subprojec_file(subproject):
+  data = {
+    "name": subproject,
+    "description": "subproject of " + project,
+    "organization": orgid,
+    "scm_type": "git",
+    "scm_url": "",
+    "scm_branch": "",
+    "scm_clean": "false",
+    "scm_delete_on_update": "false",
+    "credential": "deploykey_%s" % subproject,
+    "scm_update_on_launch": "false",
+    "scm_update_cache_timeout": 0
+  } 
+
+  open("/etc/kalm/kalm.d/%s.json" % subproject, 'w').close()
+  with open("/etc/kalm/kalm.d/%s.json" % subproject, 'w') as f:
+    json.dump(data, f)
+  return True
+
+
+
+
+  # if it does not exist, create it
+
+
+
+
+
+
+
 ########################################################################################################################
 # Main:  start
 ########################################################################################################################
+
+
+
+
 
 def kalm(mytoken, r):
 
@@ -822,7 +885,14 @@ def kalm(mytoken, r):
         subprojectname = subproject['name']
         key = os.getenv("TOWER_HOST") +":projects:orphan:" + subprojectname
         r.delete(key)
-        awx_create_project(subprojectname, orgname, mytoken, r)
+        subproject = read_subproject_definition(subprojectname)
+        projectname = subproject['name']
+        projectdesc = subproject['description']
+        projecttype = subproject['scm_type']
+        projecturl  = subproject['scm_url']
+        projectbrnc = subproject['scm_branch']
+        projectcred = subproject['credential']
+        awx_create_project(projectname, projectdesc, projecttype, projecturl, projectbrnc, projectcred, orgname, mytoken, r)
         awx_get_id("projects", subprojectname, r)
         projid = (awx_get_id("projects", subprojectname, r))
         prettyllog("config", "initialize", "subprojects", orgname, org['name'],  "sub project %s created" % subprojectname)
