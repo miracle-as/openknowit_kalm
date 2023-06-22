@@ -737,6 +737,18 @@ def get_subproject(subproject, project, organisation, mytoken, r):
       return False
   return data
 
+def create_master_project_file(project, organisation, token, r):
+  if os.path.exists("/etc/kalm.json"):
+    with open("/etc/kalm.json") as f:
+      data = json.load(f)
+  else:
+    data = {  }
+    open("/etc/kalm.json", 'w').close()
+    with open("/etc/kalm.json", 'w') as f:
+      json.dump(data, f)
+    return True
+  
+
 ######################################
 # function: create subproject file
 ######################################
@@ -745,18 +757,97 @@ def create_subproject_file(subproject, project, organisation, token, r):
   orgid = (awx_get_id("organizations", organisation, r))
   projid = (awx_get_id("projects", project, r))
   data = {
-    "name": subproject,
-    "description": "subproject of " + project,
-    "organization": orgid,
-    "scm_type": "git",
-    "scm_url": "",
-    "scm_branch": "",
-    "scm_clean": "false",
-    "scm_delete_on_update": "false",
-    "credential": "deploykey_%s" % subproject,
-    "scm_update_on_launch": "false",
-    "scm_update_cache_timeout": 0
-  } 
+  "organization": [
+    {
+      "name": "{{ organization }}",
+      "parentproject": "{{ project }}",
+      "project": [
+        {
+           "name": "{{ subproject }}",
+           "description": "subproject of {{ project }}",
+           "scm_type": "git",
+           "scm_url": "",
+           "scm_branch": "",
+           "scm_clean": "false",
+           "scm_delete_on_update": "false",
+           "credential": "deploykey_compliance",
+           "scm_update_on_launch": "false",
+           "scm_update_cache_timeout": 0
+        }
+      ],
+      "inventories": [
+        {
+          "name": "compliance",
+          "description": "Inventory containing all servers in netbox tagged compliance",
+          "type": "netbox"
+	}
+      ],
+      "templates": [
+        {
+          "name": "ansible_project_compliance_checkup",
+          "description": "Checkup job for ensuring the ability to execute on servers",
+          "job_type": "run",
+          "inventory": "compliance",
+          "project": "compliance",
+          "EE": "Automation Hub Default execution environment",
+          "credentials": "compliance",
+          "playbook": "checkup.yml"
+        },
+        {
+          "name": "ansible_project_compliance_runner",
+          "description": "Apply the project compliance on servers tagged ",
+          "job_type": "run",
+          "inventory": "compliance",
+          "project": "compliance",
+          "EE": "Automation Hub Default execution environment",
+          "credentials": "compliance",
+          "playbook": "compliance.yml"
+        }
+      ],
+      "schedules": [
+        {
+          "name": "ansible_project_compliance_checkup",
+          "type": "job",
+          "template": "ansible_project_compliance_checkup",
+          "description": "ansible project compliance checkup shedule",
+          "local_time_zone": "CET",
+          "run_every_minute": "5",
+          "start": "now",
+          "end": "never"
+        },
+        {
+          "name": "ansible_project_compliance_runner",
+          "type": "job",
+          "template": "ansible_project_compliance_runner",
+          "description": "ansible project compliance runner shedule",
+          "local_time_zone": "CET",
+          "run_every_minute": "5",
+          "start": "now",
+          "end": "never"
+        },
+        {
+          "name": "ansible_projecet_compliance",
+          "type": "project",
+          "project": "compliance",
+          "description": "Master job for syncing project compliance",
+          "local_time_zone": "CET",
+          "run_every_minute": "10",
+          "start": "now",
+          "end": "never"
+        }
+      ],
+      "labels":
+      [
+        {
+          "name": "compliance"
+        }
+      ]
+    }
+  ]
+}
+
+
+   
 
   open("/etc/kalm/kalm.d/%s.json" % subproject, 'w').close()
   with open("/etc/kalm/kalm.d/%s.json" % subproject, 'w') as f:
@@ -883,8 +974,7 @@ def kalm(mytoken, r):
     ######################################
     # Subprojects
     ######################################
-    #try:
-    if True:
+    try:
       subprojects = org['subprojects']
       print(subprojects)
       for subproject in subprojects:
@@ -903,8 +993,8 @@ def kalm(mytoken, r):
         awx_get_id("projects", subprojectname, r)
         projid = (awx_get_id("projects", subprojectname, r))
         prettyllog("config", "initialize", "subprojects", orgname, org['name'],  "sub project %s created" % subprojectname)
-    #except:
-    #  prettyllog("config", "initialize", "subprojects", orgname, "000",  "No subprojects found")
+    except:
+      prettyllog("config", "initialize", "subprojects", orgname, "000",  "No subprojects found")
 
   ######################################
   # inventories
