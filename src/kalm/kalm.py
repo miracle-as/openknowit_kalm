@@ -816,6 +816,7 @@ def kalm(mytoken, r):
     ######################################
     try:
       subprojects = org['subprojects']
+      print(subprojects)
       for subproject in subprojects:
         print(subproject)
         subprojectname = subproject['name']
