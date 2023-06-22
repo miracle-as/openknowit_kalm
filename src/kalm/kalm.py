@@ -618,7 +618,7 @@ def awx_create_credential( credential , organization, mytoken, r):
 ######################################
 # function: get  organization
 ######################################
-def awx_get_organization(orgid, mytoken, r):
+def awx_get_organization(orgid, mytoken=None, r=None):
   headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
   url = os.getenv("TOWER_HOST") + "/api/v2/organizations/%s" % orgid
   resp = requests.get(url,headers=headers, verify=VERIFY_SSL)
@@ -627,7 +627,7 @@ def awx_get_organization(orgid, mytoken, r):
 ######################################
 # function: get Project 
 ######################################
-def awx_get_project(projid, organization, mytoken, r):
+def awx_get_project(projid, organization=None, mytoken=None, r=None)):
   headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
   orgid = (awx_get_id("organizations", organization, r))
   url = os.getenv("TOWER_HOST") + "/api/v2/projects/%s" % projid
@@ -717,7 +717,7 @@ def refresh_awx_data(mytoken,r ):
 ######################################
 def get_subproject(subproject, project, organisation, mytoken, r):
   print("get subproject data")
-  
+
   #check if file exists in /etc/kalm/kalm.d/subproject.json
   # if it exists, read it and update data
   if os.path.exists("/etc/kalm/kalm.d/%s.json" % subproject):
