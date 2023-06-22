@@ -627,7 +627,7 @@ def awx_get_organization(orgid, mytoken=None, r=None):
 ######################################
 # function: get Project 
 ######################################
-def awx_get_project(projid, organization=None, mytoken=None, r=None)):
+def awx_get_project(projid, organization=None, mytoken=None, r=None):
   headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
   orgid = (awx_get_id("organizations", organization, r))
   url = os.getenv("TOWER_HOST") + "/api/v2/projects/%s" % projid
