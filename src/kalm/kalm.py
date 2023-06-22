@@ -817,6 +817,7 @@ def kalm(mytoken, r):
     try:
       subprojects = org['subprojects']
       for subproject in subprojects:
+        print(subproject)
         subprojectname = subproject['name']
         key = os.getenv("TOWER_HOST") +":projects:orphan:" + subprojectname
         r.delete(key)
