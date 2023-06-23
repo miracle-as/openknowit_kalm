@@ -215,8 +215,8 @@ def main():
             for org in (config['organization']):
               kalm.kalm(token, r, org['projects'])
               for subproject in org['subprojects']:
-                print("%s loop") % subproject
-                kalm.kalm(token, r, "subprojects", subproject)
+                print("%s loop") % subproject['name']
+                kalm.kalm(token, r, "subprojects", subproject['name'])
             print("Daemon sleeping")
             time.sleep(60)
             
