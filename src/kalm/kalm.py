@@ -950,7 +950,7 @@ def kalm(mytoken, r, realm="standalone"):
         print(subproject)
     except:
       print("We have no subprojects")
-  print("------------------------")
+  print("----------DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD--------------")
 
   if (realm == "standalone" or realm == "main"):
           cfgfile = "/etc/kalm/kalm.json"
