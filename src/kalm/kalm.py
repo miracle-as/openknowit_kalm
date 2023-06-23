@@ -485,13 +485,13 @@ def awx_create_template(name, description, job_type, inventory,project,ee, crede
   getawxdata("credentials", mytoken, r)
   credid = (awx_get_id("credentials", credential, r))
   if VERIFY_SSL == False:
-    associatecommand = "awx --insecure job_template associate %s --credential %s -k >/dev/null 2>/dev/null " % ( tmplid, credid)  
+    associatecommand = "awx job_template associate %s --credential %s --insecure  >/dev/null 2>/dev/null " % ( tmplid, credid)  
   else:
     associatecommand = "awx job_template associate %s --credential %s >/dev/null 2>/dev/null " % ( tmplid, credid)
   print("-------------------------------------------------------")
   print(associatecommand)
   print("-------------------------------------------------------")
-  
+
   os.system(associatecommand)
   ############################################################################### end of create job template ##########################################
 
