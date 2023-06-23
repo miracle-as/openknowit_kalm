@@ -1050,6 +1050,7 @@ def kalm(mytoken, r, realm="standalone", subproject=None):
       inventories = org['inventories']
     except:
       prettyllog("config", "initialize", "inventories", orgname, "000",  "No inventories found")
+      inventories = []
 
     for inventory in inventories:
       valid=True
