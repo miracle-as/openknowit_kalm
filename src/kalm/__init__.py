@@ -218,7 +218,7 @@ def main():
                 print("----------------------------------ddddddddddddddddddddddddddddddddddddddddddddddddddddddddd--")
                 print(subproject)
                 print("----------------------------------ddddddddddddddddddddddddddddddddddddddddddddddddddddddddd--")
-                kalm.kalm(token, r, "subprojects", subproject['name'])
+                kalm.kalm(token, r, "subproject", subproject['name'])
             print("Daemon sleeping")
             time.sleep(60)
             

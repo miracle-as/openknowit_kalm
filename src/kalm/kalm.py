@@ -920,10 +920,6 @@ def kalm(mytoken, r, realm="standalone", subproject=None):
   # Load and set ansible secrets in ansible vault
   ########################################################################################################################
   prettyllog("init", "runtime", "config", "init", "001", "loadning secrets")
-  print("REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEAAAAAAAAAAAAAAAAAAAAAALLLLLLLLLLMMMMMMMMMMMMMMMMMMMMM")
-  print(realm)
-  print(subproject)
-  print("REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEAAAAAAAAAAAAAAAAAAAAAALLLLLLLLLLMMMMMMMMMMMMMMMMMMMMM")
   ansiblevaultfile = "/etc/kalm/secret.json"
   f = open(ansiblevaultfile)
   ansiblevault = json.loads(f.read())
