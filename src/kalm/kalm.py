@@ -748,7 +748,6 @@ def refresh_awx_data(mytoken,r ):
     "teams",
     "unified_jobs",
     "unified_job_templates",
-    "users",
     "workflow_approvals",
     "workflow_job_nodes",
     "workflow_jobs",
