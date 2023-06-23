@@ -944,7 +944,7 @@ def kalm(mytoken, r, realm="standalone"):
   mainconfig = json.loads(f.read())
   f.close
 
-  if (realm == "projects"):
+  if (realm == "subprojects"):
     try:
       for subproject in mainconfig['subprojects']:
         print(subproject)
