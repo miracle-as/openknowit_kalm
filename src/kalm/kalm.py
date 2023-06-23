@@ -484,12 +484,14 @@ def awx_create_template(name, description, job_type, inventory,project,ee, crede
   tmplid = awx_get_id("job_templates", name ,r )
   getawxdata("credentials", mytoken, r)
   credid = (awx_get_id("credentials", credential, r))
-  print('associatecommand = "awx job_template associate %s --credential %s >/dev/null 2>/dev/null " % ( tmplid, credid)')
-  print("We should not use any awx cli commands, but the API is not consisten and sometimes fails to set the credentials")
   if VERIFY_SSL == False:
-    associatecommand = "awx job_template associate %s --credential %s -k >/dev/null 2>/dev/null " % ( tmplid, credid)  
+    associatecommand = "awx --insecure job_template associate %s --credential %s -k >/dev/null 2>/dev/null " % ( tmplid, credid)  
   else:
     associatecommand = "awx job_template associate %s --credential %s >/dev/null 2>/dev/null " % ( tmplid, credid)
+  print("-------------------------------------------------------")
+  print(associatecommand)
+  print("-------------------------------------------------------")
+  
   os.system(associatecommand)
   ############################################################################### end of create job template ##########################################
 
