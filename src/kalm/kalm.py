@@ -465,6 +465,9 @@ def awx_create_template(name, description, job_type, inventory,project,ee, crede
     "allow_simultaneous": "false",
     "job_slice_count": 1
 }
+  print("------------------------------------------")
+  print(data)
+  print("------------------------------------------")
   headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
   url = os.getenv("TOWER_HOST") + "/api/v2/job_templates/"
   resp = requests.post(url,headers=headers, json=data, verify=VERIFY_SSL)
