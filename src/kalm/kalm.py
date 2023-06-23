@@ -718,7 +718,46 @@ def awx_create_project(name, description, scm_type, scm_url, scm_branch, credent
 # function: Refresh AWX data
 ######################################
 def refresh_awx_data(mytoken,r ):
-  items = {"organizations", "projects", "credentials", "hosts", "inventories", "credential_types", "labels" , "instance_groups", "job_templates"}    
+  items = { 
+    "ad_hoc_commands",
+    "analytics,applications",
+    "credential_input_sources",
+    "credentials",
+    "credential_types",
+    "execution_environments",
+    "groups",
+    "host_metrics",
+    "hosts",
+    "instance_groups",
+    "instances",
+    "inventory_sources",
+    "inventory_updates",
+    "jobs",
+    "job_templates",
+    "labels",
+    "metrics",
+    "notifications",
+    "notification_templates",
+    "organizations",
+    "projects",
+    "project_updates",
+    "roles",
+    "schedules",
+    "settings",
+    "system_jobs",
+    "system_job_templates",
+    "teams",
+    "tokens",
+    "unified_jobs",
+    "unified_job_templates",
+    "users",
+    "workflow_approvals",
+    "workflow_job_nodes",
+    "workflow_jobs",
+    "workflow_job_template_nodes",
+    "workflow_job_templates"
+  }
+  #items = {"organizations", "projects", "credentials", "hosts", "inventories", "credential_types", "labels" , "instance_groups", "job_templates", "execution_environments"}    
   for item in items:
     getawxdata(item, mytoken, r)
 
