@@ -431,7 +431,7 @@ def awx_create_template(name, description, job_type, inventory,project,eename, c
     eeid = 1
     errormessage = "Execution environment %s is not valid" % eename
     prettyllog("Warning", "template", name, organization, "666", errormessage)
-  else
+  else:
     infomessage = "Execution environment %s has the id %s" % (eename, eeid)
     prettyllog("Info", "template", name, organization, "666", infomessage)
 
