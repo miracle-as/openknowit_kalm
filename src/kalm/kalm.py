@@ -421,12 +421,19 @@ def awx_create_schedule(name, unified_job_template,  description, tz, start, run
 ############################################################################################################################
 # Create job template
 ############################################################################################################################
-def awx_create_template(name, description, job_type, inventory,project,ee, credential, playbook, organization, mytoken, r):
+def awx_create_template(name, description, job_type, inventory,project,eename, credential, playbook, organization, mytoken, r):
   orgid = (awx_get_id("organizations", organization,r))
   invid = (awx_get_id("inventories", inventory,r ))
   projid = (awx_get_id("projects", project,r ))
   credid = (awx_get_id("credentials", credential, r))
-  eeid = (awx_get_id("execution_environments", ee, r))
+  eeid = (awx_get_id("execution_environments", eename, r))
+  if eeid == "":
+    eeid = 1
+    errormessage = "Execution environment %s is not valid" % eename
+    prettyllog("Warning", "template", name, organization, "666", errormessage)
+  else
+    infomessage = "Execution environment %s has the id %s" % (eename, eeid)
+    prettyllog("Info", "template", name, organization, "666", infomessage)
 
   data = {
     "name": name,
