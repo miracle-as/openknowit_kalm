@@ -957,10 +957,17 @@ def kalm(mytoken, r, realm="standalone", subproject=None):
     r.delete(key)
     try:
       max_hosts = org['meta']['max_hosts']
-    except:
+    except
       max_hosts = 100
-    default_environment = org['meta']['default_environment']
-    description = org['meta']['description']
+    try: 
+      default_environment = org['meta']['default_environment']
+    except:
+      default_environment = ""
+    try:
+      description = org['meta']['description']
+    except:
+      description = ""
+      
     awx_create_organization(orgname, description, max_hosts, default_environment, realm, mytoken, r)
     getawxdata("organizations", mytoken, r)
     orgid = awx_get_id("organizations", orgname, r)
