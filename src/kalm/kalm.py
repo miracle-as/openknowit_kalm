@@ -743,7 +743,6 @@ def refresh_awx_data(mytoken,r ):
     "project_updates",
     "roles",
     "schedules",
-    "settings",
     "system_jobs",
     "system_job_templates",
     "teams",
