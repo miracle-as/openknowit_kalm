@@ -212,10 +212,11 @@ def main():
         while True:
             print("Daemon running")
             print("main loop")
-            kalm.kalm(token, r, "main")
-            for subproject in config['subprojects']:
-              print("%s loop") % subproject
-              kalm.kalm(token, r, "subprojects", subproject)
+            for org in (config['organization']):
+              kalm.kalm(token, r, org['project'])
+              for subproject in org['subprojects']:
+                print("%s loop") % subproject
+                kalm.kalm(token, r, "subprojects", subproject)
             print("Daemon sleeping")
             time.sleep(60)
             
