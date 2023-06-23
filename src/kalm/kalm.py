@@ -726,7 +726,6 @@ def refresh_awx_data(mytoken,r ):
     "credential_types",
     "execution_environments",
     "groups",
-    "host_metrics",
     "hosts",
     "inventory_sources",
     "inventory_updates",
