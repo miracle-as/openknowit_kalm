@@ -199,7 +199,7 @@ def main():
         r = redis.Redis( db=15)
         r.flushdb()
         servicefile = open("/etc/kalm/kalm.service.token", mode="r")
-        configfile="/etc/kalm/kalm.json"
+        cfgfile="/etc/kalm/kalm.json"
         f = open(cfgfile)
         config = json.loads(f.read())
         f.close

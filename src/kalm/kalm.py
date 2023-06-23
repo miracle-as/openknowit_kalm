@@ -472,9 +472,6 @@ def awx_create_template(name, description, job_type, inventory,project,eename, c
     "allow_simultaneous": "false",
     "job_slice_count": 1
 }
-  print("------------------------------------------")
-  print(data)
-  print("------------------------------------------")
   headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
   url = os.getenv("TOWER_HOST") + "/api/v2/job_templates/"
   resp = requests.post(url,headers=headers, json=data, verify=VERIFY_SSL)
@@ -501,9 +498,6 @@ def awx_create_template(name, description, job_type, inventory,project,eename, c
   else:
     #associatecommand = "awx job_template associate %s --credential %s >/dev/null 2>/dev/null " % ( tmplid, credid)
     associatecommand = "awx job_template associate_credential --job-template %s --credential %s" % ( tmplid, credid )
-  print("-------------------------------------------------------")
-  print(associatecommand)
-  print("-------------------------------------------------------")
 
   os.system(associatecommand)
   ############################################################################### end of create job template ##########################################
@@ -1026,7 +1020,6 @@ def kalm(mytoken, r, realm="standalone", subproject=None):
       subprojects = org['subprojects']
       print(subprojects)
       for subproject in subprojects:
-        print(subproject)
         subprojectname = subproject['name']
         key = os.getenv("TOWER_HOST") +":projects:orphan:" + subprojectname
         r.delete(key)
