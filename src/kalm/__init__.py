@@ -203,6 +203,10 @@ def main():
         f = open(cfgfile)
         config = json.loads(f.read())
         f.close
+        print("----------------------------------ddddddddddddddddddddddddddddddddddddddddddddddddddddddddd--")
+        print(config)
+        print("----------------------------------ddddddddddddddddddddddddddddddddddddddddddddddddddddddddd--")
+
         token = servicefile.read()
         token = token.replace("\n", "")
         while True:
