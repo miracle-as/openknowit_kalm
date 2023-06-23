@@ -203,7 +203,8 @@ def main():
         token = token.replace("\n", "")
         while True:
             print("Daemon running")
-            kalm.kalm(token, r)
+            kalm.kalm(token, r, "main")
+            kalm.kalm(token, r, "subprojects")
             print("Daemon sleeping")
             time.sleep(60)
             

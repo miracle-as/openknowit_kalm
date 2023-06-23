@@ -924,8 +924,7 @@ def create_subproject_file(subproject, project, organisation, token, r):
 
 
 
-def kalm(mytoken, r):
-
+def kalm(mytoken, r, realm="standalone"):
   ########################################################################################################################
   # Load and set ansible secrets in ansible vault
   ########################################################################################################################
@@ -940,18 +939,29 @@ def kalm(mytoken, r):
   # Load  and set ansible automation org
   ########################################################################################################################
   cfgfile = "/etc/kalm/kalm.json"
-  realm = "standalone"
-  if (len(sys.argv) == 1):
-    prettyllog("init", "runtime", "config", "master", "001", "Running standalone : using local master config")
-    realm = "standalone"
-  else:
-      if (sys.argv[1] == "master" ):
+  configs = []
+  f = open(cfgfile)
+  mainconfig = json.loads(f.read())
+  f.close
+
+  if (realm == "projects"):
+    try:
+      for subproject in mainconfig['subprojects']:
+        print(subproject)
+    except:
+      print("We have no subprojects")
+  print("------------------------")
+
+  if (realm == "standalone" or realm == "main"):
           cfgfile = "/etc/kalm.json"
-          realm="master"
+          realm="main"
           prettyllog("init", "runtime", "config", "master", "002",  "Running Running as daemon")
-      if (sys.argv[1] == "custom" ):
+   
+  if (realm == "projects" ):
           prettyllog("init", "runtime", "config", sys.argv[2], "003" , "running cusom config file")
+
           cfgfile = "/etc/kalm/kalm.d/%s" % sys.argv[2]
+  
 
   f = open(cfgfile)
   config = json.loads(f.read())
