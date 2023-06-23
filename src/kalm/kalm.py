@@ -728,8 +728,6 @@ def refresh_awx_data(mytoken,r ):
     "groups",
     "host_metrics",
     "hosts",
-    "instance_groups",
-    "instances",
     "inventory_sources",
     "inventory_updates",
     "jobs",
