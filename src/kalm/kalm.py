@@ -746,7 +746,6 @@ def refresh_awx_data(mytoken,r ):
     "system_jobs",
     "system_job_templates",
     "teams",
-    "tokens",
     "unified_jobs",
     "unified_job_templates",
     "users",
