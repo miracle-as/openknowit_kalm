@@ -953,7 +953,7 @@ def kalm(mytoken, r, realm="standalone"):
   print("------------------------")
 
   if (realm == "standalone" or realm == "main"):
-          cfgfile = "/etc/kalm.json"
+          cfgfile = "/etc/kalm/kalm.json"
           realm="main"
           prettyllog("init", "runtime", "config", "master", "002",  "Running Running as daemon")
    
