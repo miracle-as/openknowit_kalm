@@ -495,9 +495,12 @@ def awx_create_template(name, description, job_type, inventory,project,eename, c
   getawxdata("credentials", mytoken, r)
   credid = (awx_get_id("credentials", credential, r))
   if VERIFY_SSL == False:
-    associatecommand = "awx job_template associate %s --credential %s --insecure  >/dev/null 2>/dev/null " % ( tmplid, credid)  
+    ####################### AWX VERSION IS CHANGING THIS
+    #associatecommand = "awx job_template associate %s --credential %s --insecure  >/dev/null 2>/dev/null " % ( tmplid, credid)  
+    associatecommand = "awx job_template associate_credential --job-template %s --credential %s --insecure" % ( tmplid, credid)
   else:
-    associatecommand = "awx job_template associate %s --credential %s >/dev/null 2>/dev/null " % ( tmplid, credid)
+    #associatecommand = "awx job_template associate %s --credential %s >/dev/null 2>/dev/null " % ( tmplid, credid)
+    associatecommand = "awx job_template associate_credential --job-template %s --credential %s" % ( tmplid, credid )
   print("-------------------------------------------------------")
   print(associatecommand)
   print("-------------------------------------------------------")
