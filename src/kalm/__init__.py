@@ -199,12 +199,19 @@ def main():
         r = redis.Redis( db=15)
         r.flushdb()
         servicefile = open("/etc/kalm/kalm.service.token", mode="r")
+        configfile="/etc/kalm/kalm.json"
+        f = open(cfgfile)
+        config = json.loads(f.read())
+        f.close
         token = servicefile.read()
         token = token.replace("\n", "")
         while True:
             print("Daemon running")
+            print("main loop")
             kalm.kalm(token, r, "main")
-            kalm.kalm(token, r, "subprojects")
+            for subproject in config['subprojects']:
+              print("%s loop") % subproject
+              kalm.kalm(token, r, "subprojects", subproject)
             print("Daemon sleeping")
             time.sleep(60)
             
