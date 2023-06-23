@@ -447,7 +447,7 @@ def awx_create_template(name, description, job_type, inventory,project,ee, crede
     "start_at_task": "",
     "timeout": 0,
     "use_fact_cache": "false",
-    "execution_environment": eeid,
+    "execution_environment": "",
     "host_config_key": "",
     "ask_scm_branch_on_launch": "false",
     "ask_diff_mode_on_launch": "false",
