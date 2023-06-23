@@ -750,9 +750,6 @@ def refresh_awx_data(mytoken,r ):
   }
   #items = {"organizations", "projects", "credentials", "hosts", "inventories", "credential_types", "labels" , "instance_groups", "job_templates", "execution_environments"}    
   for item in items:
-    print("-------------------------------------") 
-    print(item)
-    print("-------------------------------------") 
     getawxdata(item, mytoken, r)
 
 
