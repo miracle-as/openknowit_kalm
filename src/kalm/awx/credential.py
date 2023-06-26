@@ -1,8 +1,13 @@
 from .common import awx_get_id
+from .common import getawxdata
+
 from ..common import prettyllog
 
 import requests
 import os
+import json
+
+
 
 VERIFY_SSL = os.getenv("VERIFY_SSL", "false")
 if VERIFY_SSL == "false" or VERIFY_SSL == "False" or VERIFY_SSL == "FALSE" or VERIFY_SSL == "no" or VERIFY_SSL == "NO" or VERIFY_SSL == "No":
