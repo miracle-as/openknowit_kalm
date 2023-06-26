@@ -867,20 +867,19 @@ def kalm(mytoken, r, realm="standalone", subproject=None):
     ######################################
     masterproject = ""
     try:
-      projects = org['projects']
-      for project in projects:
-        projectname = project['name']
-        masterproject = projectname
-        projectdesc = project['description']
-        projecttype = project['scm_type']
-        projecturl  = project['scm_url']
-        projectbrnc = project['scm_branch']
-        projectcred = project['credential']
-        key = os.getenv("TOWER_HOST") +":projects:orphan:" + projectname
-        r.delete(key)
-        awx_create_project(projectname, projectdesc, projecttype, projecturl, projectbrnc, projectcred, orgname, mytoken, r)
-        awx_get_id("projects", projectname, r)
-        projid = (awx_get_id("projects", projectname, r))
+      project = org['project']
+      projectname = project['name']
+      masterproject = projectname
+      projectdesc = project['description']
+      projecttype = project['scm_type']
+      projecturl  = project['scm_url']
+      projectbrnc = project['scm_branch']
+      projectcred = project['credential']
+      key = os.getenv("TOWER_HOST") +":projects:orphan:" + projectname
+      r.delete(key)
+      awx_create_project(projectname, projectdesc, projecttype, projecturl, projectbrnc, projectcred, orgname, mytoken, r)
+      awx_get_id("projects", projectname, r)
+      projid = (awx_get_id("projects", projectname, r))
     except:
       prettyllog("config", "initialize", "projects", orgname, "000",  "No projects found")
     ######################################
