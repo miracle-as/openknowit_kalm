@@ -10,6 +10,7 @@ import tempfile
 import pynetbox
 import urllib3
 import datetime
+from kalm.awx import awx_get_id
 from .common import prettyllog
 
 
@@ -124,15 +125,6 @@ def vault_get_secret(path, vault):
   return secret
 
 
-def awx_get_id(item,name, r):
-  key = os.getenv("TOWER_HOST") + item +":name:" + name
-  myvalue =  r.get(key)
-  mydevode = ""
-  try: 
-    mydecode = myvalue.decode()
-  except:
-    mydecode = ""
-  return mydecode
 
   
 
@@ -519,17 +511,7 @@ def awx_create_team(name, description, organization , mytoken, r):
 def awx_create_user(name, description, organization, mytoken, r):
   prettyllog("manage", "user", name, organization, "000", "-")
 
-######################################
-# function: create Credential
-######################################
-def awx_create_credential( credential , organization, mytoken, r):
-  try:
-    credid = (awx_get_id("credentials", credential['name'], r))
-  except:
-    print("Unexcpeted credential error")
-  orgid = (awx_get_id("organizations", organization, r))
-  headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
-  credentialtypeid = (awx_get_id("credential_types", credential['type'], r))
+
 
 ######################################
 # type: vault
