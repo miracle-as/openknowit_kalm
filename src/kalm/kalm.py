@@ -10,7 +10,8 @@ import tempfile
 import pynetbox
 import urllib3
 import datetime
-from common import prettyllog
+from .common import prettyllog
+
 
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
