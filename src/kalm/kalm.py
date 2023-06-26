@@ -12,6 +12,8 @@ import urllib3
 import datetime
 from .awx.common import awx_get_id
 from .awx.common import getawxdata
+from .awx.credential import awx_create_credential
+
 
 from .common import prettyllog
 
