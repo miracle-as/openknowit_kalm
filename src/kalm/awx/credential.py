@@ -4,7 +4,11 @@ from ..common import prettyllog
 import requests
 import os
 
-
+VERIFY_SSL = os.getenv("VERIFY_SSL", "false")
+if VERIFY_SSL == "false" or VERIFY_SSL == "False" or VERIFY_SSL == "FALSE" or VERIFY_SSL == "no" or VERIFY_SSL == "NO" or VERIFY_SSL == "No":
+  VERIFY_SSL = False
+else:
+  VERIFY_SSL = True
 
 
 
