@@ -10,7 +10,7 @@ import tempfile
 import pynetbox
 import urllib3
 import datetime
-from kalm.awx import awx_get_id
+from awx.common import awx_get_id
 from .common import prettyllog
 
 
