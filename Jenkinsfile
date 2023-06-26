@@ -1,6 +1,12 @@
 pipeline {
     agent any
     stages {
+        stage('Set Branch name')
+            steps {
+                script {
+                    echo "Current branch is: ${env.GIT_BRANCH}"
+                }
+            }
         stage('Set Commit ID') {
             steps {
                 script {
