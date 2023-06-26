@@ -204,10 +204,6 @@ def main():
         f = open(cfgfile)
         config = json.loads(f.read())
         f.close
-        print("----------------------------------ddddddddddddddddddddddddddddddddddddddddddddddddddddddddd--")
-        print(config)
-        print("----------------------------------ddddddddddddddddddddddddddddddddddddddddddddddddddddddddd--")
-
         token = servicefile.read()
         token = token.replace("\n", "")
         while True:
@@ -216,9 +212,6 @@ def main():
             for org in (config['organization']):
               kalm.kalm(token, r, org['project'], "main")
               for subproject in org['subprojects']:
-                print("----------------------------------ddddddddddddddddddddddddddddddddddddddddddddddddddddddddd--")
-                print(subproject)
-                print("----------------------------------ddddddddddddddddddddddddddddddddddddddddddddddddddddddddd--")
                 kalm.kalm(token, r, "subproject", subproject['name'])
             print("Daemon sleeping")
             time.sleep(60)

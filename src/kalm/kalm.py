@@ -345,7 +345,6 @@ def awx_create_organization(name, description, max_hosts, DEE, realm, mytoken, r
          }
     url = os.getenv("TOWER_HOST") + "/api/v2/organizations/"
     resp = requests.post(url,headers=headers, json=data, verify=VERIFY_SSL)
-    print(resp.content)
     response = json.loads(resp.content)
     try:
       orgid=response['id']
