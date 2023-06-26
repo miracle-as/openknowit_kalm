@@ -19,12 +19,13 @@ pipeline {
                 sh 'poetry build'
             }
         }
-        when {
+
+        stage('Upload') {
+            when {
                 expression {
                     return env.GIT_BRANCH == "origin/main"
                 }
             }
-        stage('Upload') {
             steps {
                 sh 'echo "${COMMIT_ID}"'
                 sh 'poetry run twine upload dist/* || echo'
