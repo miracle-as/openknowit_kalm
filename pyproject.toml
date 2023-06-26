@@ -13,7 +13,9 @@ kalm_jenkins = 'kalm.jenkins:main'
 kalm_gitea = 'kalm.gitea:main'
 kalm_inabox = 'kalm.inabox:main'
 kalm_netbox = 'kalm.netbox:main'
+kalm_traefik = 'kalm.traefik:main'
 kalm_dns = 'kalm.dns:main'
+
 
 
 [tool.poetry.dependencies]
