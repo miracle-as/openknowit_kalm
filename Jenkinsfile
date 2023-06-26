@@ -1,6 +1,5 @@
 pipeline {
     agent any
-
     stages {
         stage('Set Commit ID') {
             steps {
@@ -20,6 +19,11 @@ pipeline {
                 sh 'poetry build'
             }
         }
+        when {
+                expression {
+                    return env.GIT_BRANCH == "origin/main"
+                }
+            }
         stage('Upload') {
             steps {
                 sh 'echo "${COMMIT_ID}"'
