@@ -61,6 +61,7 @@ classifiers = [  # Optional
 
 dependencies = [ # Optional
   "redis",
+  "flask",
   "pynetbox",
   "wheel",
   "hvac",
