@@ -214,7 +214,7 @@ def main():
             print("Daemon running")
             print("main loop")
             for org in (config['organization']):
-              kalm.kalm(token, r, org['projects'], "main")
+              kalm.kalm(token, r, org['project'], "main")
               for subproject in org['subprojects']:
                 print("----------------------------------ddddddddddddddddddddddddddddddddddddddddddddddddddddddddd--")
                 print(subproject)
