@@ -20,3 +20,8 @@ def main():
     if args.action[0] == "list":
         print("list traefik")
         traefik.list_traefik()
+
+    if args.action[0] == "serve":
+        traefik.serve_traefik()
+        
+
