@@ -18,5 +18,6 @@ def get_traefik_config():
     return jsonify(config_data)
 
 
-def serve_traefik(list):
+def serve_traefik(config="/etc/kalm/traefik.json"):
+  print("config: %s" % (config))
   app.run(debug=True)
