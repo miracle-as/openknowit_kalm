@@ -312,6 +312,7 @@ def awx_update_vault(ansiblevault, organization, mytoken, r):
 ############################################################################################################################
 
 def awx_create_organization(name, description, max_hosts, DEE, realm, mytoken, r):
+  prettyllog("manage", "organization", name, realm, "000", "Start")
   try:  
     orgid = (awx_get_id("organizations", name,r ))
   except:
@@ -343,6 +344,7 @@ def awx_create_organization(name, description, max_hosts, DEE, realm, mytoken, r
     response = json.loads(resp.content)
     prettyllog("manage", "organization", name, realm, resp.status_code, response)
   getawxdata("organizations", mytoken, r)
+  prettyllog("manage", "organization", name, realm, "000", "End")
 
 
 ############################################################################################################################
