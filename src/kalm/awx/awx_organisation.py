@@ -38,7 +38,7 @@ def awx_create_organization(name, description, max_hosts, DEE, realm, mytoken, r
       orgid=response['id']
       prettyllog("manage", "organization", name, "exist", resp.status_code, "organization %s created with id %s" % (orgid))
     except:
-      prettyllog("manage", "organization", name, "new", resp.status_code, response)
+      prettyllog("manage", "organization", name, "new", resp.status_code, "organization not created")
   else:    
     headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
     data = {
