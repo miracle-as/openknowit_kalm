@@ -4,3 +4,6 @@ git pull
 git checkout staging
 pip install .
 
+kalm service
+
+
