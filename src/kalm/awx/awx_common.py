@@ -8,6 +8,52 @@ if VERIFY_SSL == "false" or VERIFY_SSL == "False" or VERIFY_SSL == "FALSE" or VE
 else:
   VERIFY_SSL = True
 
+
+######################################
+# function: Refresh AWX data
+######################################
+def refresh_awx_data(mytoken,r ):
+  items = { 
+    "ad_hoc_commands",
+    "analytics,applications",
+    "credential_input_sources",
+    "credentials",
+    "credential_types",
+    "execution_environments",
+    "groups",
+    "hosts",
+    "inventory_sources",
+    "inventory_updates",
+    "jobs",
+    "job_templates",
+    "labels",
+    "metrics",
+    "notifications",
+    "notification_templates",
+    "organizations",
+    "projects",
+    "project_updates",
+    "roles",
+    "schedules",
+    "system_jobs",
+    "system_job_templates",
+    "teams",
+    "unified_jobs",
+    "unified_job_templates",
+    "workflow_approvals",
+    "workflow_job_nodes",
+    "workflow_jobs",
+    "workflow_job_template_nodes",
+    "workflow_job_templates"
+  }
+  #items = {"organizations", "projects", "credentials", "hosts", "inventories", "credential_types", "labels" , "instance_groups", "job_templates", "execution_environments"}    
+  for item in items:
+    getawxdata(item, mytoken, r)
+
+
+
+
+
 def awx_get_id(item,name, r):
   key = os.getenv("TOWER_HOST") + item +":name:" + name
   myvalue =  r.get(key)
