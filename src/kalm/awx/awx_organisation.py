@@ -49,6 +49,6 @@ def awx_create_organization(name, description, max_hosts, DEE, realm, mytoken, r
     url = os.getenv("TOWER_HOST") + "/api/v2/organizations/%s" % orgid
     resp = requests.put(url,headers=headers, json=data, verify=VERIFY_SSL)
     response = json.loads(resp.content)
-    prettyllog("manage", "organization", name, realm, resp.status_code, response)
+    prettyllog("manage", "organization", name, "update", resp.status_code, response)
   getawxdata("organizations", mytoken, r)
-  prettyllog("manage", "organization", name, realm, "000", "End")
+  prettyllog("manage", "organization", name, "end of organization", "000", "End")
