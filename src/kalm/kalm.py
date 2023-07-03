@@ -276,12 +276,11 @@ def readthefile(filename):
 ############################################################################################################################
 def awx_update_vault(ansiblevault, organization, mytoken, r):
   try:
-    vault = ansiblevault[organization]['vault']
+    vaults = ansiblevault[organization]['vault']
   except: 
-    vault = []
+    vaults = []
 
-
-  for vault in ansiblevault[organization]['vault']:
+  for vault in vaults:
     credential = { 
       "name": vault['name'], 
       "description": vault['description'], 
@@ -291,7 +290,13 @@ def awx_update_vault(ansiblevault, organization, mytoken, r):
       "kind": "vault" }
     awx_create_credential(credential, organization, mytoken, r)
 
-  for ssh in ansiblevault[organization]['ssh']:
+# Create server access
+  try: 
+    sshs = ansiblevault[organization]['ssh']
+  except:
+    sshs = []
+
+  for ssh in sshs:
     sshkeyval = readthefile(ssh['ssh_private_key'])
     credential = { 
       "name": ssh['name'], 
@@ -307,7 +312,13 @@ def awx_update_vault(ansiblevault, organization, mytoken, r):
       }
     awx_create_credential(credential, organization, mytoken, r)
 
-  for scm in ansiblevault[organization]['scm']:
+# Create access to git 
+  try:
+    scms = ansiblevault[organization]['scm']
+  except:
+    scms = []
+
+  for scm in scms:
     f = open(ssh['ssh_private_key'])
     sshkeyval = f.read()
     f.close
