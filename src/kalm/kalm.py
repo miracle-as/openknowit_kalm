@@ -772,7 +772,15 @@ def kalm(mytoken, r, realm="standalone", subproject=None):
   ########################################################################################################################
   # Load  and set ansible automation org
   ########################################################################################################################
+
+
   cfgfile = "/etc/kalm/kalm.json"
+  # checkout git repo in kalm.json main project
+
+
+
+
+
   if (realm == "standalone" or realm == "main"):
           cfgfile = "/etc/kalm/kalm.json"
           realm="main"
@@ -794,7 +802,7 @@ def kalm(mytoken, r, realm="standalone", subproject=None):
   # organizations
   ########################################################################################################################
   for org in (config['organization']):
-    prettyllog("loop","org", "config", org['name'], "000", "create organization")
+    prettyllog("loop","org", "config", org['name'], "000", "organization")
     orgname = org['name']
     key = os.getenv("TOWER_HOST") + ":organizations:name:" + orgname
     r.delete(key)
@@ -811,6 +819,7 @@ def kalm(mytoken, r, realm="standalone", subproject=None):
     except:
       description = ""
 
+    prettyllog("loop","org", "config", org['name'], "000", "create or modify organization when needed")
     awx_create_organization(orgname, description, max_hosts, default_environment, realm, mytoken, r)
     getawxdata("organizations", mytoken, r)
     orgid = awx_get_id("organizations", orgname, r)
