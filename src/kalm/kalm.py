@@ -427,6 +427,20 @@ def awx_create_template(name, description, job_type, inventory,project,eename, c
     ####################### AWX VERSION IS CHANGING THIS
     #associatecommand = "awx job_template associate %s --credential %s --insecure  >/dev/null 2>/dev/null " % ( tmplid, credid)  
     associatecommand = "awx job_template associate_credential --job-template %s --credential %s --insecure" % ( tmplid, credid)
+    prettyllog("manage", "template", name, organization, "000", associatecommand 
+    try:           
+      os.system(associatecommand)
+      prettyllog("manage", "template", name, organization, "666", "associate credential %s to template %s" % (credid, tmplid))
+    except:
+      associatecommand = "awx job_template associate %s --credential %s --insecure  >/dev/null 2>/dev/null " % ( tmplid, credid)  
+      try:
+        os.system(associatecommand)
+        prettyllog("manage", "template", name, organization, "666", "associate credential %s to template %s" % (credid, tmplid))
+      except:
+        prettyllog("manage", "template", name, organization, "666", "Could not associate credential %s to template %s" % (credid, tmplid))
+
+
+  
   else:
     #associatecommand = "awx job_template associate %s --credential %s >/dev/null 2>/dev/null " % ( tmplid, credid)
     associatecommand = "awx job_template associate_credential --job-template %s --credential %s" % ( tmplid, credid )
