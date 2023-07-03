@@ -8,8 +8,6 @@ if VERIFY_SSL == "false" or VERIFY_SSL == "False" or VERIFY_SSL == "FALSE" or VE
 else:
   VERIFY_SSL = True
 
-
-
 def awx_get_id(item,name, r):
   key = os.getenv("TOWER_HOST") + item +":name:" + name
   myvalue =  r.get(key)

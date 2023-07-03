@@ -10,10 +10,19 @@ import tempfile
 import pynetbox
 import urllib3
 import datetime
-from .awx.common import awx_get_id
-from .awx.common import getawxdata
-from .awx.credential import awx_create_credential
+from .awx.awx_common import awx_get_id
+from .awx.awx_common import getawxdata
+from .awx.awx_credential import awx_create_credential
 from .common import prettyllog
+from .awx.awx_organisation import awx_create_organization
+#from .awx_organisation import awx_get_organization
+#from .awx_organisation import awx_create_team
+#from .awx_organisation import awx_create_user
+#from .awx_project import awx_create_project
+#from .awx_project import awx_get_project
+#from .awx_project import awx_create_subproject
+#from .awx_common import awx_create_label
+
 
 
 
@@ -315,44 +324,6 @@ def awx_update_vault(ansiblevault, organization, mytoken, r):
 
 
 
-############################################################################################################################
-# Create organization
-############################################################################################################################
-
-def awx_create_organization(name, description, max_hosts, DEE, realm, mytoken, r):
-  prettyllog("manage", "organization", name, realm, "000", "Start")
-  try:  
-    orgid = (awx_get_id("organizations", name,r ))
-  except:
-    print("Unexcpetede error")
-  if (orgid == ""):
-    headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
-    data = {
-          "name": name,
-          "description": description,
-          "max_hosts": max_hosts
-         }
-    url = os.getenv("TOWER_HOST") + "/api/v2/organizations/"
-    resp = requests.post(url,headers=headers, json=data, verify=VERIFY_SSL)
-    response = json.loads(resp.content)
-    try:
-      orgid=response['id']
-      prettyllog("manage", "organization", name, realm, resp.status_code, "organization %s created with id %s" % (orgid))
-    except:
-      prettyllog("manage", "organization", name, realm, resp.status_code, response)
-  else:    
-    headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
-    data = {
-          "name": name,
-          "description": description,
-          "max_hosts": max_hosts
-         }
-    url = os.getenv("TOWER_HOST") + "/api/v2/organizations/%s" % orgid
-    resp = requests.put(url,headers=headers, json=data, verify=VERIFY_SSL)
-    response = json.loads(resp.content)
-    prettyllog("manage", "organization", name, realm, resp.status_code, response)
-  getawxdata("organizations", mytoken, r)
-  prettyllog("manage", "organization", name, realm, "000", "End")
 
 
 ############################################################################################################################

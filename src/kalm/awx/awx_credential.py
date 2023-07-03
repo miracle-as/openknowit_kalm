@@ -1,5 +1,5 @@
-from .common import awx_get_id
-from .common import getawxdata
+from .awx_common import awx_get_id
+from .awx_common import getawxdata
 
 from ..common import prettyllog
 
