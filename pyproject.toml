@@ -9,6 +9,7 @@ repository = "https://github.com/miracle-as/openknowit_kalm.git"
 
 [tool.poetry.scripts]
 kalm = 'kalm:main'
+kalm_airflow = 'kalm.airflow:main'
 kalm_jenkins = 'kalm.jenkins:main'
 kalm_gitea = 'kalm.gitea:main'
 kalm_inabox = 'kalm.inabox:main'
@@ -81,6 +82,7 @@ test = ["coverage"]
 [project.scripts]  # Optional
 kalm = "kalm:main"
 kalm_jenkins = 'kalm.jenkins:main'
+kalm_airflow = 'kalm.airflow:main'
 kalm_gitea = 'kalm.gitea:main'
 kalm_inabox = 'kalm.inabox:main'
 kalm_netbox = 'kalm.netbox:main'
