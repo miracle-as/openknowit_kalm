@@ -15,6 +15,8 @@ from .awx.common import getawxdata
 from .awx.credential import awx_create_credential
 from .common import prettyllog
 
+
+
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 VERIFY_SSL = os.getenv("VERIFY_SSL", "false")
