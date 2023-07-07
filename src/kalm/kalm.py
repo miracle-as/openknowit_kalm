@@ -17,6 +17,11 @@ from .common import prettyllog
 from .awx.awx_organisation import awx_create_organization
 from .awx.awx_project import awx_create_project
 from .awx.awx_project import awx_get_project
+from .awx.awx_hosts import awx_create_host
+from .awx.awx_hosts import awx_get_host
+from .awx.awx_hosts import awx_delete_host
+
+
 
 #from .awx_project import awx_get_project
 #from .awx_project import awx_create_subproject
@@ -129,6 +134,7 @@ def awx_delete(item, name, mytoken, r):
   url = os.getenv("TOWER_HOST") + "/api/v2/" + item + "/" + itemid
   resp = requests.delete(url,headers=headers, verify=VERIFY_SSL)
 
+
 def awx_purge_orphans(token, r):
   orphans = r.keys("*:orphan:*")
   for orphan in orphans:
@@ -216,6 +222,36 @@ def awx_create_label(name, organization, mytoken, r):
     headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
     url = os.getenv("TOWER_HOST") + "/api/v2/labels"
     resp = requests.post(url,headers=headers, json=data, verify=VERIFY_SSL)
+
+def awx_delete_label(name, organization, mytoken, r):
+  orgid = (awx_get_id("organizations", organization, r))
+  if ( orgid != "" ):
+    data = {
+       "name": name,
+       "organization": orgid
+       }
+    headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
+    url = os.getenv("TOWER_HOST") + "/api/v2/labels"
+    resp = requests.post(url,headers=headers, json=data, verify=VERIFY_SSL)
+
+def awx_create_credential(name, description, credentialtype, organization, mytoken, r):
+  orgid = (awx_get_id("organizations", organization, r))
+  data = {
+    "name": name,
+    "description": description,
+    "credential_type": credentialtype,
+    "organization": orgid
+  }
+  headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
+  url = os.getenv("TOWER_HOST") + "/api/v2/credentials/"
+  resp = requests.post(url,headers=headers, json=data, verify=VERIFY_SSL)
+  response = json.loads(resp.content)
+  try:
+    credid=response['id']
+    prettyllog("manage", "credential", name, organization, resp.status_code, credid)
+  except:
+    prettyllog("manage", "credential", name, organization, resp.status_code, response)
+
       
 
 
@@ -268,27 +304,6 @@ def awx_create_inventory(name, description, organization, inventorytype, variabl
   prettyllog("manage", "inventories", name, organization, resp.status_code, response)
 
 
-def awx_create_host(name, description, inventory, organization, mytoken, r):
-  try:  
-    invid = (awx_get_id("inventories", inventory, r))
-  except:
-    print("Unexcpetede error")
-  orgid = (awx_get_id("inventories", organization,r ))
-  data = {
-        "name": name,
-        "description": description,
-        "organization": orgid,
-        "inventory": invid
-       }
-  headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
-  url = os.getenv("TOWER_HOST") + "/api/v2/hosts/"
-  resp = requests.post(url,headers=headers, json=data, verify=VERIFY_SSL)
-  response = json.loads(resp.content)
-  try:
-    hostid=response['id']
-    prettyllog("manage", "host", name, organization, resp.status_code, "Host %s created with id: %s" % (name, hostid ))
-  except:
-    prettyllog("manage", "host", name, organization, resp.status_code, response)
 
 
 
