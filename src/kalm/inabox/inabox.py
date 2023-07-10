@@ -260,6 +260,8 @@ def create_virtual_server(hostname, size, meta_data):
     ]
 
     # Execute the virt-install command
+    print("command:" + str(command))
+    
     process = spawn_process(command, "logs/" + hostname + ".stdout", "logs" + hostname + ".stderr")
     return process
 
