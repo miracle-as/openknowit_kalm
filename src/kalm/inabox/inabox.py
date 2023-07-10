@@ -397,6 +397,7 @@ def ansible_automation_platform():
   checkservice(myfqdn, myconf['ip4'])
   print(myconf['domain'])
   hosts  = myconf['hosts']
+  print(hosts)
   try:
     check_the_hosts(hosts, myconf)
   except:
