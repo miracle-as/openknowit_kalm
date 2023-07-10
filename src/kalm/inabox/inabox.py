@@ -156,7 +156,7 @@ def check_ssh(hostname):
 def check_the_hosts(hosts, meta_data):
     processes = {}
     for group in hosts.keys():
-      print("group:" + group")
+      print("group:" + group)
       print("Checking group:" + group)
       for memeber in hosts[group]['members']:
         vm_name = memeber['hostname']
