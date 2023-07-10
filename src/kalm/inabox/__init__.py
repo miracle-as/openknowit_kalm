@@ -7,6 +7,7 @@ def main():
                version : 0.1.2 BETA \n                                              \
                actions:\n                                                      \
                list        list inabox \n  \
+               ansible_automation_platform  in a box\n  \
                rancher     activate rancher in a box\n  \
                \
                2023 Knowit Miracle\
@@ -31,7 +32,7 @@ def main():
     if args.action[0] == "ansible_automation_platform":
         print("Create ansible automation platform directory structure")
         inabox.ansible_automation_platform_inabox()
-        
+
         
 
 
