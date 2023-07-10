@@ -197,6 +197,7 @@ def  check_if_we_have_a_vm(vm_name, ):
     return False
 
 def download_file(url, filename):
+  print("Downloading file:" + url + " to " + filename")
   r = requests.get(url, allow_redirects=True)
   try:
     open(filename, 'wb').write(r.content)
