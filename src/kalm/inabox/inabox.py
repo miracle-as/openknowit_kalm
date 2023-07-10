@@ -342,10 +342,6 @@ def create_role_directory():
     print(f"Directory structure for the role '{role_name}' created successfully!")
 
 
-role_name = input("Enter the name of the role: ")
-create_role_directory(role_name)
-
-
 def k3s_inabox():
   r = init_redis()
   conn = init_connection()
