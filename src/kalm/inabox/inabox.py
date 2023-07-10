@@ -5,6 +5,8 @@ import os
 import redis
 import sys
 import time 
+from ..common import prettyllog
+
 
 def init_redis():
   r = redis.Redis()
@@ -384,5 +386,23 @@ def up_inabox():
   print_status()
   return 0
 
-
- 
+def ansible_automation_platform():
+  prettyllog("inabox", "start", "ansible_automation_platform", "ansible_automation_platform", "200", "Starting ansible automation platform") 
+  r = init_redis()
+  conn = init_connection()
+  print("Starting ansible automation platform")
+  get_servers(r, conn)
+  print("Starting inabox")
+  myconf = read_config()
+  myfqdn = myconf['service']+ '.' + myconf['domain']
+  print("Checking DNS resolution for " + myfqdn + " and " + myconf['ip4'])
+  checkservice(myfqdn, myconf['ip4'])
+  print(myconf['domain'])
+  hosts  = myconf['hosts']
+  try:
+    check_the_hosts(hosts, myconf)
+  except:
+    print("Failed to check the hosts")
+    exit(1)
+  print_status()
+  return 0
