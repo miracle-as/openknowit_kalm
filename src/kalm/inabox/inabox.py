@@ -237,6 +237,8 @@ def create_virtual_server(hostname, size, meta_data):
     if os.path.exists(meta_data['iso_path']):
       print("Found iso")
     else:
+      print("No iso found")
+      print("Downloading iso")
       if download_file("https://artifacts.openknowit.com/files/inabox/debian10.iso", meta_data['iso_path']):
         print("Downloaded iso")
       else: 
