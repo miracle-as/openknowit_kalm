@@ -223,6 +223,7 @@ def spawn_process(command, stdout_file, stderr_file):
 
 def create_virtual_server(hostname, size, meta_data):
     # check if we have a preseedfile 
+    print("check if we have a preseedfile")
     if os.path.exists(meta_data['preseed_path']):
       print("Found preseed.cfg")
     else:
@@ -232,7 +233,7 @@ def create_virtual_server(hostname, size, meta_data):
       else:
         print("Failed to download preseed.cfg")
         exit(1)
-
+    print("check if we have a iso")
     if os.path.exists(meta_data['iso_path']):
       print("Found iso")
     else:
