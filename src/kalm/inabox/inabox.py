@@ -5,6 +5,8 @@ import os
 import redis
 import sys
 import time 
+import libvirt
+
 from ..common import prettyllog
 
 
