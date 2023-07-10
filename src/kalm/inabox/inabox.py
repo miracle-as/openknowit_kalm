@@ -222,7 +222,15 @@ def spawn_process(command, stdout_file, stderr_file):
     process = subprocess.Popen(command, start_new_session=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     return process
 
-def create_virtual_server(hostname, size, meta_data):
+def create_virtual_server(vm_name, size="medium", os="debian10" , meta_data):
+    if os == "debian10":
+      return create_virtual_server_debian(vm_name, size, meta_data)
+    else:
+      print("Unknown os")
+      exit(1)
+      
+
+def create_virtual_server_debian(hostname, size, meta_data):
     # check if we have a preseedfile 
     print("check if we have a preseedfile")
     if os.path.exists(meta_data['preseed_path']):
