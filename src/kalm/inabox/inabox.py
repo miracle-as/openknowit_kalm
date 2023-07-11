@@ -5,7 +5,7 @@ import os
 import redis
 import sys
 import time 
-import libvirt
+
 
 from ..common import prettyllog
 
@@ -26,41 +26,10 @@ def init_redis():
     
 
 
-def init_connection():
-  conn = libvirt.open()
-  if conn is None:
-    print('Failed to open connection to the hypervisor.')
-    exit(1)
-  else:
-    print('Successfully connected to the hypervisor.')
-    return conn
-
 
 
 def list_inabox():
     print("list inabox")
-
-def get_servers(r, conn):
-  states = {
-    "0": "no state",
-    "1": "running",
-    "2": "blocked on resource",
-    "3": "paused by user",
-    "4": "being shut down",
-    "5": "shut off",
-    "6": "crashed"
-  }
-  domains = conn.listAllDomains()
-  print('List of KVM virtual machines:')
-  for domain in domains:
-    name = domain.name()
-    state, _ = domain.state()
-    print(f'Name: {name}, State: states[{state}]')
-  conn.close()
-  return domains
-
-
-
 
 def check_dns_resolution(hostname, ip4):
     command = ['dig', '+short', hostname]
