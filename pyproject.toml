@@ -60,7 +60,6 @@ classifiers = [  # Optional
 dependencies = [ # Optional
   "redis",
   "pynetbox",
-  "pylibvirt",
   "wheel",
   "hvac",
   "netbox",
