@@ -24,6 +24,8 @@ def awx_create_organization(name, description, max_hosts, DEE, realm, mytoken, r
     orgid = (awx_get_id("organizations", name,r ))
   except:
     print("Unexcpetede error")
+  print(mytoken)
+
   if (orgid == ""):
     headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
     data = {
@@ -34,14 +36,12 @@ def awx_create_organization(name, description, max_hosts, DEE, realm, mytoken, r
     url = os.getenv("TOWER_HOST") + "/api/v2/organizations/"
     resp = requests.post(url,headers=headers, json=data, verify=VERIFY_SSL)
     response = json.loads(resp.content)
-    print("--------------------------------------------------------")
-    print(response)
-    print("--------------------------------------------------------")
     try:
       orgid=response['id']
       prettyllog("manage", "organization", name, "exist", resp.status_code, "organization %s created with id %s" % (orgid))
     except:
       prettyllog("manage", "organization", name, "new", resp.status_code, "organization not created")
+      print(response)
   else:    
     prettyllog("manage", "organization", name, "exist", "000", "organization already exist")
     headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
