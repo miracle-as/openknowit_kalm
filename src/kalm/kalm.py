@@ -788,12 +788,16 @@ def kalm(mytoken, r, realm="standalone", subproject=None):
     prettyllog("loop","org", "config", org['name'], "000", "create or modify organization when needed")
     awx_create_organization(orgname, description, max_hosts, default_environment, realm, mytoken, r)
     getawxdata("organizations", mytoken, r)
+
     orgid = awx_get_id("organizations", orgname, r)
     loop = True
     while ( loop ):
       orgdata = awx_get_organization(orgid, mytoken, r)
-      if ( orgdata['name'] == orgname ):
-        loop = False
+      try:
+        if ( orgdata['name'] == orgname ):
+          loop = False
+      except:
+        loop = True
 
     awx_update_vault(ansiblevault, orgname, mytoken, r)
     refresh_awx_data(mytoken, r)
