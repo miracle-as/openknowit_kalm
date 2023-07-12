@@ -34,6 +34,9 @@ def awx_create_organization(name, description, max_hosts, DEE, realm, mytoken, r
     url = os.getenv("TOWER_HOST") + "/api/v2/organizations/"
     resp = requests.post(url,headers=headers, json=data, verify=VERIFY_SSL)
     response = json.loads(resp.content)
+    print("--------------------------------------------------------")
+    print(response)
+    print("--------------------------------------------------------")
     try:
       orgid=response['id']
       prettyllog("manage", "organization", name, "exist", resp.status_code, "organization %s created with id %s" % (orgid))
