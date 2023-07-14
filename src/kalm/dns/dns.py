@@ -231,12 +231,12 @@ def virtlib(args):
             ipaddress = get_dhcp_leases(network, mac_address)
             netid = get_network_id(network)
             prettyllog("manage", "dns", domain_name, "new", "000", "add dns record %s" % (domain_name + "." + network + ".openknowit.com")) 
-            ip4s.append(domain_name + "." + network + ".openknowit.com", "A", ipaddress)
+            ipaddress = { "domain_name" : domain_name, "network" : network, "ipaddress" : ipaddress }
+            ip4s.append(ipaddress)
       except:
         print("no network")
 
     for ip4 in ip4s:
-      prettyllog("manage", "dns", domain_name, "new", "000", "add dns record %s" % (ip4))
-
-      add_dns_record(ip4)
+      prettyllog("manage", "dns", domain_name, "new", "000", "add dns record %s" % (ip4.domain_name + "." + ip4.network + ".openknowit.com"))
+      add_dns_record(ip4.domain_name, "A", ip4.ipaddress)
 
