@@ -179,7 +179,7 @@ def sync_dns(args):
     if record['name'] == '@':
       print("root record")
 
-def add_dns(args):
+def add_dns_record(record, record_type="A", record_value=""):
   print("add dns")
   domain = os.getenv('KALM_DNS_DOMAIN')
   url=os.getenv('KALM_DNS_URL')
@@ -221,8 +221,6 @@ def virtlib(args):
         dhcp = get_dhcp_leases(netid)
       except: 
         dhcp = ""
-      data = ipaddress + " " + domain_name + "." + network + ".openknowit.com"
-      ip4s.append(data)
     except:
       try:
         for interface in json_dict["domain"]["devices"]["interface"]:
@@ -234,11 +232,8 @@ def virtlib(args):
               dhcp = get_dhcp_leases(netid)
             except: 
               dhcp = ""
-            data = ipaddress + " " + domain_name + "." + network + ".openknowit.com"
-            ip4s.append(data)
+            add_dns_record(domain_name + "." + network + ".openknowit.com", "A", ipaddress)
       except:
         print("no network")
-    for ip4 in ip4s:
-      print(ip4s)
 
 
