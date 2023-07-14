@@ -200,21 +200,19 @@ def add_dns_record(record, record_type="A", record_value=""):
   print(records)
   for zone in records['zones']:
      print(zone)
-      if zone['name'] == domain:
-        print("found domain")
-        zone_id = zone['id']
-        print(zone_id)
-        url = url + "/zones/" + zone_id + "/records"
-        data = {
-          "name": record,
-          "type": record_type,
-          "value": record_value
-        }
-        r = requests.post(url, headers=headers, json=data)
-        print(r.status_code)
-        print(r.json())
-        if r.status_code != 200:
-          print("Error: " + str(r.status_code))
+     if zone['name'] == domain:
+      print("found domain")
+      zone_id = zone['id']
+      print(zone_id)
+      url = url + "/zones/" + zone_id + "/records"
+      data = {
+        "name": record,
+        "type": record_type,
+        "value": record_value
+      }
+      r = requests.post(url, headers=headers, json=data)
+      if r.status_code != 200:
+        print("Error: " + str(r.status_code))
 
 def virtlib(args):
    print("virtlib")
