@@ -187,6 +187,7 @@ def add_dns_record(record, record_type="A", record_value=""):
   prettyllog("manage", "dns", record, "new", "000", "add dns record %s" % (record))
   dns_type=os.getenv('KALM_DNS_TYPE')
   token=os.getenv('KALM_DNS_TOKEN')
+  print(token)
   url = url + "/dns"
   r = requests.get(url, headers={'Authorization': 'Bearer ' + token})
   print(r.content)
