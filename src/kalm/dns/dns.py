@@ -209,6 +209,7 @@ def add_dns_record(record, record_type="A", record_value=""):
         "value": record_value
       }
       r = requests.post(url, headers=headers, json=data)
+      print(r.content)
       if r.status_code != 200:
         print("Error: " + str(r.status_code))
 
