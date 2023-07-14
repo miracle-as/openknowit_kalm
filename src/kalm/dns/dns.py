@@ -188,19 +188,14 @@ def add_dns_record(record, record_type="A", record_value=""):
   dns_type=os.getenv('KALM_DNS_TYPE')
   token=os.getenv('KALM_DNS_TOKEN')
   print(token)
-  url = url + "/dns"
+# curl "https://dns.hetzner.com/api/v1/records?zone_id=${ZONEID}" -H 'Auth-API-Token: 3FEd6xf0WUr5GTW1BkhnzQqOF23z9HWe'  |jq '.[][] | .id, .type, .name, .value '  |paste - - - -   > /tmp/${ZONEID}.lst
+
+  url = url + "/zones"
   r = requests.get(url, headers={'Auth-API-Token: ' + token})
   print(r.content)
   if r.status_code != 200:
     print("Error: " + str(r.status_code))
     exit(1)
-  data = r.json()
-  for record in data:
-    print(record)
-    if record['type'] == 'A':
-      print("A record")
-    if record['name'] == '@':
-      print("root record")
 
 def virtlib(args):
    print("virtlib")
