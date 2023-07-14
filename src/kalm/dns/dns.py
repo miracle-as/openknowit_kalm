@@ -202,12 +202,14 @@ def add_dns_record(record, record_type="A", record_value=""):
       print("found domain")
       zone_id = zone['id']
       print(zone_id)
-      url = url + "/records?zone_id=%s" % (zone_id)
+      url = url + "/record
       print(url)
       data = {
         "name": record,
+        "ttl": 600,
         "type": record_type,
-        "value": record_value
+        "value": record_value,
+        "zone_id": zone_id
       }
       r = requests.post(url, headers=headers, json=data)
       print(r.content)
