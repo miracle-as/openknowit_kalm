@@ -201,8 +201,8 @@ def add_dns_record(record, record_type="A", record_value=""):
   if r.status_code != 200:
     print("Error: " + str(r.status_code))
     exit(1)
-  data = r.json()
-  print(data["zones"]['id'])
+  records = r.json()
+  print(records)
 
 def virtlib(args):
    print("virtlib")
