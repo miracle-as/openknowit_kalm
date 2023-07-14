@@ -220,11 +220,9 @@ def virtlib(args):
       network = json_dict["domain"]["devices"]["interface"]["source"]["@network"]
       ipaddress = get_dhcp_leases(network, mac_address)
       netid = get_network_id(network)
+      prettyllog("manage", "dns", domain_name, "new", "000", "add dns record %s" % (domain_name + "." + network + ".openknowit.com"))
+
       ip4s.append(domain_name + "." + network + ".openknowit.com", "A", ipaddress)
-      try:
-        dhcp = get_dhcp_leases(netid)
-      except: 
-        dhcp = ""
     except:
       try:
         for interface in json_dict["domain"]["devices"]["interface"]:
