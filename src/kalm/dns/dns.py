@@ -184,6 +184,7 @@ def add_dns_record(record, record_type="A", record_value=""):
   print("add dns")
   domain = os.getenv('KALM_DNS_DOMAIN')
   url=os.getenv('KALM_DNS_URL')
+  prettyllog("manage", "dns", record, "new", "000", "add dns record %s" % (record))
   dns_type=os.getenv('KALM_DNS_TYPE')
   token=os.getenv('KALM_DNS_TOKEN')
   url = url + "/dns"
