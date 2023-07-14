@@ -9,6 +9,7 @@ import json
 import subprocess
 import xmltodict
 import re
+from ..common import prettyllog
 
 def convert_to_json(xml_output):
     # Convert XML to dictionary
@@ -228,10 +229,7 @@ def virtlib(args):
             network = interface["source"]["@network"]
             ipaddress = get_dhcp_leases(network, mac_address)
             netid = get_network_id(network)
-            try:
-              dhcp = get_dhcp_leases(netid)
-            except: 
-              dhcp = ""
+            prettyllog("manage", "dns", domain_name, "new", "000", "add dns record %s" % (domain_name + "." + network + ".openknowit.com")) 
             add_dns_record(domain_name + "." + network + ".openknowit.com", "A", ipaddress)
       except:
         print("no network")
