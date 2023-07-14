@@ -213,12 +213,14 @@ def virtlib(args):
     json_output = convert_to_json(xml_output)
     json_dict = json.loads(json_output)
     domain_name = json_dict["domain"]["name"]
+    prettyllog("manage", "dns", domain_name, "new", "000", "add dns record %s" % (domain_name))
     ip4s = []
     try:
       mac_address = json_dict["domain"]["devices"]["interface"]["mac"]["@address"]
       network = json_dict["domain"]["devices"]["interface"]["source"]["@network"]
       ipaddress = get_dhcp_leases(network, mac_address)
       netid = get_network_id(network)
+      add_dns_record(domain_name + "." + network + ".openknowit.com", "A", ipaddress)
       try:
         dhcp = get_dhcp_leases(netid)
       except: 
