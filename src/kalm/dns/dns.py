@@ -202,7 +202,7 @@ def add_dns_record(record, record_type="A", record_value=""):
       print("found domain")
       zone_id = zone['id']
       print(zone_id)
-      url = url + "/record
+      url = url + "/record"
       print(url)
       data = {
         "name": record,
