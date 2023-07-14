@@ -181,28 +181,40 @@ def sync_dns(args):
       print("root record")
 
 def add_dns_record(record, record_type="A", record_value=""):
-  print("add dns")
   domain = os.getenv('KALM_DNS_DOMAIN')
   url=os.getenv('KALM_DNS_URL')
   prettyllog("manage", "dns", record, "new", "000", "add dns record %s" % (record))
   dns_type=os.getenv('KALM_DNS_TYPE')
   token=os.getenv('KALM_DNS_TOKEN')
-  print(token)
-# curl "https://dns.hetzner.com/api/v1/records?zone_id=${ZONEID}" -H 'Auth-API-Token: 3FEd6xf0WUr5GTW1BkhnzQqOF23z9HWe'  |jq '.[][] | .id, .type, .name, .value '  |paste - - - -   > /tmp/${ZONEID}.lst
 
   url = url + "/zones"
-  print(url)
   headers = {
     "Content-Type": "application/json",
     "Auth-API-Token": token
   }
   r = requests.get(url, headers=headers)
-  print(r.content)
   if r.status_code != 200:
     print("Error: " + str(r.status_code))
     exit(1)
   records = r.json()
   print(records)
+  for zone in records['zones']:
+     print(zone)
+      if zone['name'] == domain:
+        print("found domain")
+        zone_id = zone['id']
+        print(zone_id)
+        url = url + "/zones/" + zone_id + "/records"
+        data = {
+          "name": record,
+          "type": record_type,
+          "value": record_value
+        }
+        r = requests.post(url, headers=headers, json=data)
+        print(r.status_code)
+        print(r.json())
+        if r.status_code != 200:
+          print("Error: " + str(r.status_code))
 
 def virtlib(args):
    print("virtlib")
