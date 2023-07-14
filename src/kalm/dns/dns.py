@@ -187,12 +187,12 @@ def add_dns_record(record, record_type="A", record_value=""):
   dns_type=os.getenv('KALM_DNS_TYPE')
   token=os.getenv('KALM_DNS_TOKEN')
 
-  url = url + "/zones"
+  zoneurl = url + "/zones"
   headers = {
     "Content-Type": "application/json",
     "Auth-API-Token": token
   }
-  r = requests.get(url, headers=headers)
+  r = requests.get(zoneurl, headers=headers)
   if r.status_code != 200:
     print("Error: " + str(r.status_code))
     exit(1)
