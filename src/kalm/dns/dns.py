@@ -189,7 +189,7 @@ def add_dns_record(record, record_type="A", record_value=""):
   token=os.getenv('KALM_DNS_TOKEN')
   print(token)
   url = url + "/dns"
-  r = requests.get(url, headers={'Authorization': 'Bearer ' + token})
+  r = requests.get(url, headers={'Auth-API-Token: ' + token})
   print(r.content)
   if r.status_code != 200:
     print("Error: " + str(r.status_code))
