@@ -192,7 +192,11 @@ def add_dns_record(record, record_type="A", record_value=""):
 
   url = url + "/zones"
   print(url)
-  r = requests.get(url, headers={'Auth-API-Token: ' + token})
+  headers = {
+    "Content-Type": "application/json",
+    "Auth-API-Token": token
+  }
+  r = requests.get(url, headers=headers)
   print(r.content)
   if r.status_code != 200:
     print("Error: " + str(r.status_code))
