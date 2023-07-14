@@ -198,7 +198,13 @@ def add_dns(args):
     if record['name'] == '@':
       print("root record")
 
-def virtlib():
+def virtlib(args):
+   print("virtlib")
+   print("get domains")
+   print("get ip address")
+   print("get network")
+   print(args)
+   
    domain_ids = get_domains()
    for domain_id in domain_ids:
     xml_output = get_virsh_xmldump(domain_id)
