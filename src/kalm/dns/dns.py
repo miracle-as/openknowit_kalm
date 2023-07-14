@@ -235,7 +235,8 @@ def virtlib(args):
             ip4s.append(ipaddress)
       except:
         print("no network")
-
+    print(ip4s)
+    
     for ip4 in ip4s:
       prettyllog("manage", "dns", domain_name, "new", "000", "add dns record %s" % (ip4.domain_name + "." + ip4.network + ".openknowit.com"))
       add_dns_record(ip4.domain_name, "A", ip4.ipaddress)
