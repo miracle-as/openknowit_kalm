@@ -44,7 +44,7 @@ def check_netbox_connectivity():
         print(status)
         return(True)
     except:
-        prettyllog("netbox", "check", "-", "001", "Connection failed")
+        prettyllog("netbox", "check", "Access","-", "001", "Connection failed")
         return(False)
 
 
