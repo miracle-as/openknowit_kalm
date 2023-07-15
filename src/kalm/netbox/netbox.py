@@ -41,13 +41,8 @@ def check_netbox_environment_variables():
 
 
 def check_netbox_connectivity():
-    try:
         status = get_netbox_data("status")
         print(status)
-        return(True)
-    except:
-        prettyllog("netbox", "check", "Access","-", "001", "Connection failed")
-        return(False)
 
 
 
