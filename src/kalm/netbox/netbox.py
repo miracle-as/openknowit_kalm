@@ -18,9 +18,15 @@ def get_netbox_data(api):
     'Accept': 'application/json',
     }
     url = os.getenv("KALM_NETBOX_URL") + "/api/" + api + "/"
+    print(url)
 
-    response = requests.get(url, headers=headers)
-    return response.json()
+    try:
+        response = requests.get(url, headers=headers)
+        return response.json()
+    except:
+        prettyllog("netbox", "check", "001", "Could not get data from %s" % url)
+        return False
+    
 
 def read_file(file):
     with open(file, 'r') as myfile:
