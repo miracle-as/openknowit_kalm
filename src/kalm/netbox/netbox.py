@@ -53,6 +53,9 @@ def check_netbox_connectivity():
 
 
 def read_kalm_netbox_config():
+    if os.path.isfile('/etc/kalm/netbox.json') == False:
+        prettyllog("netbox", "check", "001", "Could not find /etc/kalm/netbox.json")
+        return False
     config = read_file('/etc/kalm/netbox.json')
     config = json.loads(config)
     return config
