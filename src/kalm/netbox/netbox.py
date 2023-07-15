@@ -52,19 +52,23 @@ def check_netbox_connectivity():
         return status
 
 
-
+def read_kalm_netbox_config():
+    config = read_file('/etc/kalm/netbox.json')
+    config = json.loads(config)
+    return config
 
 
 
 def service(args):
     while not bauilout:
+        prettyllog("netbox", "check", "access", "-", "000", "Read the kalm netbox config")
+        config = read_kalm_netbox_config()
+        print(config)
         prettyllog("netbox", "check", "access", "-", "000", "Checking netbox environment variables")
         bailout = check_netbox_environment_variables()
         prettyllog("netbox", "check", "access", "-", "000", "Checking netbox connectivity")
-
         netboxaccess = check_netbox_connectivity()
         if netboxaccess:
-
             prettyllog("netbox", "check", "access", "-", "000", "We have access to %s " % os.getenv("KALM_NETBOX_URL"))
         else:
             prettyllog("netbox", "check", "access", "-", "000", "We have no access to %s " % os.getenv("KALM_NETBOX_URL"))
