@@ -17,7 +17,6 @@ def main():
 
     if args.action[0] == "service":
         print("Keep out netbox server in sync")
-        prettyllog("service", "netbox", "-", "000", "Star netbox kalm service")
         netbox.service(args)
 
 
