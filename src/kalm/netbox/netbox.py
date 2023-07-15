@@ -1,6 +1,7 @@
 import requests
 import json
 import os
+import time
 import base64
 import xml.etree.ElementTree as ET
 from ..common import prettyllog
@@ -68,6 +69,9 @@ def service(args):
             prettyllog("netbox", "check", "access", "-", "000", "We have access to %s " % os.getenv("KALM_NETBOX_URL"))
         else:
             prettyllog("netbox", "check", "access", "-", "000", "We have no access to %s " % os.getenv("KALM_NETBOX_URL"))
+        time.sleep(10)
+        
+
 
         
 
