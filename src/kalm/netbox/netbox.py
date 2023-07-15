@@ -19,8 +19,6 @@ def get_netbox_data(api):
     'Accept': 'application/json',
     }
     url = os.getenv("KALM_NETBOX_URL") + "/api/" + api + "/"
-    print(url)
-
     try:
         response = requests.get(url, headers=headers)
         return response.json()
@@ -51,7 +49,8 @@ def check_netbox_environment_variables():
 
 def check_netbox_connectivity():
         status = get_netbox_data("status")
-        print(status)
+        return status
+
 
 
 
@@ -70,7 +69,7 @@ def service(args):
         else:
             prettyllog("netbox", "check", "access", "-", "000", "We have no access to %s " % os.getenv("KALM_NETBOX_URL"))
         time.sleep(10)
-        
+
 
 
         
