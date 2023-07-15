@@ -9,13 +9,14 @@ bauilout = False
 
 
 
-headers = {
+
+def get_netbox_data(url):
+
+    headers = {
     'Authorization': 'Token ' + os.getenv("KALM_NETBOX_TOKEN"),
     'Content-Type': 'application/json',
     'Accept': 'application/json',
-}
-
-def get_netbox_data(url):
+    }
     response = requests.get(url, headers=headers)
     return response.json()
 
