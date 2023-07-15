@@ -36,7 +36,9 @@ def check_netbox_environment_variables():
     for environmentvariable in environmentvariables:
         if os.getenv(environmentvariable) == "":
             prettyllog("netbox", "check", "001", "%s needs to be defined" % environmentvariable)
-            return False
+            return True
+    return False
+
 
 def check_netbox_connectivity():
     try:
@@ -54,7 +56,7 @@ def check_netbox_connectivity():
 def service(args):
     while not bauilout:
         prettyllog("netbox", "check", "access", "-", "000", "Checking netbox environment variables")
-        check_netbox_environment_variables()
+        bailout = check_netbox_environment_variables()
         prettyllog("netbox", "check", "access", "-", "000", "Checking netbox connectivity")
 
         netboxaccess = check_netbox_connectivity()
@@ -63,7 +65,7 @@ def service(args):
             prettyllog("netbox", "check", "access", "-", "000", "We have access to %s " % os.getenv("KALM_NETBOX_URL"))
         else:
             prettyllog("netbox", "check", "access", "-", "000", "We have no access to %s " % os.getenv("KALM_NETBOX_URL"))
-            
+
         
 
 
