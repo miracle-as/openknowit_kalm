@@ -1,5 +1,6 @@
 from . import netbox
 import argparse
+from ..common import prettyllog
 
 def main():
     parser = argparse.ArgumentParser(description="Keep kalm and automate netbox", usage="kalm_netbox <action> \n\n \
@@ -14,9 +15,10 @@ def main():
     args = parser.parse_args()
     ready = False
 
-    if args.action[0] == "refresh":
-        print("set jenkins")
-        netbox.refresh(args)
+    if args.action[0] == "service":
+        print("Keep out netbox server in sync")
+        prettyllog("service", "netbox", "-", "000", "Star netbox kalm service")
+        netbox.service(args)
 
 
 

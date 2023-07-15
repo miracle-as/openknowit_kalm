@@ -23,6 +23,7 @@ def main():
     if args.action[0] == "rancher":
         print("Start rancher in a boc")
         inabox.rancher_inabox()
+
     if args.action[0] == "ansible_role":
         print("Create ansible role directory structure")
         inabox.ansible_role_inabox()
