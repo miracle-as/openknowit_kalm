@@ -10,13 +10,15 @@ bauilout = False
 
 
 
-def get_netbox_data(url):
+def get_netbox_data(api):
 
     headers = {
     'Authorization': 'Token ' + os.getenv("KALM_NETBOX_TOKEN"),
     'Content-Type': 'application/json',
     'Accept': 'application/json',
     }
+    url = os.getenv("KALM_NETBOX_URL") + "/api/" + api + "/"
+
     response = requests.get(url, headers=headers)
     return response.json()
 
