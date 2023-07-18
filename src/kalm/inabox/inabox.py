@@ -218,6 +218,48 @@ def spawn_process(command, stdout_file, stderr_file):
     process = subprocess.Popen(command, start_new_session=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     return process
 
+def create_virtual_server_rhel(hostname, osversion, size, meta_data):
+    # check if we have a preseedfile 
+    if os.path.exists(meta_data['preseed_path']):
+      print("Found preseed.cfg")
+    else:
+      print("No preseed.cfg found")
+      if download_file("https://artifacts.openknowit.com/files/inabox/rhel.pxreseed.cfg", meta_data['preseed_path']):
+        print("Downloaded preseed.cfg")
+      else:
+        print("Failed to download preseed.cfg")
+        exit(1)
+
+    if os.path.exists(meta_data['iso_path']):
+      print("Found iso")
+    else:
+      if download_file("https://artifacts.openknowit.com/files/inabox/rhel8.iso", meta_data['iso_path']):
+        print("Downloaded iso")
+      else: 
+        print("Failed to download iso")
+        exit(1)
+      
+    # Construct the virt-install command with preseeding options
+    mysize = 50
+    disksize = "size=" + str(mysize)
+    vcpus = 4 
+    command = [
+       "virt-install", 
+       "--install","rhel8",
+       "--name" , hostname,
+       "--memory", "8192",
+       "--vcpus", "6",
+       "--disk", disksize,
+       "--initrd-inject" , "./preseed.cfg",
+       "--extra-args", "debian/priority=critical", 
+       "--noautoconsole",
+       "--noreboot"
+    ]
+
+    # Execute the virt-install command
+    process = spawn_process(command, "logs/" + hostname + ".stdout", "logs" + hostname + ".stderr")
+    return process
+
 def create_virtual_server(hostname, size, meta_data):
     # check if we have a preseedfile 
     if os.path.exists(meta_data['preseed_path']):

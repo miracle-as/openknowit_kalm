@@ -5,6 +5,8 @@ import time
 import base64
 import xml.etree.ElementTree as ET
 from ..common import prettyllog
+import hvac
+
 
 bauilout = False
 
@@ -88,16 +90,20 @@ def service(args):
         else:
             prettyllog("netbox", "check", "access", "-", "000", "We have no access to /etc/kalm/kalm.json")
 
-
-
-        prettyllog("netbox", "check", "access", "-", "000", "Checking netbox environment variables")
-        bailout = check_netbox_environment_variables()
-        prettyllog("netbox", "check", "access", "-", "000", "Checking netbox connectivity")
-        netboxaccess = check_netbox_connectivity()
-        if netboxaccess:
-            prettyllog("netbox", "check", "access", "-", "000", "We have access to %s " % os.getenv("KALM_NETBOX_URL"))
+        if kalmconfig['organization']['secrets'] == "filesystem":
+            prettyllog("netbox", "check", "access", "-", "000", "We are using filesystem for secrets")
+            read_secret = read_file('/etc/kalm/secrets.json')
         else:
-            prettyllog("netbox", "check", "access", "-", "000", "We have no access to %s " % os.getenv("KALM_NETBOX_URL"))
+            prettyllog("netbox", "check", "access", "-", "000", "We are using vault for secrets")
+            if os.getenv("VAULT_TOKEN") is None or os.getenv("KALM_VAULT_URL") is None:
+                prettyllog("netbox", "check", "access", "-", "000", "We have no access to vault")
+                return False
+            else:
+                prettyllog("netbox", "check", "access", "-", "000", "We have access to vault")
+                client = hvac.Client(url=os.getenv("KALM_VAULT_URL")
+                client.token = os.getenv("VAULT_TOKEN")
+                read_secret = client.read('secret/kalm')
+                                     
         time.sleep(10)
 
 
