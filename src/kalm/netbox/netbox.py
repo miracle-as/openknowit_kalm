@@ -93,6 +93,7 @@ def service(args):
         if kalmconfig['organization']['secrets'] == "filesystem":
             prettyllog("netbox", "check", "access", "-", "000", "We are using filesystem for secrets")
             read_secret = read_file('/etc/kalm/secrets.json')
+            print(read_secret)
         else:
             prettyllog("netbox", "check", "access", "-", "000", "We are using vault for secrets")
             if os.getenv("VAULT_TOKEN") is None or os.getenv("KALM_VAULT_URL") is None:
@@ -103,9 +104,9 @@ def service(args):
                 client = hvac.Client(url=os.getenv("KALM_VAULT_URL"))
                 client.token = os.getenv("VAULT_TOKEN")
                 read_secret = client.read('secret/kalm')['data']['secrets']
-                prettyllog("netbox", "check", "access", "-", "000", "Read the secrets from vault")
+                prettyllog("netbox", "check", "access", "-", "000", "Read the secrets from vault")½
 
-                                     
+
         time.sleep(10)
 
 
