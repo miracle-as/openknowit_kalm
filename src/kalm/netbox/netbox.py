@@ -104,7 +104,7 @@ def service(args):
                 client = hvac.Client(url=os.getenv("KALM_VAULT_URL"))
                 client.token = os.getenv("VAULT_TOKEN")
                 read_secret = client.read('secret/kalm')['data']['secrets']
-                prettyllog("netbox", "check", "access", "-", "000", "Read the secrets from vault")½
+                prettyllog("netbox", "check", "access", "-", "000", "Read the secrets from vault")
 
 
         time.sleep(10)
