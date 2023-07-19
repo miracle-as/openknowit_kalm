@@ -6,6 +6,8 @@ import base64
 import xml.etree.ElementTree as ET
 from ..common import prettyllog
 import hvac
+from git import Repo
+
 
 
 bauilout = False
@@ -79,10 +81,17 @@ def read_kalm_config():
     config = json.loads(config)
     return config
 
-def service(args):
-    while not bauilout:
+
+def clone_project_repo(project):
+    if os.path.isdir('/etc/kalm/project') == False:
+        os.mkdir('/opt/kalm/project')
+
+    if os.path.isdir('/opt/kalm/project/' + project{'name'}) == False:
+    
+        Repo.clone_from(project["scm_url"], '/opt/kalm/project')
         prettyllog("netbox", "check", "access", "-", "000", "Read the kalm netbox config")
         kalmconfig = read_kalm_config()
+        read_secret = ""
         if kalmconfig is not False:
             prettyllog("netbox", "check", "access", "-", "000", "We have access to /etc/kalm/kalm.json")
             prettyllog("netbox", "check", "access", "-", "000", "Out organization is %s" % kalmconfig["organization"])
@@ -105,7 +114,10 @@ def service(args):
                 client.token = os.getenv("VAULT_TOKEN")
                 read_secret = client.read('secret/kalm')['data']['secrets']
                 prettyllog("netbox", "check", "access", "-", "000", "Read the secrets from vault")
-
+                print(read_secret)
+        
+        clone_project_repo(kalmconfig["organization"]["project"])
+        prettyllog("netbox", "check", "access", "-", "000", "Cloned the project repo")
 
         time.sleep(10)
 
