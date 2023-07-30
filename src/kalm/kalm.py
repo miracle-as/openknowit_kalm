@@ -22,6 +22,20 @@ from .awx.awx_project import awx_get_project
 #from .awx_project import awx_create_subproject
 #from .awx_common import awx_create_label
 
+def git_create_repo(name, description, private, organization, mytoken, r):
+  prettyllog("manage", "repo", name, organization, "000", "-")
+
+def git_create_org(name, description, private, mytoken, r):
+  prettyllog("manage", "org", name, "000", "000", "-")
+
+def git_create_team(name, description, private, mytoken, r):
+  prettyllog("manage", "team", name, "000", "000", "-")
+
+def git_create_user(name, description, private, mytoken, r):
+  prettyllog("manage", "user", name, "000", "000", "-")
+
+
+
 
 
 class suppress_stdout_stderr(object):
@@ -726,6 +740,31 @@ def kalm(mytoken, r, realm="standalone", subproject=None):
   f = open(ansiblevaultfile)
   ansiblevault = json.loads(f.read())
   f.close
+
+  ###################################
+  # check if git is accessible
+  ###################################
+  prettyllog("init", "runtime", "config", "init", "001", "checking git access")
+  gitprovider=os.getenv("GITPROVIDER")
+  if gitprovider == "github":
+    giturl="https://github.com"
+  if gitprovider == "gitlab":
+    giturl="https://gitlab.com"
+  if gitprovider == "bitbucket":
+    giturl="https://bitbucket.org"
+  if gitprovider == "gitea":
+    giturl=os.getenv("GITURL")
+  if gitprovider == "gogs":
+    giturl=os.getenv("GITURL")
+
+  gituser=os.getenv("GITUSER")
+  gitpassword=os.getenv("GITPASSWORD")
+  gitorg=os.getenv("GITORG")
+
+
+
+    
+
 
   
 

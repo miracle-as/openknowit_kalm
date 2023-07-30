@@ -10,6 +10,7 @@ repository = "https://github.com/miracle-as/openknowit_kalm.git"
 [tool.poetry.scripts]
 kalm = 'kalm:main'
 kalm_airflow = 'kalm.airflow:main'
+kalm_pitv = 'kalm.pitv:main'
 kalm_jenkins = 'kalm.jenkins:main'
 kalm_gitea = 'kalm.gitea:main'
 kalm_inabox = 'kalm.inabox:main'
@@ -28,8 +29,6 @@ pynetbox = "^6.6.2"
 hvac = "^1.1.0"
 netbox = "^0.0.2"
 python-jenkins = "^1.7.0"
-urllib3 = "^2.0.2"
-xmltodict = "^0.12.0"
 
 
 
