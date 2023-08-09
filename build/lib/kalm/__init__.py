@@ -1,4 +1,4 @@
-from kalm import kalm
+from kalm.kalm import kalm
 import os
 import sys
 import redis
