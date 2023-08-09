@@ -6,10 +6,6 @@ import redis
 import sys
 import time 
 
-
-from ..common import prettyllog
-
-
 def init_redis():
   r = redis.Redis()
   r.set('foo', 'bar')
@@ -26,10 +22,41 @@ def init_redis():
     
 
 
+def init_connection():
+  conn = libvirt.open()
+  if conn is None:
+    print('Failed to open connection to the hypervisor.')
+    exit(1)
+  else:
+    print('Successfully connected to the hypervisor.')
+    return conn
+
 
 
 def list_inabox():
     print("list inabox")
+
+def get_servers(r, conn):
+  states = {
+    "0": "no state",
+    "1": "running",
+    "2": "blocked on resource",
+    "3": "paused by user",
+    "4": "being shut down",
+    "5": "shut off",
+    "6": "crashed"
+  }
+  domains = conn.listAllDomains()
+  print('List of KVM virtual machines:')
+  for domain in domains:
+    name = domain.name()
+    state, _ = domain.state()
+    print(f'Name: {name}, State: states[{state}]')
+  conn.close()
+  return domains
+
+
+
 
 def check_dns_resolution(hostname, ip4):
     command = ['dig', '+short', hostname]
@@ -124,9 +151,10 @@ def check_ssh(hostname):
   
 def check_the_hosts(hosts, meta_data):
     processes = {}
-    for member in hosts:
-        print(member)
-        vm_name = member['hostname']
+    for group in hosts.keys():
+      print("Checking group:" + group)
+      for memeber in hosts[group]['members']:
+        vm_name = memeber['hostname']
         if check_if_we_have_a_vm(vm_name):
           print("We have a vm:" + vm_name ) 
           if is_vm_running(vm_name):
@@ -166,7 +194,6 @@ def  check_if_we_have_a_vm(vm_name, ):
     return False
 
 def download_file(url, filename):
-  print("Downloading file:" + url + " to " + filename)
   r = requests.get(url, allow_redirects=True)
   try:
     open(filename, 'wb').write(r.content)
@@ -191,17 +218,50 @@ def spawn_process(command, stdout_file, stderr_file):
     process = subprocess.Popen(command, start_new_session=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     return process
 
-def create_virtual_server(vm_name, size="medium", os="debian10" , meta_data):
-    if os == "debian10":
-      return create_virtual_server_debian(vm_name, size, meta_data)
-    else:
-      print("Unknown os")
-      exit(1)
-      
-
-def create_virtual_server_debian(hostname, size, meta_data):
+def create_virtual_server_rhel(hostname, osversion, size, meta_data):
     # check if we have a preseedfile 
-    print("check if we have a preseedfile")
+    if os.path.exists(meta_data['preseed_path']):
+      print("Found preseed.cfg")
+    else:
+      print("No preseed.cfg found")
+      if download_file("https://artifacts.openknowit.com/files/inabox/rhel.pxreseed.cfg", meta_data['preseed_path']):
+        print("Downloaded preseed.cfg")
+      else:
+        print("Failed to download preseed.cfg")
+        exit(1)
+
+    if os.path.exists(meta_data['iso_path']):
+      print("Found iso")
+    else:
+      if download_file("https://artifacts.openknowit.com/files/inabox/rhel8.iso", meta_data['iso_path']):
+        print("Downloaded iso")
+      else: 
+        print("Failed to download iso")
+        exit(1)
+      
+    # Construct the virt-install command with preseeding options
+    mysize = 50
+    disksize = "size=" + str(mysize)
+    vcpus = 4 
+    command = [
+       "virt-install", 
+       "--install","rhel8",
+       "--name" , hostname,
+       "--memory", "8192",
+       "--vcpus", "6",
+       "--disk", disksize,
+       "--initrd-inject" , "./preseed.cfg",
+       "--extra-args", "debian/priority=critical", 
+       "--noautoconsole",
+       "--noreboot"
+    ]
+
+    # Execute the virt-install command
+    process = spawn_process(command, "logs/" + hostname + ".stdout", "logs" + hostname + ".stderr")
+    return process
+
+def create_virtual_server(hostname, size, meta_data):
+    # check if we have a preseedfile 
     if os.path.exists(meta_data['preseed_path']):
       print("Found preseed.cfg")
     else:
@@ -211,12 +271,10 @@ def create_virtual_server_debian(hostname, size, meta_data):
       else:
         print("Failed to download preseed.cfg")
         exit(1)
-    print("check if we have a iso")
+
     if os.path.exists(meta_data['iso_path']):
       print("Found iso")
     else:
-      print("No iso found")
-      print("Downloading iso")
       if download_file("https://artifacts.openknowit.com/files/inabox/debian10.iso", meta_data['iso_path']):
         print("Downloaded iso")
       else: 
@@ -241,8 +299,6 @@ def create_virtual_server_debian(hostname, size, meta_data):
     ]
 
     # Execute the virt-install command
-    print("command:" + str(command))
-    
     process = spawn_process(command, "logs/" + hostname + ".stdout", "logs" + hostname + ".stderr")
     return process
 
@@ -326,6 +382,10 @@ def create_role_directory():
     print(f"Directory structure for the role '{role_name}' created successfully!")
 
 
+role_name = input("Enter the name of the role: ")
+create_role_directory(role_name)
+
+
 def k3s_inabox():
   r = init_redis()
   conn = init_connection()
@@ -366,24 +426,5 @@ def up_inabox():
   print_status()
   return 0
 
-def ansible_automation_platform():
-  prettyllog("inabox", "start", "ansible_automation_platform", "ansible_automation_platform", "200", "Starting ansible automation platform") 
-  r = init_redis()
-  conn = init_connection()
-  print("Starting ansible automation platform")
-  get_servers(r, conn)
-  print("Starting inabox")
-  myconf = read_config()
-  myfqdn = myconf['service']+ '.' + myconf['domain']
-  print("Checking DNS resolution for " + myfqdn + " and " + myconf['ip4'])
-  checkservice(myfqdn, myconf['ip4'])
-  print(myconf['domain'])
-  hosts  = myconf['hosts']
-  print(hosts)
-  try:
-    check_the_hosts(hosts, myconf)
-  except:
-    print("Failed to check the hosts")
-    exit(1)
-  print_status()
-  return 0
+
+ 

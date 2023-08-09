@@ -6,122 +6,134 @@ import hvac
 import os
 import sys
 import datetime
+import tempfile
 import pynetbox
 import urllib3
 import datetime
-from . import common
+from .awx.awx_common import awx_get_id
+from .awx.awx_common import getawxdata
+from .awx.awx_credential import awx_create_credential
+from .common import prettyllog
+from .awx.awx_organisation import awx_create_organization
+from .awx.awx_project import awx_create_project
+from .awx.awx_project import awx_get_project
+
+#from .awx_project import awx_get_project
+#from .awx_project import awx_create_subproject
+#from .awx_common import awx_create_label
+
+def git_create_repo(name, description, private, organization, mytoken, r):
+  prettyllog("manage", "repo", name, organization, "000", "-")
+
+def git_create_org(name, description, private, mytoken, r):
+  prettyllog("manage", "org", name, "000", "000", "-")
+
+def git_create_team(name, description, private, mytoken, r):
+  prettyllog("manage", "team", name, "000", "000", "-")
+
+def git_create_user(name, description, private, mytoken, r):
+  prettyllog("manage", "user", name, "000", "000", "-")
+
+
+
+
+
+class suppress_stdout_stderr(object):
+    '''
+    A context manager for doing a "deep suppression" of stdout and stderr in 
+    Python, i.e. will suppress all print, even if the print originates in a 
+    compiled C/Fortran sub-function.
+       This will not suppress raised exceptions, since exceptions are printed
+    to stderr just before a script exits, and after the context manager has
+    exited (at least, I think that is why it lets exceptions through).      
+
+    '''
+    def __init__(self):
+        # Open a pair of null files
+        self.null_fds =  [os.open(os.devnull,os.O_RDWR) for x in range(2)]
+        # Save the actual stdout (1) and stderr (2) file descriptors.
+        self.save_fds = [os.dup(1), os.dup(2)]
+
+    def __enter__(self):
+        # Assign the null pointers to stdout and stderr.
+        os.dup2(self.null_fds[0],1)
+        os.dup2(self.null_fds[1],2)
+
+    def __exit__(self, *_):
+        # Re-assign the real stdout/stderr back to (1) and (2)
+        os.dup2(self.save_fds[0],1)
+        os.dup2(self.save_fds[1],2)
+        # Close all file descriptors
+        for fd in self.null_fds + self.save_fds:
+            os.close(fd)
 
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 VERIFY_SSL = os.getenv("VERIFY_SSL", "false")
-if VERIFY_SSL == "false" or VERIFY_SSL == "False" or VERIFY_SSL == "FALSE" or VERIFY_SSL == "no" or VERIFY_SSL == "NO" or VERIFY_SSL == "No":
-  VERIFY_SSL = False
+if VERIFY_SSL.lower() == "false" or VERIFY_SSL == "no":
+    VERIFY_SSL = False
 else:
-  VERIFY_SSL = True
+    VERIFY_SSL = True
 
-
-def prettyllog(function, action, item, organization, statuscode, text):
-  d_date = datetime.datetime.now()
-  reg_format_date = d_date.strftime("%Y-%m-%d %I:%M:%S %p")
-  print("%-20s: %-12s %20s %-50s %-20s %-4s %-50s " %( reg_format_date, function,action,item,organization,statuscode, text))
-
-  
-
-
-#def prettyllog(function, action, item, organization, statuscode, text):
- # d_date = datetime.datetime.now()
- # reg_format_date = d_date.strftime("%Y-%m-%d %I:%M:%S %p")
- # print("%-20s: %-12s %20s %-50s %-20s %-4s %-50s " %( reg_format_date, function,action,item,organization,statuscode, text))
 
 class Hvac:
-  def __init__(self):
-    self.url = self._get_url()
-    self.token = self._get_token()
-    self.client = hvac.Client(url=self.url, token=self.token)
+    def __init__(self):
+        self.url = self._get_url()
+        self.token = self._get_token()
+        self.client = hvac.Client(url=self.url, token=self.token)
 
-  @staticmethod
-  def _get_url():
-    return os.getenv(key="VAULT_URL")
+    @staticmethod
+    def _get_url():
+        return os.getenv(key="VAULT_URL")
 
-  @staticmethod
-  def _get_token():
-    return os.getenv(key="VAULT_TOKEN")
+    @staticmethod
+    def _get_token():
+        return os.getenv(key="VAULT_TOKEN")
 
-  # Method to create a new KV pair
-  def create_kv_engine(self, engine_name):
-    self.client.sys.enable_secrets_engine(
-      backend_type="kv",
-      path=engine_name,
-      options={"version": "2"}
-    )
+    # Method to create a new KV pair
+    def create_kv_engine(self, engine_name):
+        self.client.sys.enable_secrets_engine(
+            backend_type="kv",
+            path=engine_name,
+            options={"version": "2"}
+        )
 
   # Method to create a password 
-  def create_password(self, engine_name, username, password):
-    self.client.secrets.kv.v2.create_or_update_secret(
-      mount_point=engine_name,
-      path=username,
-      secret={"username": username, "password": password}
-    )
+    def create_password(self, engine_name, username, password):
+      self.client.secrets.kv.v2.create_or_update_secret(
+        mount_point=engine_name,
+        path=username,
+        secret={"username": username, "password": password}
+      )
 
   # Method to read an existing password 
-  def read_password(self, engine_name, username):
-    return self.client.secrets.kv.v2.read_secret_version(
-      mount_point=engine_name,
-      path=username
-    )
-  # Method to read an existing token
-  def read_secret(self, engine_name, secret):
-    return self.client.secrets.kv.v2.read_secret_version(
-      mount_point=engine_name,
-      path=secret
-    )
+    def read_password(self, engine_name, username):
+      return self.client.secrets.kv.v2.read_secret_version(
+        mount_point=engine_name,
+        path=username
+      )
+    # Method to read an existing token
+    def read_secret(self, engine_name, secret):
+      return self.client.secrets.kv.v2.read_secret_version(
+        mount_point=engine_name,
+        path=secret
+      )
+def checkout_git_repo(url, branch, path):
+    #create a temporary directory
+    tmpdir = tempfile.mkdtemp()
+    #clone the repo
+    command = "cd %s && git clone -b %s %s %s" % (tmpdir, branch, url, path)
+    os.system(command)
 
-def getawxdata(item, mytoken, r):
-  headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
-  url = os.getenv("TOWER_HOST") + "/api/v2/" + item
-  intheloop = "first"
-  while ( intheloop == "first" or intheloop != "out" ):
-    try:
-      resp = requests.get(url,headers=headers, verify=VERIFY_SSL)
-    except:
-      intheloop = "out"
-    try:
-      mydata = json.loads(resp.content)
-    except:
-      intheloop = "out"
-    try:
-      url = os.getenv("TOWER_HOST") + "/api/v2/" + (mydata['next'])
-    except: 
-      intheloop = "out"
-    savedata = True
-    try:
-      myresults = mydata['results'] 
-    except:
-      savedata = False
-    if ( savedata == True ):
-      for result in mydata['results']:
-        key = os.getenv("TOWER_HOST") + item +":id:" + str(result['id'])
-        r.set(key, str(result), 600)
-        key = os.getenv("TOWER_HOST") + item +":name:" + result['name']
-        r.set(key, str(result['id']), 600 )
-        key = os.getenv("TOWER_HOST") + item +":orphan:" + result['name']
-        r.set(key, str(result), 600)
+
+
 
 def vault_get_secret(path, vault):
   secret = vault.read_secret(engine_name="secret", secret=path)['data']['data']
   return secret
 
 
-def awx_get_id(item,name, r):
-  key = os.getenv("TOWER_HOST") + item +":name:" + name
-  myvalue =  r.get(key)
-  mydevode = ""
-  try: 
-    mydecode = myvalue.decode()
-  except:
-    mydecode = ""
-  return mydecode
 
   
 
@@ -131,7 +143,7 @@ def awx_delete(item, name, mytoken, r):
   url = os.getenv("TOWER_HOST") + "/api/v2/" + item + "/" + itemid
   resp = requests.delete(url,headers=headers, verify=VERIFY_SSL)
 
-def awx_purge_orphans():
+def awx_purge_orphans(token, r):
   orphans = r.keys("*:orphan:*")
   for orphan in orphans:
     mykey = orphan.decode().split(":")
@@ -197,7 +209,6 @@ def awx_create_subproject(org, project, subproject, mytoken, r):
   if os.path.exists("/etc/kalm/kalm.d/%s.json" % subproject):
     with open("/etc/kalm.d/subproject.json") as f:
       data = json.load(f)
-      print(data)
 
   else:
       open("/etc/kalm/kalm.d/%s.json" % subproject, 'w').close()
@@ -242,7 +253,6 @@ def awx_create_inventory(name, description, organization, inventorytype, variabl
     prettyllog("manage", "inventories", name, organization, resp.status_code, response)
     loop = True
     while ( loop ):
-        print("looop")
         getawxdata("inventories", mytoken, r)
         try:
             invid = (awx_get_id("inventories", name, r))
@@ -307,12 +317,12 @@ def readthefile(filename):
 # update ansible vault
 ############################################################################################################################
 def awx_update_vault(ansiblevault, organization, mytoken, r):
-  print("------------------------------------------------------------------")
-  print(ansiblevault)
-  print(organization)
-  print("------------------------------------------------------------------")
+  try:
+    vaults = ansiblevault[organization]['vault']
+  except: 
+    vaults = []
 
-  for vault in ansiblevault[organization]['vault']:
+  for vault in vaults:
     credential = { 
       "name": vault['name'], 
       "description": vault['description'], 
@@ -322,7 +332,13 @@ def awx_update_vault(ansiblevault, organization, mytoken, r):
       "kind": "vault" }
     awx_create_credential(credential, organization, mytoken, r)
 
-  for ssh in ansiblevault[organization]['ssh']:
+# Create server access
+  try: 
+    sshs = ansiblevault[organization]['ssh']
+  except:
+    sshs = []
+
+  for ssh in sshs:
     sshkeyval = readthefile(ssh['ssh_private_key'])
     credential = { 
       "name": ssh['name'], 
@@ -338,7 +354,13 @@ def awx_update_vault(ansiblevault, organization, mytoken, r):
       }
     awx_create_credential(credential, organization, mytoken, r)
 
-  for scm in ansiblevault[organization]['scm']:
+# Create access to git 
+  try:
+    scms = ansiblevault[organization]['scm']
+  except:
+    scms = []
+
+  for scm in scms:
     f = open(ssh['ssh_private_key'])
     sshkeyval = f.read()
     f.close
@@ -355,42 +377,6 @@ def awx_update_vault(ansiblevault, organization, mytoken, r):
 
 
 
-############################################################################################################################
-# Create organization
-############################################################################################################################
-
-def awx_create_organization(name, description, max_hosts, DEE, realm, mytoken, r):
-  try:  
-    orgid = (awx_get_id("organizations", name,r ))
-  except:
-    print("Unexcpetede error")
-  if (orgid == ""):
-    headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
-    data = {
-          "name": name,
-          "description": description,
-          "max_hosts": max_hosts
-         }
-    url = os.getenv("TOWER_HOST") + "/api/v2/organizations/"
-    resp = requests.post(url,headers=headers, json=data, verify=VERIFY_SSL)
-    response = json.loads(resp.content)
-    try:
-      orgid=response['id']
-      prettyllog("manage", "organization", name, realm, resp.status_code, "organization %s created with id %s" % (orgid))
-    except:
-      prettyllog("manage", "organization", name, realm, resp.status_code, response)
-  else:    
-    headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
-    data = {
-          "name": name,
-          "description": description,
-          "max_hosts": max_hosts
-         }
-    url = os.getenv("TOWER_HOST") + "/api/v2/organizations/%s" % orgid
-    resp = requests.put(url,headers=headers, json=data, verify=VERIFY_SSL)
-    response = json.loads(resp.content)
-    prettyllog("manage", "organization", name, realm, resp.status_code, response)
-  getawxdata("organizations", mytoken, r)
 
 
 ############################################################################################################################
@@ -420,12 +406,19 @@ def awx_create_schedule(name, unified_job_template,  description, tz, start, run
 ############################################################################################################################
 # Create job template
 ############################################################################################################################
-def awx_create_template(name, description, job_type, inventory,project,ee, credential, playbook, organization, mytoken, r):
+def awx_create_template(name, description, job_type, inventory,project,eename, credential, playbook, organization, mytoken, r):
   orgid = (awx_get_id("organizations", organization,r))
   invid = (awx_get_id("inventories", inventory,r ))
   projid = (awx_get_id("projects", project,r ))
   credid = (awx_get_id("credentials", credential, r))
-  eeid = (awx_get_id("execution_environments", ee, r))
+  eeid = (awx_get_id("execution_environments", eename, r))
+  if eeid == "":
+    eeid = 1
+    errormessage = "Execution environment %s is not valid" % eename
+    prettyllog("Warning", "template", name, organization, "666", errormessage)
+  else:
+    infomessage = "Execution environment %s has the id %s" % (eename, eeid)
+    prettyllog("Info", "template", name, organization, "666", infomessage)
 
   data = {
     "name": name,
@@ -483,14 +476,30 @@ def awx_create_template(name, description, job_type, inventory,project,ee, crede
   tmplid = awx_get_id("job_templates", name ,r )
   getawxdata("credentials", mytoken, r)
   credid = (awx_get_id("credentials", credential, r))
-  print('associatecommand = "awx job_template associate %s --credential %s >/dev/null 2>/dev/null " % ( tmplid, credid)')
-  print("We should not use any awx cli commands, but the API is not consisten and sometimes fails to set the credentials")
   if VERIFY_SSL == False:
-    associatecommand = "/usr/local/bin/awx job_template associate %s --credential %s -k >/dev/null 2>/dev/null " % ( tmplid, credid)  
+    ####################### AWX VERSION IS CHANGING THIS
+    #associatecommand = "awx job_template associate %s --credential %s --insecure  >/dev/null 2>/dev/null " % ( tmplid, credid)  
+    associatecommand = "awx job_template associate_credential --job-template %s --credential %s --insecure >/dev/null 2>&1" % ( tmplid, credid)
+    prettyllog("manage", "template", name, organization, "000", associatecommand)
+    try:           
+      with suppress_stdout_stderr():
+        os.system(associatecommand)
+        prettyllog("manage", "template", name, organization, "666", "associate credential %s to template %s" % (credid, tmplid))
+    except:
+      associatecommand = "awx job_template associate %s --credential %s --insecure  >/dev/null 2>/dev/null " % ( tmplid, credid)  
+      try:
+        with suppress_stdout_stderr():
+          os.system(associatecommand)
+        prettyllog("manage", "template", name, organization, "666", "associate credential %s to template %s" % (credid, tmplid))
+      except:
+        prettyllog("manage", "template", name, organization, "666", "Could not associate credential %s to template %s" % (credid, tmplid))
+
+
+  
   else:
-    associatecommand = "/usr/local/bin/awx job_template associate %s --credential %s >/dev/null 2>/dev/null " % ( tmplid, credid)
-    
-  print(associatecommand)
+    #associatecommand = "awx job_template associate %s --credential %s >/dev/null 2>/dev/null " % ( tmplid, credid)
+    associatecommand = "awx job_template associate_credential --job-template %s --credential %s" % ( tmplid, credid )
+
   os.system(associatecommand)
   ############################################################################### end of create job template ##########################################
 
@@ -507,217 +516,222 @@ def awx_create_team(name, description, organization , mytoken, r):
 def awx_create_user(name, description, organization, mytoken, r):
   prettyllog("manage", "user", name, organization, "000", "-")
 
-######################################
-# function: create Credential
-######################################
-def awx_create_credential( credential , organization, mytoken, r):
-  try:
-    credid = (awx_get_id("credentials", credential['name'], r))
-  except:
-    print("Unexcpeted credential error")
-  orgid = (awx_get_id("organizations", organization, r))
-  headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
-  credentialtypeid = (awx_get_id("credential_types", credential['type'], r))
-
-######################################
-# type: vault
-######################################
-  if( credential['kind'] == "vault"):
-    data = {
-      "name": credential['name'],
-      "description": credential['description'],
-      "credential_type": credentialtypeid,
-      "organization": orgid,
-      "inputs":
-        {
-           "vault_id": "",
-           "vault_password": credential['vault_password']
-        },
-      "kind": credential['kind']
-    }
-
-######################################
-# type: hashicorp vault
-######################################
-  if( credential['kind'] == "hashivault_kv"):
-    myurl = os.getenv(key="VAULT_URL")
-    mytoken = os.getenv(key="VAULT_TOKEN")
-    data = {
-      "name": credential['name'],
-      "description": credential['description'],
-      "credential_type": credentialtypeid,
-      "organization": orgid,
-      "inputs":
-        {
-           "url": credential['url'],
-           "token": credential['token']
-        },
-      "kind": credential['kind']
-    }
-
-
-######################################
-# type: GIT source control
-######################################
-  if( credential['kind'] == "scm"):
-    data = {
-        "name": credential['name'],
-        "description": credential['description'],
-        "credential_type": credentialtypeid,
-        "organization": orgid,
-        "inputs":
-          {
-            "ssh_key_data": credential['ssh_key_data'],
-            "username": credential['username'],
-            "password": credential['password']
-          },
-        "kind": credential['kind']
-        }
-
-######################################
-# type: machine 
-######################################
-  if( credential['kind'] == "ssh" ):
-    data = {
-        "name": credential['name'],
-        "description": credential['description'],
-        "credential_type": credentialtypeid,
-        "organization": orgid,
-        "inputs":
-          {
-            "ssh_key_data": credential['ssh_key_data'], 
-            "username": credential['username'],
-            "password": credential['password'],
-            "become_method": credential['privilege_escalation_method'],
-            "become_username": credential['privilege_escalation_username'],
-            "become_password": credential['privilege_escalation_password']
-          },
-        "kind": credential['kind']
-        }
-
-  if ( credid == ""):
-    url = os.getenv("TOWER_HOST") + "/api/v2/credentials/"
-    resp = requests.post(url,headers=headers, json=data, verify=VERIFY_SSL)
-    response = json.loads(resp.content)
-    try:
-      credid=response['id']
-      prettyllog("manage", "credential", credential['name'], organization, resp.status_code, credid)
-    except:
-      prettyllog("manage", "credential", credential['name'], organization, resp.status_code, response)
-  else:
-    url = os.getenv("TOWER_HOST") + "/api/v2/credentials/%s/" % credid
-    resp = requests.put(url,headers=headers, json=data, verify=VERIFY_SSL)
-    response = json.loads(resp.content)
-    try:
-      credid=response['id']
-      prettyllog("manage", "credential", credential['name'], organization, resp.status_code, credid)
-    except:
-      prettyllog("manage", "credential", credential['name'], organization, resp.status_code, response)
-  getawxdata("credentials", mytoken, r)
-
 
 ######################################
 # function: get  organization
 ######################################
-def awx_get_organization(orgid, mytoken, r):
+def awx_get_organization(orgid, mytoken=None, r=None):
   headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
   url = os.getenv("TOWER_HOST") + "/api/v2/organizations/%s" % orgid
   resp = requests.get(url,headers=headers, verify=VERIFY_SSL)
   return   json.loads(resp.content)
 
-######################################
-# function: get Project 
-######################################
-def awx_get_project(projid, organization, mytoken, r):
-  headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
-  orgid = (awx_get_id("organizations", organization, r))
-  url = os.getenv("TOWER_HOST") + "/api/v2/projects/%s" % projid
-  resp = requests.get(url,headers=headers,  verify=VERIFY_SSL)
-  return   json.loads(resp.content)
-
-
-
-######################################
-# function: Create Project 
-######################################
-def awx_create_project(name, description, scm_type, scm_url, scm_branch, credential, organization, mytoken, r):
-  getawxdata("projects", mytoken, r)
-  try:  
-    projid = (awx_get_id("projects", name, r))
-  except:
-    print("Unexpected error")
-  headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
-  orgid = (awx_get_id("organizations", organization, r))
-  credid = (awx_get_id("credentials", credential, r))
-  data = {
-        "name": name,
-        "description": description,
-        "scm_type": scm_type,
-        "scm_url": scm_url,
-        "organization": orgid,
-        "scm_branch": scm_branch,
-        "credential": credid
-       }
-  if (projid == ""):
-    url = os.getenv("TOWER_HOST") + "/api/v2/projects/"
-    resp = requests.post(url,headers=headers, json=data, verify=VERIFY_SSL)
-    response = json.loads(resp.content)
-    try:
-      projid=response['id']
-      prettyllog("manage", "project", name, organization, resp.status_code, projid)
-    except:
-      prettyllog("manage", "project", name, organization, resp.status_code, response)
-    #loop until project is synced
-    loop = True
-    while ( loop ):
-        getawxdata("projects", mytoken, r)
-        try:  
-            projid = (awx_get_id("projects", name, r))
-        except:
-            print("Unexpected error")
-        projectinfo = awx_get_project(projid, organization)
-        try:
-          if( projectinfo['status'] == "successful"):
-              loop = False
-        except:
-          print("Project status unknown")
-
-  else:
-    url = os.getenv("TOWER_HOST") + "/api/v2/projects/%s/" % projid
-    resp = requests.put(url,headers=headers, json=data, verify=VERIFY_SSL)
-    response = json.loads(resp.content)
-    try:  
-      projid = (awx_get_id("projects", name,r ))
-      prettyllog("manage", "project", name, organization, resp.status_code, projid)
-    except:
-      prettyllog("manage", "project", name, organization, resp.status_code, response)
-    getawxdata("projects", mytoken, r)
-    try:
-        projid = (awx_get_id("projects", name, r ))
-    except:
-        print("Unexpected error")
-    projectinfo = awx_get_project(projid, organization, mytoken, r)
-    if( projectinfo['status'] == "successful"):
-      prettyllog("manage", "project", name, organization, "000", "Project is ready")
-    else:    
-      prettyllog("manage", "project", name, organization, "666", "Project is not ready")
-  refresh_awx_data(mytoken, r)
 
 ######################################
 # function: Refresh AWX data
 ######################################
 def refresh_awx_data(mytoken,r ):
-  items = {"organizations", "projects", "credentials", "hosts", "inventories", "credential_types", "labels" , "instance_groups", "job_templates"}    
+  items = { 
+    "ad_hoc_commands",
+    "analytics,applications",
+    "credential_input_sources",
+    "credentials",
+    "credential_types",
+    "execution_environments",
+    "groups",
+    "hosts",
+    "inventory_sources",
+    "inventory_updates",
+    "jobs",
+    "job_templates",
+    "labels",
+    "metrics",
+    "notifications",
+    "notification_templates",
+    "organizations",
+    "projects",
+    "project_updates",
+    "roles",
+    "schedules",
+    "system_jobs",
+    "system_job_templates",
+    "teams",
+    "unified_jobs",
+    "unified_job_templates",
+    "workflow_approvals",
+    "workflow_job_nodes",
+    "workflow_jobs",
+    "workflow_job_template_nodes",
+    "workflow_job_templates"
+  }
+  #items = {"organizations", "projects", "credentials", "hosts", "inventories", "credential_types", "labels" , "instance_groups", "job_templates", "execution_environments"}    
   for item in items:
     getawxdata(item, mytoken, r)
+
+
+
+######################################
+# function: get subproject data 
+######################################
+def get_subproject(subproject, project, organisation, mytoken, r):
+  print("get subproject data")
+
+  #check if file exists in /etc/kalm/kalm.d/subproject.json
+  # if it exists, read it and update data
+  if os.path.exists("/etc/kalm/kalm.d/%s.json" % subproject):
+    with open("/etc/kalm/kalm.d/%s.json" % subproject) as f:
+      data = json.load(f)
+  else:
+    print("Subproject file does not exist")
+    if create_subproject_file(subproject, project, organisation, mytoken, r):
+      if os.path.exists("/etc/kalm/kalm.d/%s.json" % subproject):
+        with open("/etc/kalm/kalm.d/%s.json" % subproject) as f:
+          data = json.load(f)
+      else:
+        print("Subproject file does not exist")
+        return False
+    else:
+      print("Subproject file does not exist")
+      return False
+  return data
+
+def create_master_project_file(project, organisation, token, r):
+  if os.path.exists("/etc/kalm.json"):
+    with open("/etc/kalm.json") as f:
+      data = json.load(f)
+  else:
+    data = {  }
+    open("/etc/kalm.json", 'w').close()
+    with open("/etc/kalm.json", 'w') as f:
+      json.dump(data, f)
+    return True
+  
+
+######################################
+# function: create subproject file
+######################################
+
+def create_subproject_file(subproject, project, organisation, token, r):
+  orgid = (awx_get_id("organizations", organisation, r))
+  projid = (awx_get_id("projects", project, r))
+  data = {
+  "organization": [
+    {
+      "name": "{{ organization }}",
+      "parentproject": "{{ project }}",
+      "project": [
+        {
+           "name": "{{ subproject }}",
+           "description": "subproject of {{ project }}",
+           "scm_type": "git",
+           "scm_url": "",
+           "scm_branch": "",
+           "scm_clean": "false",
+           "scm_delete_on_update": "false",
+           "credential": "deploykey_compliance",
+           "scm_update_on_launch": "false",
+           "scm_update_cache_timeout": 0
+        }
+      ],
+      "inventories": [
+        {
+          "name": "compliance",
+          "description": "Inventory containing all servers in netbox tagged compliance",
+          "type": "netbox"
+	}
+      ],
+      "templates": [
+        {
+          "name": "ansible_project_compliance_checkup",
+          "description": "Checkup job for ensuring the ability to execute on servers",
+          "job_type": "run",
+          "inventory": "compliance",
+          "project": "compliance",
+          "EE": "Automation Hub Default execution environment",
+          "credentials": "compliance",
+          "playbook": "checkup.yml"
+        },
+        {
+          "name": "ansible_project_compliance_runner",
+          "description": "Apply the project compliance on servers tagged ",
+          "job_type": "run",
+          "inventory": "compliance",
+          "project": "compliance",
+          "EE": "Automation Hub Default execution environment",
+          "credentials": "compliance",
+          "playbook": "compliance.yml"
+        }
+      ],
+      "schedules": [
+        {
+          "name": "ansible_project_compliance_checkup",
+          "type": "job",
+          "template": "ansible_project_compliance_checkup",
+          "description": "ansible project compliance checkup shedule",
+          "local_time_zone": "CET",
+          "run_every_minute": "5",
+          "start": "now",
+          "end": "never"
+        },
+        {
+          "name": "ansible_project_compliance_runner",
+          "type": "job",
+          "template": "ansible_project_compliance_runner",
+          "description": "ansible project compliance runner shedule",
+          "local_time_zone": "CET",
+          "run_every_minute": "5",
+          "start": "now",
+          "end": "never"
+        },
+        {
+          "name": "ansible_projecet_compliance",
+          "type": "project",
+          "project": "compliance",
+          "description": "Master job for syncing project compliance",
+          "local_time_zone": "CET",
+          "run_every_minute": "10",
+          "start": "now",
+          "end": "never"
+        }
+      ],
+      "labels":
+      [
+        {
+          "name": "compliance"
+        }
+      ]
+    }
+  ]
+}
+
+
+   
+
+  open("/etc/kalm/kalm.d/%s.json" % subproject, 'w').close()
+  with open("/etc/kalm/kalm.d/%s.json" % subproject, 'w') as f:
+    json.dump(data, f)
+  return True
+
+
+
+
+  # if it does not exist, create it
+
+
+
+
+
 
 
 ########################################################################################################################
 # Main:  start
 ########################################################################################################################
 
-def kalm(mytoken, r):
 
+
+
+
+def kalm(mytoken, r, realm="standalone", subproject=None):
   ########################################################################################################################
   # Load and set ansible secrets in ansible vault
   ########################################################################################################################
@@ -725,27 +739,57 @@ def kalm(mytoken, r):
   ansiblevaultfile = "/etc/kalm/secret.json"
   f = open(ansiblevaultfile)
   ansiblevault = json.loads(f.read())
-  print(ansiblevault)
-
   f.close
+
+  ###################################
+  # check if git is accessible
+  ###################################
+  prettyllog("init", "runtime", "config", "init", "001", "checking git access")
+  gitprovider=os.getenv("GITPROVIDER")
+  if gitprovider == "github":
+    giturl="https://github.com"
+  if gitprovider == "gitlab":
+    giturl="https://gitlab.com"
+  if gitprovider == "bitbucket":
+    giturl="https://bitbucket.org"
+  if gitprovider == "gitea":
+    giturl=os.getenv("GITURL")
+  if gitprovider == "gogs":
+    giturl=os.getenv("GITURL")
+
+  gituser=os.getenv("GITUSER")
+  gitpassword=os.getenv("GITPASSWORD")
+  gitorg=os.getenv("GITORG")
+
+
+
+    
+
+
+  
 
 
   ########################################################################################################################
   # Load  and set ansible automation org
   ########################################################################################################################
+
+
   cfgfile = "/etc/kalm/kalm.json"
-  realm = "standalone"
-  if (len(sys.argv) == 1):
-    prettyllog("init", "runtime", "config", "master", "001", "Running standalone : using local master config")
-    realm = "standalone"
-  else:
-      if (sys.argv[1] == "master" ):
-          cfgfile = "/etc/kalm.json"
-          realm="master"
+  # checkout git repo in kalm.json main project
+
+
+
+
+
+  if (realm == "standalone" or realm == "main"):
+          cfgfile = "/etc/kalm/kalm.json"
+          realm="main"
           prettyllog("init", "runtime", "config", "master", "002",  "Running Running as daemon")
-      if (sys.argv[1] == "custom" ):
-          prettyllog("init", "runtime", "config", sys.argv[2], "003" , "running cusom config file")
-          cfgfile = "/etc/kalm/kalm.d/%s" % sys.argv[2]
+   
+  if (realm == "subproject" ):
+          prettyllog("init", "runtime", "config", subproject, "003" , "running cusom config file")
+          cfgfile = "/etc/kalm/kalm.d/%s" % subproject + ".json"
+  
 
   f = open(cfgfile)
   config = json.loads(f.read())
@@ -758,21 +802,41 @@ def kalm(mytoken, r):
   # organizations
   ########################################################################################################################
   for org in (config['organization']):
-    prettyllog("loop","org", "config", org['name'], "000", "create organization")
+    prettyllog("loop","org", "config", org['name'], "000", "organization")
     orgname = org['name']
     key = os.getenv("TOWER_HOST") + ":organizations:name:" + orgname
     r.delete(key)
-    max_hosts = org['meta']['max_hosts']
-    default_environment = org['meta']['default_environment']
-    description = org['meta']['description']
+    try:
+      max_hosts = org['meta']['max_hosts']
+    except:
+      max_hosts = 100
+    try: 
+      default_environment = org['meta']['default_environment']
+    except:
+      default_environment = ""
+    try:
+      description = org['meta']['description']
+    except:
+      description = ""
+    try: 
+      autocreaterepositories = org['meta']['autocreaterepositories']
+    except:
+      autocreaterepositories = False
+
+
+    prettyllog("loop","org", "config", org['name'], "000", "create or modify organization when needed")
     awx_create_organization(orgname, description, max_hosts, default_environment, realm, mytoken, r)
     getawxdata("organizations", mytoken, r)
+
     orgid = awx_get_id("organizations", orgname, r)
     loop = True
     while ( loop ):
       orgdata = awx_get_organization(orgid, mytoken, r)
-      if ( orgdata['name'] == orgname ):
-        loop = False
+      try:
+        if ( orgdata['name'] == orgname ):
+          loop = False
+      except:
+        loop = True
 
     awx_update_vault(ansiblevault, orgname, mytoken, r)
     refresh_awx_data(mytoken, r)
@@ -798,20 +862,21 @@ def kalm(mytoken, r):
     ######################################
     # Projects
     ######################################
+    masterproject = ""
     try:
-      projects = org['projects']
-      for project in projects:
-        projectname = project['name']
-        projectdesc = project['description']
-        projecttype = project['scm_type']
-        projecturl  = project['scm_url']
-        projectbrnc = project['scm_branch']
-        projectcred = project['credential']
-        key = os.getenv("TOWER_HOST") +":projects:orphan:" + projectname
-        r.delete(key)
-        awx_create_project(projectname, projectdesc, projecttype, projecturl, projectbrnc, projectcred, orgname, mytoken, r)
-        awx_get_id("projects", projectname, r)
-        projid = (awx_get_id("projects", projectname, r))
+      project = org['project']
+      projectname = project['name']
+      masterproject = projectname
+      projectdesc = project['description']
+      projecttype = project['scm_type']
+      projecturl  = project['scm_url']
+      projectbrnc = project['scm_branch']
+      projectcred = project['credential']
+      key = os.getenv("TOWER_HOST") +":projects:orphan:" + projectname
+      r.delete(key)
+      awx_create_project(projectname, projectdesc, projecttype, projecturl, projectbrnc, projectcred, orgname, mytoken, r)
+      awx_get_id("projects", projectname, r)
+      projid = (awx_get_id("projects", projectname, r))
     except:
       prettyllog("config", "initialize", "projects", orgname, "000",  "No projects found")
     ######################################
@@ -819,11 +884,19 @@ def kalm(mytoken, r):
     ######################################
     try:
       subprojects = org['subprojects']
+      print(subprojects)
       for subproject in subprojects:
         subprojectname = subproject['name']
         key = os.getenv("TOWER_HOST") +":projects:orphan:" + subprojectname
         r.delete(key)
-        awx_create_project(subprojectname, orgname, mytoken, r)
+        subproject =  get_subproject(subprojectname, masterproject, orgname, mytoken, r)
+        projectname = subproject['name']
+        projectdesc = subproject['description']
+        projecttype = subproject['scm_type']
+        projecturl  = subproject['scm_url']
+        projectbrnc = subproject['scm_branch']
+        projectcred = subproject['credential']
+        awx_create_project(projectname, projectdesc, projecttype, projecturl, projectbrnc, projectcred, orgname, mytoken, r)
         awx_get_id("projects", subprojectname, r)
         projid = (awx_get_id("projects", subprojectname, r))
         prettyllog("config", "initialize", "subprojects", orgname, org['name'],  "sub project %s created" % subprojectname)
@@ -837,10 +910,10 @@ def kalm(mytoken, r):
       inventories = org['inventories']
     except:
       prettyllog("config", "initialize", "inventories", orgname, "000",  "No inventories found")
+      inventories = []
 
     for inventory in inventories:
       valid=True
-      print(inventory)
       try:
         inventoryname = inventory['name']
       except:
@@ -858,7 +931,6 @@ def kalm(mytoken, r):
         inventoryvariables = inventory['variables']
       except:
         inventoryvariables = {}
-      print(inventoryvariables)
       if valid:
         awx_create_inventory(inventoryname, inventorydesc, orgname, inventorytype, inventoryvariables, mytoken, r)
       else:
@@ -902,8 +974,6 @@ def kalm(mytoken, r):
     ######################################
     # Templates
     ######################################
-    print("Templates")
-    print("============================DEBUG==============================YY")
     try:
       templates = org['templates']
       for template in templates:
@@ -918,7 +988,6 @@ def kalm(mytoken, r):
         awx_create_template(templatename, templatedescription, templatejob_type, templateinventory, templateproject, templateEE, templatecredential, templateplaybook, orgname, mytoken, r)
     except:
       prettyllog("config", "initialize", "templates", orgname, "000",  "No templates found")
-    print("============================DEBUG==============================YY")
 
     ######################################
     # Schedules

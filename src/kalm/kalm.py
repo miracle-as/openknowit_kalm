@@ -878,7 +878,7 @@ def kalm(mytoken, r, realm="standalone", subproject=None):
       awx_get_id("projects", projectname, r)
       projid = (awx_get_id("projects", projectname, r))
     except:
-      prettyllog("config", "initialize", "projects", orgname, "002",  "No projects found")
+      prettyllog("config", "initialize", "projects", orgname, "000",  "No projects found")
     ######################################
     # Subprojects
     ######################################

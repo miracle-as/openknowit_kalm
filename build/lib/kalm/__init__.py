@@ -1,4 +1,5 @@
-from kalm.kalm import kalm
+from kalm import kalm
+
 import os
 import sys
 import redis
@@ -199,11 +200,19 @@ def main():
         r = redis.Redis( db=15)
         r.flushdb()
         servicefile = open("/etc/kalm/kalm.service.token", mode="r")
+        cfgfile="/etc/kalm/kalm.json"
+        f = open(cfgfile)
+        config = json.loads(f.read())
+        f.close
         token = servicefile.read()
         token = token.replace("\n", "")
         while True:
             print("Daemon running")
-            kalm.kalm(token, r)
+            print("main loop")
+            for org in (config['organization']):
+              kalm.kalm(token, r, org['project'], "main")
+              for subproject in org['subprojects']:
+                kalm.kalm(token, r, "subproject", subproject['name'])
             print("Daemon sleeping")
             time.sleep(60)
             
@@ -212,7 +221,6 @@ def main():
 
 
     if ready and args.action[0] == "initservice":
-        print("Init service")
         r = redis.Redis()
         r.flushdb()
         result = runme("/usr/local/bin/awx --conf.color False tokens create |jq '{'id': .id, 'token': .token }")

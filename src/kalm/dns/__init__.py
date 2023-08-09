@@ -10,6 +10,7 @@ def main():
                setenv      set env \n                                     \
                list        list dns records \n  \
                sync        sync dns record\n  \
+               virtlib     create dns records for virtlib\n  \
                \
                2023 Knowit Miracle\
                ")
@@ -35,6 +36,12 @@ def main():
         print("set env")
         dns.set_env(args)
         ready = True
+    
+    if args.action[0] == "virtlib":
+        print("set env")
+        dns.virtlib(args)
+        ready = True
+
         
 
 
