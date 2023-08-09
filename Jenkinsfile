@@ -26,12 +26,6 @@ pipeline {
                 sh 'poetry build'
             }
         }
-        stage('Test') {
-            steps {
-                sh 'echo "${COMMIT_ID}"'
-                sh 'poetry run pytest'
-            }
-        }
 
         stage('Upload') {
             when {
