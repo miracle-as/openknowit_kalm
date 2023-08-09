@@ -1,132 +1,99 @@
 import requests
 import json
 import os
-import time
 import base64
 import xml.etree.ElementTree as ET
-from ..common import prettyllog
-import hvac
-from git import Repo
+import yaml
+
+netbox_url = os.environ.get('NETBOX_URL')
+netbox_token = os.environ.get('NETBOX_TOKEN')
+
+NETBOX_URL = os.getenv("NETBOX_API_URL")
+NETBOX_TOKEN = os.getenv("NETBOX_API_TOKEN")
 
 
 
-bauilout = False
-
-
-
-
-def get_netbox_data(api):
-
+def get_clusters():
     headers = {
-    'Authorization': 'Token ' + os.getenv("KALM_NETBOX_TOKEN"),
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
+        "Authorization": f"Token {NETBOX_TOKEN}",
+        "Accept": "application/json",
     }
-    url = os.getenv("KALM_NETBOX_URL") + "/api/" + api + "/"
-    try:
-        response = requests.get(url, headers=headers)
-        return response.json()
-    except:
-        prettyllog("netbox", "check", "001", "Could not get data from %s" % url)
-        return False
-    
+    response = requests.get(f"{NETBOX_URL}/virtualization/clusters/", headers=headers)
+    clusters = response.json()
+    return clusters["results"]
 
-def read_file(file):
-    with open(file, 'r') as myfile:
-        data = myfile.read()
-    return data
+def get_virtual_machines():
+    headers = {
+        "Authorization": f"Token {NETBOX_TOKEN}",
+        "Accept": "application/json",
+    }
+    response = requests.get(f"{NETBOX_URL}/virtualization/virtual-machines/", headers=headers)
+    vms = response.json()
+    return vms["results"]
 
-def refresh_netbox():
-    config = read_file('/etc/kalm/netbox.json')
-    config = json.loads(config)
-    for key in config:
-        print(key)
+def netboxdata(args):
+    clusters = get_clusters()
+    vms = get_virtual_machines()
 
-def check_netbox_environment_variables():
-    environmentvariables = ["KALM_NETBOX_URL", "KALM_NETBOX_TOKEN"]
-    for environmentvariable in environmentvariables:
-        if os.getenv(environmentvariable) == "":
-            prettyllog("netbox", "check", "001", "%s needs to be defined" % environmentvariable)
-            return True
-    return False
+    vm_data = []
+    for vm in vms:
+        vm_entry = {
+            "name": vm["name"],
+            "cluster": vm["cluster"]["name"] if vm.get("cluster") else "N/A",
+            "disk_gb": vm["disk"],
+            "cpu": vm["vcpus"],
+            "memory_mb": vm["memory"]
+        }
+        vm_data.append(vm_entry)
 
+    data = {
+        "clusters": [cluster["name"] for cluster in clusters],
+        "virtual_machines": vm_data
+    }
 
-def check_netbox_connectivity():
-        status = get_netbox_data("status")
-        return status
-def create_netbox_config(organiaztion):
-    config = {}
-    config["netbox"] = {}
-    config["netbox"]["organization"] = organiaztion
-    prettyllog("netbox", "check", "config", "-", "001", "Creating /etc/kalm/netbox.json")
-    open('/etc/kalm/netbox.json', 'w').close()
-    with open('/etc/kalm/netbox.json', 'w') as outfile:
-        json.dump(config, outfile)
+    print(json.dumps(data, indent=2))
 
+def ansible_inventory(args):
+    clusters = get_clusters()
+    vms = get_virtual_machines()
 
+    vm_data = []
+    for vm in vms:
+        vm_entry = {
+            "name": vm["name"],
+            "cluster": vm["cluster"]["name"] if vm.get("cluster") else "N/A",
+            "disk_gb": vm["disk"],
+            "cpu": vm["vcpus"],
+            "memory_mb": vm["memory"]
+        }
+        vm_data.append(vm_entry)
 
-def read_kalm_netbox_config(organization):
-    if os.path.isfile('/etc/kalm/netbox.json') == False:
-        prettyllog("netbox", "check", "config", "-", "001", "Could not find /etc/kalm/netbox.json")
-        create_netbox_config(organization)
-    config = read_file('/etc/kalm/netbox.json')
-    config = json.loads(config)
-    return config
+    data = {
+        "_meta": {
+            "hostvars": {}
+        },
+        "all": {
+            "children": ["clusters"]
+        },
+        "clusters": {
+            "hosts": [cluster["name"] for cluster in clusters]
+        }
+    }
 
-def read_kalm_config():
-    if os.path.isfile('/etc/kalm/kalm.json') == False:
-        prettyllog("netbox", "check", "config", "-", "001", "Could not find /etc/kalm/kalm.json")
-        return False
-    config = read_file('/etc/kalm/kalm.json')
-    config = json.loads(config)
-    return config
+    for vm in vms:
+        if vm.get("cluster"):
+            cluster_name = vm["cluster"]["name"]
+            if cluster_name not in data:
+                data[cluster_name] = {"hosts": []}
+            data[cluster_name]["hosts"].append(vm["name"])
+            data["_meta"]["hostvars"][vm["name"]] = {
+                "disk_gb": vm["disk"],
+                "cpu": vm["vcpus"],
+                "memory_mb": vm["memory"]
+            }
 
+    print(yaml.dump(data))
 
-def clone_project_repo(project):
-    if os.path.isdir('/etc/kalm/project') == False:
-        os.mkdir('/opt/kalm/project')
-
-    if os.path.isdir('/opt/kalm/project/' + project{'name'}) == False:
-    
-        Repo.clone_from(project["scm_url"], '/opt/kalm/project')
-        prettyllog("netbox", "check", "access", "-", "000", "Read the kalm netbox config")
-        kalmconfig = read_kalm_config()
-        read_secret = ""
-        if kalmconfig is not False:
-            prettyllog("netbox", "check", "access", "-", "000", "We have access to /etc/kalm/kalm.json")
-            prettyllog("netbox", "check", "access", "-", "000", "Out organization is %s" % kalmconfig["organization"])
-            netboxconfig = read_kalm_netbox_config(kalmconfig["organization"])
-        else:
-            prettyllog("netbox", "check", "access", "-", "000", "We have no access to /etc/kalm/kalm.json")
-
-        if kalmconfig['organization']['secrets'] == "filesystem":
-            prettyllog("netbox", "check", "access", "-", "000", "We are using filesystem for secrets")
-            read_secret = read_file('/etc/kalm/secrets.json')
-            print(read_secret)
-        else:
-            prettyllog("netbox", "check", "access", "-", "000", "We are using vault for secrets")
-            if os.getenv("VAULT_TOKEN") is None or os.getenv("KALM_VAULT_URL") is None:
-                prettyllog("netbox", "check", "access", "-", "000", "We have no access to vault")
-                return False
-            else:
-                prettyllog("netbox", "check", "access", "-", "000", "We have access to vault")
-                client = hvac.Client(url=os.getenv("KALM_VAULT_URL"))
-                client.token = os.getenv("VAULT_TOKEN")
-                read_secret = client.read('secret/kalm')['data']['secrets']
-                prettyllog("netbox", "check", "access", "-", "000", "Read the secrets from vault")
-                print(read_secret)
-        
-        clone_project_repo(kalmconfig["organization"]["project"])
-        prettyllog("netbox", "check", "access", "-", "000", "Cloned the project repo")
-
-        time.sleep(10)
-
-
-
-        
-
-
-        
 
 
 
