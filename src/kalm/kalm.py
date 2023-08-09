@@ -789,6 +789,7 @@ def kalm(mytoken, r, realm="standalone", subproject=None):
   if (realm == "subproject" ):
           prettyllog("init", "runtime", "config", subproject, "003" , "running cusom config file")
           cfgfile = "/etc/kalm/kalm.d/%s" % subproject + ".json"
+  prettyllog("init", "runtime", "config", "master", "001", "loading config file %s" % cfgfile)
   
 
   f = open(cfgfile)
