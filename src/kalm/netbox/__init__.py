@@ -4,9 +4,11 @@ import argparse
 def main():
     parser = argparse.ArgumentParser(description="Keep kalm and automate netbox", usage="kalm_netbox <action> \n\n \
                \
-               version : 0.0.1 (netbox)   \n                                              \
+               version : 0.0.2 (netbox)   \n                                              \
                actions:\n                                                      \
-               refresh     refresh core netbox content \n  \
+               netboxdata                dump netbox data in json \n  \
+               ansible_inventory         dump ansible inventory              \n  \
+               refresh                   refresh core netbox content \n  \
                \
                2023 Knowit Miracle\
                ")

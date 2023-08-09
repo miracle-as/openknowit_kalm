@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "kalm"
-version = "0.7.58"
+version = "0.7.59"
 description = "Knowit Automation lifecycle management"
 authors = ["Jakob Holst <jakob.holst@knowit.dk>"]
 license = "MIT"
@@ -27,12 +27,13 @@ hvac = "^1.1.0"
 netbox = "^0.0.2"
 python-jenkins = "^1.7.0"
 urllib3 = "^2.0.2"
+pyyaml = "^6.0.1"
 
 
 
 [project]
 name = "kalm"  
-version = "0.7.58"
+version = "0.7.59"
 description = "Knowit automation lifecycle management"
 readme = "README.md" # Optional
 requires-python = ">=3.7"
