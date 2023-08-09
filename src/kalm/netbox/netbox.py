@@ -31,7 +31,7 @@ def get_virtual_machines():
     vms = response.json()
     return vms["results"]
 
-def netboxdata():
+def netboxdata(args):
     clusters = get_clusters()
     vms = get_virtual_machines()
 
@@ -53,7 +53,7 @@ def netboxdata():
 
     print(json.dumps(data, indent=2))
 
-def ansible_inventory():
+def ansible_inventory(args):
     clusters = get_clusters()
     vms = get_virtual_machines()
 
