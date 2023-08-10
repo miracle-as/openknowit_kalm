@@ -1,4 +1,6 @@
 from . import vault
+import os
+
 import argparse
 
 def main():
@@ -16,8 +18,8 @@ def main():
     print("check if we are ready to go")
 
     try:
-        sshpath = args.action[1].path.dirname
-        sshfile = args.action[1].path.basename
+        sshpath = os.path.dirname(args.action[1])
+        sshfile = os.path.basename(args.action[1])
         ready = True
     except:
         print("not ready")
