@@ -15,9 +15,19 @@ def main():
     ready = False
     print("check if we are ready to go")
 
-    if args.action[0] == "refresh_key":
-        vault.refresh_key(args.action[1])
-        return 0
+    try:
+        sshpath = args.action[1].path.dirname
+        sshfile = args.action[1].path.basename
+        ready = True
+    except:
+        print("not ready")
+        ready = False
+
+
+    if ready:   
+        if args.action[0] == "refresh_key":
+            vault.refresh_key(sshpath, sshfile)
+            return 0
     
         
 
