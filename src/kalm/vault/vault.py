@@ -49,18 +49,18 @@ def refresh_key(args):
       KEY_DIR = os.path.dirname(args[1])
       KEY_NAME = os.path.basename(args[1])
     except:
-      exit
-      return None
+      KEY_DIR = "/home/knowit/.ssh"
+      KEY_NAME = "sshkey"
     print(KEY_DIR)  
     print(KEY_NAME)
     print("Refreshing key...")
-    
+
 
 
     # Generate an SSH key pair
 
     generate_ssh_key()
-    
+
     # Read the public key from the generated key pair
     public_key_path = os.path.join(KEY_DIR, KEY_NAME + ".pub")
     with open(public_key_path, "r") as f:
