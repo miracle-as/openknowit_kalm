@@ -16,7 +16,7 @@ def main():
     print("check if we are ready to go")
 
     if args.action[0] == "refresh_key":
-        vault.refresh_key(args)
+        vault.refresh_key(args.action[1])
         return 0
     
         
