@@ -42,7 +42,11 @@ def sign_public_key(public_key):
         return None
 
     
-def refresh_key(keypath):
+def refresh_key(args):
+    print("Refreshing key...")
+    print(args)
+    # Generate an SSH key pair
+    
     generate_ssh_key()
     
     # Read the public key from the generated key pair
