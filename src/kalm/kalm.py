@@ -471,7 +471,7 @@ def awx_create_template(name, description, job_type, inventory,project,eename, c
       tmplid=response['id']
       prettyllog("update", "template", name, organization, resp.status_code, tmplid)
     except:
-      prettyllog("update", "template", name, organization, resp.status_code, response)
+      prettyllog("update", "template", name, organization, resp.status_code, response, "ERROR")
   getawxdata("job_templates", mytoken, r)
   tmplid = awx_get_id("job_templates", name ,r )
   getawxdata("credentials", mytoken, r)

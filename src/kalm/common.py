@@ -19,18 +19,13 @@ if VERIFY_SSL == "false" or VERIFY_SSL == "False" or VERIFY_SSL == "FALSE" or VE
 else:
   VERIFY_SSL = True
 
-
-
-
 def get_file_content(file_path):
     with open(file_path, 'r') as f:
         return f.read()
-    
 
 def get_file_content_lines(file_path):
     with open(file_path, 'r') as f:
         return f.readlines()
-    
 
 def prettyllog(function, action, item, organization, statuscode, text, severity="INFO"):
   d_date = datetime.datetime.now()
