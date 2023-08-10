@@ -9,9 +9,7 @@ VAULT_ADDR = os.getenv("VAULT_ADDR")
 
 # Directory to store the SSH key pair
 
-def generate_ssh_key(keypath):
-    KEY_DIR = os.path.dirname(keypath)
-    KEY_NAME = os.path.basename(keypath)
+def generate_ssh_key(KEY_DIR, KEY_NAME):
     if not os.path.exists(KEY_DIR):
         os.makedirs(KEY_DIR)
     # Generate an SSH key pair without a passphrase
@@ -44,23 +42,14 @@ def sign_public_key(public_key):
     
 def refresh_key(args):
     print("Refreshing key...")
-    print(args)
     try:
       KEY_DIR = os.path.dirname(args[1])
       KEY_NAME = os.path.basename(args[1])
     except:
       KEY_DIR = "/home/knowit/.ssh"
       KEY_NAME = "sshkey"
-    print(KEY_DIR)  
-    print(KEY_NAME)
-    print("Refreshing key...")
-
-
-
     # Generate an SSH key pair
-
-    generate_ssh_key()
-
+    generate_ssh_key(KEY_DIR="/tmp/", KEY_NAME="sshkey")
     # Read the public key from the generated key pair
     public_key_path = os.path.join(KEY_DIR, KEY_NAME + ".pub")
     with open(public_key_path, "r") as f:
