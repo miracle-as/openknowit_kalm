@@ -13,6 +13,7 @@ def generate_ssh_key(KEY_DIR, KEY_NAME):
     if not os.path.exists(KEY_DIR):
         os.makedirs(KEY_DIR)
     # Generate an SSH key pair without a passphrase
+    subprocess.run(["rm", "-f", os.path.join(KEY_DIR, KEY_NAME)])
     subprocess.run(["ssh-keygen", "-t", "rsa", "-N", "", "-f", os.path.join(KEY_DIR, KEY_NAME)])
 
 def sign_public_key(public_key):
