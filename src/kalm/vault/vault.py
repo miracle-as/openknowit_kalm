@@ -45,8 +45,16 @@ def sign_public_key(public_key):
 def refresh_key(args):
     print("Refreshing key...")
     print(args)
+    try:
+      KEY_DIR = os.path.dirname(args[1])
+      KEY_NAME = os.path.basename(args[1])
+    except:
+      exit
+      return None
+
+
     # Generate an SSH key pair
-    
+
     generate_ssh_key()
     
     # Read the public key from the generated key pair
