@@ -875,14 +875,18 @@ def kalm(mytoken, r, realm="standalone", subproject=None):
       projectcred = project['credential']
       key = os.getenv("TOWER_HOST") +":projects:orphan:" + projectname
       r.delete(key)
+      prettyllog("config", "initialize", "projects", orgname, "000",  "Creating project %s" % projectname)
       awx_create_project(projectname, projectdesc, projecttype, projecturl, projectbrnc, projectcred, orgname, mytoken, r)
+      prettyllog("config", "initialize", "projects", orgname, "000",  "Getting project id for %s" % projectname)
       awx_get_id("projects", projectname, r)
       projid = (awx_get_id("projects", projectname, r))
+      prettyllog("config", "initialize", "projects", orgname, "000",  "project id %s for %s" % (projid, projectname))
     except:
       prettyllog("config", "initialize", "projects", orgname, "000",  "No projects found")
     ######################################
     # Subprojects
     ######################################
+    prettyllog("config", "initialize", "subprojects", orgname, "000",  "Checking for subprojects")
     try:
       subprojects = org['subprojects']
       print(subprojects)
@@ -907,6 +911,7 @@ def kalm(mytoken, r, realm="standalone", subproject=None):
   ######################################
   # inventories
   ######################################
+    prettyllog("config", "initialize", "inventories", orgname, "000",  "Checking for inventories")
     try: 
       inventories = org['inventories']
     except:
@@ -942,6 +947,7 @@ def kalm(mytoken, r, realm="standalone", subproject=None):
   ######################################
   # hosts
   ######################################
+    prettyllog("config", "initialize", "hosts", orgname, "000",  "Checking for hosts")
     try:
       hosts = org['hosts']
       for host in hosts:
@@ -956,6 +962,7 @@ def kalm(mytoken, r, realm="standalone", subproject=None):
     ######################################
     # users
     ######################################
+    prettyllog("config", "initialize", "users", orgname, "000",  "Checking for users")
     try:
       users = org['users']
     except:
@@ -975,6 +982,7 @@ def kalm(mytoken, r, realm="standalone", subproject=None):
     ######################################
     # Templates
     ######################################
+    prettyllog("config", "initialize", "templates", orgname, "000",  "Checking for templates")
     try:
       templates = org['templates']
       for template in templates:
@@ -993,6 +1001,7 @@ def kalm(mytoken, r, realm="standalone", subproject=None):
     ######################################
     # Schedules
     ######################################
+    prettyllog("config", "initialize", "schedules", orgname, "000",  "Checking for schedules")
     try:
       schedules = org['schedules']
       for schedule in schedules:
@@ -1022,4 +1031,6 @@ def kalm(mytoken, r, realm="standalone", subproject=None):
         awx_create_schedule(schedulename, unified_job_template_id, description,tz, dtstart, run_frequency, run_every, dtend, scheduletype, orgname, mytoken, r)
     except:
       prettyllog("config", "initialize", "schedules", orgname, "000",  "No schedules found")
+prettyllog("config", "initialize", "end", "000", "000",  "Initialization complete")
+
 ### The end
