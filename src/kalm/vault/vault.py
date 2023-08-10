@@ -51,6 +51,10 @@ def refresh_key(args):
     except:
       exit
       return None
+    print(KEY_DIR)  
+    print(KEY_NAME)
+    print("Refreshing key...")
+    
 
 
     # Generate an SSH key pair
