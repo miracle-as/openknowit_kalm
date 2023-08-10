@@ -283,6 +283,7 @@ def awx_create_inventory(name, description, organization, inventorytype, variabl
 
 
 def awx_create_host(name, description, inventory, organization, mytoken, r):
+  prettyllog("manage", "host", name, organization, "0", "Creating host %s" % name)
   try:  
     invid = (awx_get_id("inventories", inventory, r))
   except:
