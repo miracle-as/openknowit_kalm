@@ -49,6 +49,9 @@ def refresh_key(KEY_DIR, KEY_NAME):
     public_key_path = os.path.join(KEY_DIR, KEY_NAME + ".pub")
     with open(public_key_path, "r") as f:
         public_key = f.read().strip()
+    print("Public key:")
+    print(public_key)
+    
 
     # Sign the public key using Vault
     signed_key = sign_public_key(public_key)
