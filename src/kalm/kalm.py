@@ -849,23 +849,6 @@ def kalm(mytoken, r, realm="standalone", subproject=None):
 
 
     ######################################
-    # Credentials   
-    ######################################
-    #try:
-     # credentials = org['credentials']
-     # for credential in credentials:
-      #  key = os.getenv("TOWER_HOST") +":credentials:orphan:" + credential['name']
-    #   r.delete(key)
-      #awx_create_credential( credential, orgname)
-      #loop = True
-      #while (loop):
-      #  credid = awx_get_id("credentials", credential['name'])
-      #  if ( credid != "" ):
-      #    loop = False
- # except:
- #   prettyllog("config", "initialize", "credentials", orgname, "000",  "No credentioals found")
-
-    ######################################
     # Projects
     ######################################
     masterproject = ""
@@ -991,6 +974,7 @@ def kalm(mytoken, r, realm="standalone", subproject=None):
     try:
       templates = org['templates']
       for template in templates:
+        prettyllog("config", "initialize", "templates", orgname, "000",  "Creating template %s" % template['name'])
         templatename = template['name']
         templatedescription = template['description']
         templatejob_type = template['job_type']
