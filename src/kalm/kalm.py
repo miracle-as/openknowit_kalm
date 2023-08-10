@@ -340,7 +340,32 @@ def awx_update_vault(ansiblevault, organization, mytoken, r):
     sshs = []
 
   for ssh in sshs:
-    sshkeyval = readthefile(ssh['ssh_private_key'])
+    try:
+      sshkeyval = readthefile(ssh['ssh_private_key'])
+    except:
+      sshkeyval = ""
+    try:
+      sshsingval = readthefile(ssh['ssh_signed_key'])
+    except:
+      sshsingval = ""
+    try:
+      test = ssh['name']
+    except:
+      ssh['name'] = "default"
+    try:
+      sshusername = ssh['username']
+    except:
+      sshusername = "root"
+    try:
+      sshpassword = ssh['password']
+    except:
+      sshpassword = ""
+    try:
+      sshdescription = ssh['description']
+    except:
+      sshdescription = "No data provided"
+
+
     credential = { 
       "name": ssh['name'], 
       "username": ssh['username'], 
@@ -348,7 +373,7 @@ def awx_update_vault(ansiblevault, organization, mytoken, r):
       "description": ssh['description'], 
       "type": "Machine", 
       "ssh_key_data": sshkeyval,
-      "privilege_escalation_method": ssh['privilege_escalation_method'],
+      "ssh_public_key_data": sshsingval,
       "privilege_escalation_username": ssh['privilege_escalation_username'],
       "privilege_escalation_password": ssh['privilege_escalation_password'],
       "kind": "ssh" 
