@@ -407,12 +407,15 @@ def awx_create_schedule(name, unified_job_template,  description, tz, start, run
 ############################################################################################################################
 # Create job template
 ############################################################################################################################
+
 def awx_create_template(name, description, job_type, inventory,project,eename, credential, playbook, organization, mytoken, r):
+  prettyllog("Info", "template", name, organization, "666", "Creating template %s" % name, "INFO")
   orgid = (awx_get_id("organizations", organization,r))
   invid = (awx_get_id("inventories", inventory,r ))
   projid = (awx_get_id("projects", project,r ))
   credid = (awx_get_id("credentials", credential, r))
   eeid = (awx_get_id("execution_environments", eename, r))
+  prettyllog("Info", "template", name, organization, "666", "Organization %s has the id %s" % (organization, orgid))
   if eeid == "":
     eeid = 1
     errormessage = "Execution environment %s is not valid" % eename
@@ -462,6 +465,7 @@ def awx_create_template(name, description, job_type, inventory,project,eename, c
   url = os.getenv("TOWER_HOST") + "/api/v2/job_templates/"
   resp = requests.post(url,headers=headers, json=data, verify=VERIFY_SSL)
   response = json.loads(resp.content)
+  prettyllog("Info", "template", name, organization, resp.status_code, response, "DEBUG")  
   getawxdata("job_templates", mytoken, r)
   tmplid = awx_get_id("job_templates", name, r )
   if ( tmplid != "" ):
