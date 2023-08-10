@@ -24,7 +24,6 @@ def awx_create_organization(name, description, max_hosts, DEE, realm, mytoken, r
     orgid = (awx_get_id("organizations", name,r ))
   except:
     print("Unexcpetede error")
-  print(mytoken)
 
   if (orgid == ""):
     headers = {"User-agent": "python-awx-client", "Content-Type": "application/json","Authorization": "Bearer {}".format(mytoken)}
