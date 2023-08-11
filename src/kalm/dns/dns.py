@@ -160,8 +160,8 @@ def list_dns():
     token=os.getenv('KALM_DNS_TOKEN')
     if url.endswith("/"):
       url = url[:-1]
-      
-    url = url + "dns" 
+
+    url = url + "/dns" 
     print(url)
 
     r = requests.get(url, headers={'Authorization': 'Bearer ' + token})
