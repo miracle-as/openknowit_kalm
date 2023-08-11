@@ -23,8 +23,12 @@ VAULT_FORMAT = "json"
 VAULT_ADDR = os.getenv("VAULT_ADDR")
 
 def extract_key_data(public_key):
+    with open(public_key, "r") as f:
+      public_key_str = f.read()
+    public_key_bytesio = io.BytesIO(public_key_str.encode())
+
     try:
-        key = paramiko.RSAKey(file_obj=public_key)
+        key = paramiko.RSAKey(file_obj=public_key_bytesio)
         key_data = {
             "key_type": key.get_name(),
             "bits": key.get_bits(),
