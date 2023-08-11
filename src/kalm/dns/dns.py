@@ -176,7 +176,10 @@ def list_dns():
       print("Error: " + str(r.status_code))
       print(records)
       exit(1)
+    
     records = r.content
+    print(records)
+    
     for record in records:
       print(record)
 
