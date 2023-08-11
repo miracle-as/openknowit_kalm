@@ -18,10 +18,7 @@ def main():
     parser.add_argument('action', metavar='<action>', type=str, nargs='+', help='setup netbox')
     args = parser.parse_args()
     ready = False
-    print("check if we are ready to go")
-
     if args.action[0] == "list":
-        print("list dns")
         dns.list_dns()
         
     if args.action[0] == "sync":

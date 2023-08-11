@@ -9,6 +9,8 @@ import json
 import subprocess
 import xmltodict
 import re
+import netifaces
+
 from ..common import prettyllog
 
 def convert_to_json(xml_output):
@@ -120,7 +122,6 @@ def env_check():
   print("KALM_DNS_TOKEN: " + token)
 
 def set_env():
-  print("set env")
   domain = os.getenv('KALM_DNS_DOMAIN')
   url=os.getenv('KALM_DNS_URL')
   dns_type=os.getenv('KALM_DNS_TYPE')
@@ -139,63 +140,107 @@ def set_env():
     print("Error: KALM_DNS_TOKEN is not set")
     exit(1)
 
-  print("KALM_DNS_DOMAIN: " + domain)
-  print("KALM_DNS_URL: " + url)
-  print("KALM_DNS_TYPE: " + dns_type)
-  print("KALM_DNS_TOKEN: " + token)
   os.environ['KALM_DNS_DOMAIN'] = domain
   os.environ['KALM_DNS_URL'] = url
   os.environ['KALM_DNS_TYPE'] = dns_type
   os.environ['KALM_DNS_TOKEN'] = token
+  return True
 
-
-
-def list_dns():
-    set_env()
-    domain = os.getenv('KALM_DNS_DOMAIN')
-    url=os.getenv('KALM_DNS_URL', 'https://dns.com')
-    dns_type=os.getenv('KALM_DNS_TYPE')
-    token=os.getenv('KALM_DNS_TOKEN')
-    if url.endswith("/"):
-      url = url[:-1]
-    url = url + "/api/v1/zones" 
-    headers = {
-      "Content-Type": "application/json",
-      "Auth-API-Token": token
-    }
-    r = requests.get(url, headers=headers)
-    if r.status_code != 200:
-      print("Error: " + str(r.status_code))
-      print(records)
-      exit(1)
-    
-    records = r.content.decode("utf-8")
-    zones = json.loads(records)['zones']
-    for zone in zones:
-      print(zone['name'])
-      if zone['name'] == domain:
-         print(zone['id'])
-
-
-
-def sync_dns(args):
-  print("sync dns")
+def get_zone_id():
+  set_env()
   domain = os.getenv('KALM_DNS_DOMAIN')
   url=os.getenv('KALM_DNS_URL')
   dns_type=os.getenv('KALM_DNS_TYPE')
   token=os.getenv('KALM_DNS_TOKEN')
-  url = url + "/dns"
-  r = requests.get(url, headers={'Authorization': 'Bearer ' + token})
+  if url.endswith("/"):
+    url = url[:-1]
+  zoneurl = url + "/api/v1/zones" 
+  headers = {
+    "Content-Type": "application/json",
+    "Auth-API-Token": token
+  }
+  r = requests.get(zoneurl, headers=headers)
+  if r.status_code != 200:
+    print("Error: " + str(r.status_code))
+    print(records)
+    exit(1)
+  
+  records = r.content.decode("utf-8")
+  zones = json.loads(records)['zones']
+  for zone in zones:
+    if zone['name'] == domain:
+      return zone['id']
+  return None
+   
+def get_records():
+  set_env()
+  domain = os.getenv('KALM_DNS_DOMAIN')
+  url=os.getenv('KALM_DNS_URL')
+  dns_type=os.getenv('KALM_DNS_TYPE')
+  token=os.getenv('KALM_DNS_TOKEN')
+  headers = {
+    "Content-Type": "application/json",
+    "Auth-API-Token": token
+  }
+
+  if url.endswith("/"):
+    url = url[:-1]
+  zoneid = get_zone_id()
+  if zoneid != None:
+    recordurl = url + "/api/v1/records?zone_id=" + zoneid 
+    #https://dns.hetzner.com/api/v1/records?zone_id=${ZONEID}"
+    
+    r = requests.get(recordurl, headers=headers)
+    if r.status_code != 200:
+      print("Error: " + str(r.status_code))
+      print(records)
+      exit(1)
+    records = r.content.decode("utf-8")
+    records = json.loads(records)['records']
+    for record in records:
+      if record['type'] == 'A':
+         print(record['value'] + " " + record['name'])
+    return True
+
+
+
+def list_dns():
+    print(get_my_ipify()  )
+    print(get_my_ethernet_interfaces())
+    set_env()
+    get_records()
+    return True
+
+def get_my_ipify():
+  r = requests.get("https://api.ipify.org")
   if r.status_code != 200:
     print("Error: " + str(r.status_code))
     exit(1)
-  data = r.json()
-  for record in data:
-    print(record)
-    if record['type'] == 'A':
-      print("A record")
-    if record['name'] == '@':
-      print("root record")
+  return r.content.decode("utf-8")
+
+def get_my_ethernet_interfaces():
+  interfaces = netifaces.interfaces()
+  for interface in interfaces:
+    if interface.startswith("eth"):
+      return interface
+  return None
+
+   
+def sync_my_system():
+  set_env()
+  domain = os.getenv('KALM_DNS_DOMAIN')
+  url=os.getenv('KALM_DNS_URL')
+  prettyllog("manage", "dns", domain, "new", "000", "sync my system")
+  dns_type=os.getenv('KALM_DNS_TYPE')
+  token=os.getenv('KALM_DNS_TOKEN')
+  myip = get_my_ip()
+  if myip is None:
+    print("Error: can't get my ip")
+    exit(1)
+  if url.endswith("/"):
+    url = url[:-1]
+  zoneurl = url + "/api/v1/zones"
+
 
 def add_dns_record(record, record_type="A", record_value=""):
   domain = os.getenv('KALM_DNS_DOMAIN')
