@@ -45,13 +45,13 @@ def signkey(args):
   if ready:
     urlpath = "ssh-client-signer/public_key"
     url = f"{VAULT_ADDR}/v1/{urlpath}"
-    output_path = "/etc/ssh/trusted-user-ca-keys.pem"
+    output_path = sshpath + "/" + sshfile + ".signed.pub"
     response = requests.get(url)
 
     if response.status_code == 200:
       with open(output_path, "wb") as output_file:
         output_file.write(response.content)
-      print(f"Public key saved to {output_path}")
+      print(f"Signed Public key saved to {output_path}")
       return True
     else:
       print("Request failed with status code:", response.status_code)
