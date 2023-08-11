@@ -176,7 +176,7 @@ def list_dns():
       print("Error: " + str(r.status_code))
       print(records)
       exit(1)
-    records = r.content.json()
+    records = r.content
     for record in records:
       print(record)
 
