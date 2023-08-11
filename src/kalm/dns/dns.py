@@ -161,7 +161,7 @@ def list_dns():
     if url.endswith("/"):
       url = url[:-1]
 
-    url = url + "api/v1/dns" 
+    url = url + "/api/v1/dns" 
     print(url)
 
     r = requests.get(url, headers={'Authorization': 'Bearer ' + token})
