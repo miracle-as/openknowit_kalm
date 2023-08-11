@@ -178,8 +178,9 @@ def list_dns():
       exit(1)
     
     records = r.content.decode("utf-8")
-    print(records)
-
+    zones = json.loads(records)['zones']
+    for zone in zones:
+      print(zone['name'])
 
 
 
