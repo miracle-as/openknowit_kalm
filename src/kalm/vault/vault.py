@@ -20,15 +20,23 @@ VAULT_FORMAT = "json"
 VAULT_ADDR = os.getenv("VAULT_ADDR")
 
 def signkey(args):
+  ready = False
   try:
     sshpath = os.path.dirname(args.action[1])
     sshfile = os.path.basename(args.action[1])
     #create path if it does not exist
     if not os.path.exists(sshpath):
-      os.makedirs(sshpath)
-      ready = True
+      try:
+        os.makedirs(sshpath)
+        ready = True
+      except:
+        print("could not create directory")
+        ready = False
+        
+    
     if os.path.exists(sshpath) and os.path.isdir(sshpath):
       print("directory exists")
+      ready = True
     else:
       print("directory does not exist")
       ready = False
