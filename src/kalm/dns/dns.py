@@ -125,7 +125,7 @@ def set_env(args):
   url=os.getenv('KALM_DNS_URL')
   dns_type=os.getenv('KALM_DNS_TYPE')
   token=os.getenv('KALM_DNS_TOKEN')
-  
+
   if domain is None:
     print("Error: KALM_DNS_DOMAIN is not set")
     exit(1)
@@ -159,6 +159,8 @@ def set_env(args):
 
 
 def list_dns():
+    set_env()
+
     print("list dns")
     domain = os.getenv('KALM_DNS_DOMAIN')
     url=os.getenv('KALM_DNS_URL', 'https://dns.com')
