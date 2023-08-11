@@ -19,7 +19,7 @@ VAULT_TOKEN = os.getenv("VAULT_TOKEN")
 VAULT_FORMAT = "json"
 VAULT_ADDR = os.getenv("VAULT_ADDR")
 
-def sigkey(args):
+def signkey(args):
   try:
     sshpath = os.path.dirname(args.action[1])
     sshfile = os.path.basename(args.action[1])

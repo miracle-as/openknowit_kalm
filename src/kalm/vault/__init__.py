@@ -21,7 +21,7 @@ def main():
     
 
     if args.action[0] == "signssh":
-          vault.refresh_key(args)
+          vault.signkey(args)
           return 0
     
         
