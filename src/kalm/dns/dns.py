@@ -177,7 +177,7 @@ def list_dns():
       print(records)
       exit(1)
     
-    records = r.content
+    records = r.content.decode("utf-8")
     print(records)
 
 
