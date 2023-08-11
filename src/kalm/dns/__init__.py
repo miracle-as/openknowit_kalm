@@ -2,18 +2,19 @@ from . import dns
 import argparse
 
 def main():
-    parser = argparse.ArgumentParser(description="Keep kalm and automate", usage="kalm_dns <action> \n\n \
-               \
-               version : 0.1.2 BETA \n                                    \
-               actions:\n                                                 \
-               envcheck    check if env is set \n                         \
-               setenv      set env \n                                     \
-               list        list dns records \n  \
-               sync        sync dns record\n  \
-               virtlib     create dns records for virtlib\n  \
-               \
-               2023 Knowit Miracle\
+    parser = argparse.ArgumentParser(description="Keep kalm and automate", usage="kalm_dns <action> \n\n\
+\
+               version : 0.1.2 BETA \n\
+               actions:\n\
+               envcheck    check if env is set \n\
+               setenv      set env \n\
+               list        list dns records \n\
+               sync        sync dns record\n\
+               virtlib     create dns records for virtlib\n\
+\n\
+               2023 Knowit Miracle\n\
                ")
+    
     parser.add_argument('action', metavar='<action>', type=str, nargs='+', help='setup netbox')
     args = parser.parse_args()
     ready = False

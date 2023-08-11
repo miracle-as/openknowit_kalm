@@ -30,8 +30,7 @@ pynetbox = "^6.6.2"
 hvac = "^1.1.0"
 netbox = "^0.0.2"
 python-jenkins = "^1.7.0"
-
-
+xmltodict = "^0.13.0"
 
 [project]
 name = "kalm"  
