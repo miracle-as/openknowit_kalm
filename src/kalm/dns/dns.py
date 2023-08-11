@@ -179,9 +179,7 @@ def list_dns():
     
     records = r.content
     print(records)
-    
-    for record in records:
-      print(record)
+
 
 
 
