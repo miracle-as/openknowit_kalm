@@ -1,4 +1,5 @@
 import os
+import io
 import subprocess
 import requests
 import paramiko
@@ -76,10 +77,12 @@ def signkey(args):
     if response.status_code == 200:
       with open(output_path, "wb") as output_file:
         output_file.write(response.content)
+
       print(f"Signed Public key saved to {output_path}")
       print("Public key:")  
+      public_key_bytesio = io.BytesIO(response.content.decode("utf-8").encode())
       extract_key_data(output_path)
-      
+
       return True
     else:
       print("Request failed with status code:", response.status_code)
