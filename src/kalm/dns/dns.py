@@ -164,8 +164,12 @@ def list_dns():
 
     url = url + "/api/v1/dns" 
     print(url)
+    headers = {
+      "Content-Type": "application/json",
+      "Auth-API-Token": token
+    }
 
-    r = requests.get(url, headers={'Auth-API-Token: ' + token})
+    r = requests.get(url, headers=headers)
     records = r.json()
     if r.status_code != 200:
       print("Error: " + str(r.status_code))
