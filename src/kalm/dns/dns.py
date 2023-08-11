@@ -203,8 +203,22 @@ def get_records():
     return True
 
 
+def list_interfaces():
+  interfaces = netifaces.interfaces()
+  for interface in interfaces:
+    if interface == "lo":
+      continue
+    addrs = netifaces.ifaddresses(interface)
+    if netifaces.AF_INET in addrs:
+      ipv4_info = addrs[netifaces.AF_INET]
+      for addr in ipv4_info:
+        print(f"Interface: {interface}")
+        print(f"  IPv4 Address: {addr['addr']}")
+
+
 
 def list_dns():
+    list_interfaces()
     print(get_my_ipify()  )
     print(get_my_ethernet_interfaces())
     set_env()
