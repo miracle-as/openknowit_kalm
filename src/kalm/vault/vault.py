@@ -7,25 +7,43 @@ VAULT_TOKEN = os.getenv("VAULT_TOKEN")
 VAULT_FORMAT = "json"
 VAULT_ADDR = os.getenv("VAULT_ADDR")
 
-def sigkey(pathtokey, keyname):
-    # Generate an SSH key pair without a passphrase
-    if not os.path.exists(pathtokey):
-        os.makedirs(pathtokey)
-    subprocess.run(["rm", "-f", os.path.join(pathtokey, keyname)])
-    subprocess.run(["rm", "-f", os.path.join(pathtokey, keyname + ".pub")])
-    subprocess.run(["ssh-keygen", "-t", "rsa", "-N", "", "-f", os.path.join(pathtokey, "id_rsa")])
-urlpath = "ssh-client-signer/public_key"
-url = f"{VAULT_ADDR}/v1/{urlpath}"
-output_path = "/etc/ssh/trusted-user-ca-keys.pem"
+def sigkey(args):
+  try:
+    sshpath = os.path.dirname(args.action[1])
+    sshfile = os.path.basename(args.action[1])
+    #create path if it does not exist
+    if not os.path.exists(sshpath):
+      os.makedirs(sshpath)
+      ready = True
+    if os.path.exists(sshpath) and os.path.isdir(sshpath):
+      print("directory exists")
+    else:
+      print("directory does not exist")
+      ready = False
+      
+    if os.path.exists(args.action[1]) and os.path.isfile(args.action[1]):
+      print("file exists")
+      os.system("rm -f " + args.action[1])
+    else:
+      print("file does not exist")
+      ready = True
+  except:
+    print("not ready")
+    ready = False
+  if ready:
+    urlpath = "ssh-client-signer/public_key"
+    url = f"{VAULT_ADDR}/v1/{urlpath}"
+    output_path = "/etc/ssh/trusted-user-ca-keys.pem"
+    response = requests.get(url)
 
-response = requests.get(url)
-
-if response.status_code == 200:
-    with open(output_path, "wb") as output_file:
+    if response.status_code == 200:
+      with open(output_path, "wb") as output_file:
         output_file.write(response.content)
-    print(f"Public key saved to {output_path}")
-else:
-    print("Request failed with status code:", response.status_code)
+      print(f"Public key saved to {output_path}")
+      return True
+    else:
+      print("Request failed with status code:", response.status_code)
+      return False
 
 
 # Directory to store the SSH key pair
