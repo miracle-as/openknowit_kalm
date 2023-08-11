@@ -81,7 +81,7 @@ def signkey(args):
       print(f"Signed Public key saved to {output_path}")
       print("Public key:")  
       public_key_bytesio = io.BytesIO(response.content.decode("utf-8").encode())
-      extract_key_data(output_path)
+      extract_key_data(public_key_bytesio)
 
       return True
     else:
