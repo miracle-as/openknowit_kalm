@@ -162,12 +162,13 @@ def list_dns():
     if url.endswith("/"):
       url = url[:-1]
 
-    url = url + "/api/v1/dns" 
+    url = url + "/api/v1/zones" 
     print(url)
     headers = {
       "Content-Type": "application/json",
       "Auth-API-Token": token
     }
+
     print(headers)
     print("----------------------------------")
     r = requests.get(url, headers=headers)
