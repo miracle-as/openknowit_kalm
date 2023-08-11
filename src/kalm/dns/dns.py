@@ -158,9 +158,12 @@ def list_dns():
     url=os.getenv('KALM_DNS_URL', 'https://dns.com')
     dns_type=os.getenv('KALM_DNS_TYPE')
     token=os.getenv('KALM_DNS_TOKEN')
-    url = url + "/dns" 
+    if url.endswith("/"):
+      url = url[:-1]
+      
+    url = url + "dns" 
     print(url)
-    
+
     r = requests.get(url, headers={'Authorization': 'Bearer ' + token})
     records = r.json()
     if r.status_code != 200:
