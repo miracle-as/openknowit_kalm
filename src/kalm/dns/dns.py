@@ -158,6 +158,7 @@ def list_dns():
     url=os.getenv('KALM_DNS_URL', 'https://dns.com')
     dns_type=os.getenv('KALM_DNS_TYPE')
     token=os.getenv('KALM_DNS_TOKEN')
+    print(token)
     if url.endswith("/"):
       url = url[:-1]
 
