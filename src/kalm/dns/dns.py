@@ -172,11 +172,11 @@ def list_dns():
     print(headers)
     print("----------------------------------")
     r = requests.get(url, headers=headers)
-    records = r.json()
     if r.status_code != 200:
       print("Error: " + str(r.status_code))
       print(records)
       exit(1)
+    records = r.content.json()
     for record in records:
       print(record)
 
