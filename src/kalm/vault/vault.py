@@ -77,6 +77,8 @@ def signkey(args):
       with open(output_path, "wb") as output_file:
         output_file.write(response.content)
       print(f"Signed Public key saved to {output_path}")
+      print("Public key:")  
+      print(extract_key_data(response.content))
       return True
     else:
       print("Request failed with status code:", response.status_code)
