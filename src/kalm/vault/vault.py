@@ -7,6 +7,27 @@ VAULT_TOKEN = os.getenv("VAULT_TOKEN")
 VAULT_FORMAT = "json"
 VAULT_ADDR = os.getenv("VAULT_ADDR")
 
+def sigkey(pathtokey, keyname):
+    # Generate an SSH key pair without a passphrase
+    if not os.path.exists(pathtokey):
+        os.makedirs(pathtokey)
+    subprocess.run(["rm", "-f", os.path.join(pathtokey, keyname)])
+    subprocess.run(["rm", "-f", os.path.join(pathtokey, keyname + ".pub")])
+    subprocess.run(["ssh-keygen", "-t", "rsa", "-N", "", "-f", os.path.join(pathtokey, "id_rsa")])
+urlpath = "ssh-client-signer/public_key"
+url = f"{VAULT_ADDR}/v1/{urlpath}"
+output_path = "/etc/ssh/trusted-user-ca-keys.pem"
+
+response = requests.get(url)
+
+if response.status_code == 200:
+    with open(output_path, "wb") as output_file:
+        output_file.write(response.content)
+    print(f"Public key saved to {output_path}")
+else:
+    print("Request failed with status code:", response.status_code)
+
+
 # Directory to store the SSH key pair
 
 def generate_ssh_key(KEY_DIR, KEY_NAME):
