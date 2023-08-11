@@ -139,14 +139,6 @@ def set_env():
     print("Error: KALM_DNS_TOKEN is not set")
     exit(1)
 
-  if args.domain is not None:
-    domain = args.domain
-  if args.url is not None:
-    url = args.url
-  if args.type is not None:
-    dns_type = args.type
-  if args.token is not None:
-    token = args.token
   print("KALM_DNS_DOMAIN: " + domain)
   print("KALM_DNS_URL: " + url)
   print("KALM_DNS_TYPE: " + dns_type)
@@ -167,6 +159,8 @@ def list_dns():
     dns_type=os.getenv('KALM_DNS_TYPE')
     token=os.getenv('KALM_DNS_TOKEN')
     url = url + "/dns" 
+    print(url)
+    
     r = requests.get(url, headers={'Authorization': 'Bearer ' + token})
     records = r.json()
     if r.status_code != 200:
