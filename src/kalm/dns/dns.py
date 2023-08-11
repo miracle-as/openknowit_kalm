@@ -125,6 +125,10 @@ def set_env(args):
   url=os.getenv('KALM_DNS_URL')
   dns_type=os.getenv('KALM_DNS_TYPE')
   token=os.getenv('KALM_DNS_TOKEN')
+  if token is None:
+    print("Error: KALM_DNS_TOKEN is not set")
+    exit(1)
+    
   if args.domain is not None:
     domain = args.domain
   if args.url is not None:
