@@ -152,25 +152,17 @@ def set_env():
 
 def list_dns():
     set_env()
-
-    print("list dns")
     domain = os.getenv('KALM_DNS_DOMAIN')
     url=os.getenv('KALM_DNS_URL', 'https://dns.com')
     dns_type=os.getenv('KALM_DNS_TYPE')
     token=os.getenv('KALM_DNS_TOKEN')
-    print(token)
     if url.endswith("/"):
       url = url[:-1]
-
     url = url + "/api/v1/zones" 
-    print(url)
     headers = {
       "Content-Type": "application/json",
       "Auth-API-Token": token
     }
-
-    print(headers)
-    print("----------------------------------")
     r = requests.get(url, headers=headers)
     if r.status_code != 200:
       print("Error: " + str(r.status_code))
@@ -181,6 +173,8 @@ def list_dns():
     zones = json.loads(records)['zones']
     for zone in zones:
       print(zone['name'])
+      if zone['name'] == domain:
+         print(zone['id'])
 
 
 
