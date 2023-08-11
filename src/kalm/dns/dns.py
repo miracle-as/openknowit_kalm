@@ -168,6 +168,7 @@ def list_dns():
     records = r.json()
     if r.status_code != 200:
       print("Error: " + str(r.status_code))
+      print(records)
       exit(1)
     for record in records:
       print(record)
