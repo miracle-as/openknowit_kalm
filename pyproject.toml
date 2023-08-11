@@ -83,6 +83,7 @@ test = ["coverage"]
 [project.scripts]  # Optional
 kalm = "kalm:main"
 kalm_jenkins = 'kalm.jenkins:main'
+kalm_vault = 'kalm.vault:main'
 kalm_airflow = 'kalm.airflow:main'
 kalm_gitea = 'kalm.gitea:main'
 kalm_inabox = 'kalm.inabox:main'

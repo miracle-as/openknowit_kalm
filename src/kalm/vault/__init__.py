@@ -8,7 +8,7 @@ def main():
                \
                version : 0.1.2 vault  \n\
                actions:\n\
-               refresh_key </path/to/key>\n\
+               signssh </path/to/key>\n\
                \
                2023 Knowit Miracle\
                ")

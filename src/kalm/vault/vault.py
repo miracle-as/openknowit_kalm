@@ -3,6 +3,18 @@ import subprocess
 import requests
 
 # Vault environment settings
+try:
+  os.environ["VAULT_TOKEN"]
+except KeyError:
+    print("Error: VAULT_TOKEN is not set")
+    exit(1)
+try:
+    os.environ["VAULT_ADDR"]
+except KeyError:
+    print("Error: VAULT_ADDR is not set")
+    exit(1)
+
+
 VAULT_TOKEN = os.getenv("VAULT_TOKEN")
 VAULT_FORMAT = "json"
 VAULT_ADDR = os.getenv("VAULT_ADDR")
