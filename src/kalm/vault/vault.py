@@ -1,6 +1,8 @@
 import os
 import subprocess
 import requests
+import paramiko
+
 
 # Vault environment settings
 try:
@@ -19,6 +21,21 @@ VAULT_TOKEN = os.getenv("VAULT_TOKEN")
 VAULT_FORMAT = "json"
 VAULT_ADDR = os.getenv("VAULT_ADDR")
 
+def extract_key_data(public_key):
+    try:
+        key = paramiko.RSAKey(file_obj=public_key)
+        key_data = {
+            "key_type": key.get_name(),
+            "bits": key.get_bits(),
+            "comment": key.get_comment(),
+            "public_exponent": key.e,
+            "modulus": key.n,
+        }
+        return key_data
+    except paramiko.ssh_exception.SSHException as e:
+        print("Error extracting data:", e)
+        return None
+
 def signkey(args):
   ready = False
   try:
@@ -32,7 +49,7 @@ def signkey(args):
       except:
         print("could not create directory")
         ready = False
-        
+
     
     if os.path.exists(sshpath) and os.path.isdir(sshpath):
       print("directory exists")
