@@ -2,7 +2,9 @@ import os
 import io
 import subprocess
 import requests
-import paramiko
+from datetime import datetime
+from cryptography import x509
+from cryptography.hazmat.backends import default_backend
 
 
 # Vault environment settings
@@ -22,25 +24,16 @@ VAULT_TOKEN = os.getenv("VAULT_TOKEN")
 VAULT_FORMAT = "json"
 VAULT_ADDR = os.getenv("VAULT_ADDR")
 
-def extract_key_data(public_key):
-    with open(public_key, "r") as f:
-      public_key_str = f.read()
-    public_key_bytesio = io.BytesIO(public_key_str.encode())
+def extract_certificate_expiry(cert_path):
+    with open(cert_path, 'rb') as cert_file:
+        cert_data = cert_file.read()
+    
+    cert = x509.load_pem_x509_certificate(cert_data, default_backend())
+    not_after = cert.not_valid_after
+    expiration_date = not_after.strftime('%Y-%m-%d %H:%M:%S')
+    return expiration_date
 
-    try:
-        key = paramiko.RSAKey(file_obj=public_key_bytesio)
-        key_data = {
-            "key_type": key.get_name(),
-            "bits": key.get_bits(),
-            "comment": key.get_comment(),
-            "public_exponent": key.e,
-            "modulus": key.n,
-        }
-        return key_data
-    except paramiko.ssh_exception.SSHException as e:
-        print("Error extracting data:", e)
-        return None
-
+        
 def signkey(args):
   ready = False
   try:
@@ -73,24 +66,33 @@ def signkey(args):
     print("not ready")
     ready = False
   if ready:
-    urlpath = "ssh-client-signer/public_key"
+    #create new ssh key
+    os.system("ssh-keygen -f " + args.action[1] + " -q -N \"\"")
+    #sign ssh key
+    #read the public key
+    with open(args.action[1] + ".pub", "r") as f:
+        public_key = f.read()
+
+    data = {
+        "public_key": public_key
+    }
+    urlpath = "ssh-client-signer/sign/my-role"
     url = f"{VAULT_ADDR}/v1/{urlpath}"
-    output_path = sshpath + "/" + sshfile + ".signed.pub"
-    response = requests.get(url)
+    output_path = sshpath + "/" + sshfile + ".signed"
+    response = requests.post(url, json=data, headers={"X-Vault-Token": VAULT_TOKEN})
+    response_json = response.json()
+    sign_public_key = response_json['data']['signed_key']
+    with open(output_path, "w") as f:
+        f.write(sign_public_key)
+    #change permissions
+    os.system("chmod 600 " + output_path)
+    os.system("chmod 600 " + args.action[1] )
+    os.system("chmod 600 " + args.action[1] + ".pub")
+    print("signed key written to " + output_path)
+    return True
 
-    if response.status_code == 200:
-      with open(output_path, "wb") as output_file:
-        output_file.write(response.content)
-
-      print(f"Signed Public key saved to {output_path}")
-      print("Public key:")  
-      public_key_bytesio = io.BytesIO(response.content.decode("utf-8").encode())
-      extract_key_data(public_key_bytesio)
-
-      return True
-    else:
-      print("Request failed with status code:", response.status_code)
-      return False
+    
+    
 
 
 # Directory to store the SSH key pair

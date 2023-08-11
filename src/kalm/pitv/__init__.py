@@ -20,6 +20,9 @@ def main():
     print("check if we are ready to go")
 
 
+    if args.action[0] == "evacuate":
+        pitv.evacuate()
+
     if args.action[0] == "status":
         print("status pitv")
         pitv.status()
