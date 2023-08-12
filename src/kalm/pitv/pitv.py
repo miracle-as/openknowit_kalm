@@ -1,4 +1,5 @@
 import requests
+import time
 import os
 import urllib3
 import redis
@@ -31,7 +32,8 @@ def service():
 
 def check_if_file_is_picture(file):
   print("check if file is a picture")
-  if file.lower.endswith(".jpg") or file.lower.endswith(".jpeg") or file.lower.endswith(".png") or file.lower.endswith(".gif") or file.lower.endswith(".bmp") or file.lower.endswith(".tiff") or file.lower.endswith(".tif") or file.lower.endswith(".webp") or file.lower.endswith("cr2"):
+  file = file.lower()
+  if file.endswith(".jpg") or file.endswith(".jpeg") or file.endswith(".png") or file.endswith(".gif") or file.endswith(".bmp") or file.endswith(".tiff") or file.endswith(".tif") or file.endswith(".webp") or file.endswith("cr2"):
     
     return True
   else:
@@ -43,7 +45,10 @@ def get_image_metadata(image_path):
     try:
         with Image.open(image_path) as img:
             metadata = img.info
-            return metadata
+            if len(metadata) > 0:
+              return metadata
+            else:
+              return None
     except Exception as e:
         print("Error:", e)
         return None
@@ -82,21 +87,46 @@ def evacuate():
     count = count + 1
     if redis.exists(file):
       status = redis.get(file).decode("utf-8")
-      print(status)
-      if status == "0":
-        print("file " + str(count) + " of " + str(total) ) #no newline
-        if check_if_file_is_picture(file):
-          print(file)
-          key = "Picture:" + file
-          redis.set(file, "1")
-        else:
-          redis.set(file, "999")
+      # print a status wihout newline
+      print("file " + str(count) + " of " + str(total) + " status: " + status, end="\r")
       if status == "1":
         metadata = get_image_metadata(file)
-        print(metadata)
+        if metadata is not None:
+#          {'Software': 'gnome-photos-thumbnailer', 'Thumb::URI': 'file:///home/jho/Downloads/IMG_0075.CR2', 'Thumb::Image::Height': '3456', 'Thumb::Image::Width': '5184'}
+          if metadata['Software'] == "gnome-photos-thumbnailer":
+            print("file " + str(count) + " of " + str(total) + " status: " + status,  end="\r")
+            redis.set(file, "998")
+            key = "Picture:" + file
+            redis.delete(key)
+    else:
+      print("file " + str(count) + " of " + str(total) + " status: unknown", end="\r")
+      if check_if_file_is_picture(file):
+        print(file)
+        key = "Picture:" + file
+        redis.set(file, "1")
       else:
-        redis.set(file, "0")
-  print("evacuate")
+        redis.set(file, "999")
+      
+    
+
+
+
+
+
+#      if status == 0 or status == 
+#        print("file " + str(count) + " of " + str(total) ) #no newline
+#        if check_if_file_is_picture(file):
+#          print(file)
+#          key = "Picture:" + file
+#         redis.set(file, "1")
+#       else:
+#         redis.set(file, "999")
+#      if status == "1":
+#        metadata = get_image_metadata(file)
+#        print(metadata)
+#      else:
+#        redis.set(file, "0")
+#  print("evacuate")
   #get all files on the system
 
   
