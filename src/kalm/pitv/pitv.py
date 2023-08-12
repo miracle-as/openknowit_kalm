@@ -31,7 +31,8 @@ def service():
 
 def check_if_file_is_picture(file):
   print("check if file is a picture")
-  if file.endswith(".jpg") or file.endswith(".jpeg") or file.endswith(".png"):
+  if file.lower.endswith(".jpg") or file.lower.endswith(".jpeg") or file.lower.endswith(".png") or file.lower.endswith(".gif") or file.lower.endswith(".bmp") or file.lower.endswith(".tiff") or file.lower.endswith(".tif") or file.lower.endswith(".webp") or file.lower.endswith("cr2"):
+    
     return True
   else:
     return False
