@@ -86,6 +86,7 @@ def evacuate():
         print("file " + str(count) + " of " + str(total) ) #no newline
         if check_if_file_is_picture(file):
           print(file)
+          key = "Picture:" + file
           redis.set(file, "1")
         else:
           redis.set(file, "999")
