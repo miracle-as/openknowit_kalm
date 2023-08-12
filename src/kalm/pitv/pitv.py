@@ -99,8 +99,11 @@ def evacuate():
               redis.set(file, "998")
               key = "Picture:" + file
               redis.delete(key)
+              next
           except:
               print("file " + str(count) + " of " + str(total) + " status: " + status,  end="\r")
+          print("file " + str(count) + " of " + str(total) + " status: " + status,  end="\r")
+          
             
     else:
       print("file " + str(count) + " of " + str(total) + " status: unknown", end="\r")
