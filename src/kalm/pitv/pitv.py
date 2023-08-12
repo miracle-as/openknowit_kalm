@@ -92,12 +92,16 @@ def evacuate():
       if status == "1":
         metadata = get_image_metadata(file)
         if metadata is not None:
-#          {'Software': 'gnome-photos-thumbnailer', 'Thumb::URI': 'file:///home/jho/Downloads/IMG_0075.CR2', 'Thumb::Image::Height': '3456', 'Thumb::Image::Width': '5184'}
-          if metadata['Software'] == "gnome-photos-thumbnailer":
-            print("file " + str(count) + " of " + str(total) + " status: " + status,  end="\r")
-            redis.set(file, "998")
-            key = "Picture:" + file
-            redis.delete(key)
+#         ½ {'Software': 'gnome-photos-thumbnailer', 'Thumb::URI': 'file:///home/jho/Downloads/IMG_0075.CR2', 'Thumb::Image::Height': '3456', 'Thumb::Image::Width': '5184'}
+          try:
+            if metadata['Software'] == "gnome-photos-thumbnailer":
+              print("file " + str(count) + " of " + str(total) + " status: " + status,  end="\r")
+              redis.set(file, "998")
+              key = "Picture:" + file
+              redis.delete(key)
+          except:
+              print("file " + str(count) + " of " + str(total) + " status: " + status,  end="\r")
+            
     else:
       print("file " + str(count) + " of " + str(total) + " status: unknown", end="\r")
       if check_if_file_is_picture(file):
