@@ -114,10 +114,9 @@ def evacuate():
       md5 = calculate_md5(file)
       print(md5)
       # scp file remotehost:/files/
-      
-      keys = "MD5:" + md5
-
-      redis.set(keys, filesize)
+      if md5 is not None: 
+        keys = "MD5:" + md5
+        redis.set(keys, filesize)
 
       if status == "1":
         metadata = get_image_metadata(file)
