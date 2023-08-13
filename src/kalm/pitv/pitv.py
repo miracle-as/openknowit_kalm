@@ -34,15 +34,14 @@ def service():
 
 
 def calculate_md5(filename, block_size=65536):
-    md5_hash = hashlib.md5()
-    with open(filename, "rb") as file:
+    if not os.path.isfile(filename):
+      md5_hash = hashlib.md5()
+      with open(filename, "rb") as file:
         for block in iter(lambda: file.read(block_size), b""):
             md5_hash.update(block)
-    return md5_hash.hexdigest()
-
-jpg_file_path = "path/to/your/image.jpg"
-md5_checksum = calculate_md5(jpg_file_path)
-print("MD5 checksum:", md5_checksum)
+      return md5_hash.hexdigest()
+    else:
+      return None
 
 
 def hashit(file):
@@ -113,9 +112,11 @@ def evacuate():
       # print a status wihout newline
       print("file " + str(count) + " of " + str(total) + " status: " + status, end="\r")
       md5 = calculate_md5(file)
+      print(md5)
       # scp file remotehost:/files/
       
       keys = "MD5:" + md5
+
       redis.set(keys, filesize)
 
       if status == "1":
