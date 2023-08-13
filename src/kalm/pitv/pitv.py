@@ -5,6 +5,7 @@ import urllib3
 import redis
 from PIL import Image
 import subprocess
+import hashlib
 
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -30,6 +31,28 @@ def status():
 def service():
   print("service")
 
+
+
+def calculate_md5(filename, block_size=65536):
+    md5_hash = hashlib.md5()
+    with open(filename, "rb") as file:
+        for block in iter(lambda: file.read(block_size), b""):
+            md5_hash.update(block)
+    return md5_hash.hexdigest()
+
+jpg_file_path = "path/to/your/image.jpg"
+md5_checksum = calculate_md5(jpg_file_path)
+print("MD5 checksum:", md5_checksum)
+
+
+def hashit(file):
+   #read file in binary mode
+    with open(file, 'rb') as f:
+        data = f.read()
+        #return md5 hash
+        data = data.encode("utf-8")
+        return hashlib.md5(data).hexdigest()
+
 def check_if_file_is_picture(file):
   print("check if file is a picture")
   file = file.lower()
@@ -38,8 +61,6 @@ def check_if_file_is_picture(file):
     return True
   else:
     return False
-  
-
 
 def get_image_metadata(image_path):
     try:
@@ -86,25 +107,22 @@ def evacuate():
   for file in files:
     count = count + 1
     if redis.exists(file):
+      # get file size
+      filesize = os.path.getsize(file)
       status = redis.get(file).decode("utf-8")
       # print a status wihout newline
       print("file " + str(count) + " of " + str(total) + " status: " + status, end="\r")
+      md5 = calculate_md5(file)
+      # scp file remotehost:/files/
+      
+      keys = "MD5:" + md5
+      redis.set(keys, filesize)
+
       if status == "1":
         metadata = get_image_metadata(file)
         if metadata is not None:
-#         ½ {'Software': 'gnome-photos-thumbnailer', 'Thumb::URI': 'file:///home/jho/Downloads/IMG_0075.CR2', 'Thumb::Image::Height': '3456', 'Thumb::Image::Width': '5184'}
-          try:
-            if metadata['Software'] == "gnome-photos-thumbnailer":
-              print("file " + str(count) + " of " + str(total) + " status: " + status,  end="\r")
-              redis.set(file, "998")
-              key = "Picture:" + file
-              redis.delete(key)
-              next
-          except:
-              print("file " + str(count) + " of " + str(total) + " status: " + status,  end="\r")
-          print("file " + str(count) + " of " + str(total) + " status: " + status,  end="\r")
-          
-            
+           key = "metadata:" + file
+           redis.set(key, str(metadata))
     else:
       print("file " + str(count) + " of " + str(total) + " status: unknown", end="\r")
       if check_if_file_is_picture(file):
