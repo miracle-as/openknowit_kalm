@@ -107,7 +107,11 @@ def evacuate():
     count = count + 1
     if redis.exists(file):
       # get file size
-      filesize = os.path.getsize(file)
+      try:
+        filesize = os.path.getsize(file)
+      except:
+        filesize = 0
+        
       status = redis.get(file).decode("utf-8")
       # print a status wihout newline
       print("file " + str(count) + " of " + str(total) + " status: " + status, end="\r")
