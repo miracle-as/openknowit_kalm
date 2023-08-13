@@ -34,7 +34,7 @@ def service():
 
 
 def calculate_md5(filename, block_size=65536):
-    if not os.path.isfile(filename):
+    if os.path.isfile(filename):
       md5_hash = hashlib.md5()
       with open(filename, "rb") as file:
         for block in iter(lambda: file.read(block_size), b""):
