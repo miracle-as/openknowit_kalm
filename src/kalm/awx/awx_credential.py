@@ -116,6 +116,11 @@ def awx_create_credential( credential , organization, mytoken, r):
       credential_privilege_escalation_username = credential['privilege_escalation_username']
     except:
       credential_privilege_escalation_username = ""
+    try:
+      credential_privilege_escalation_password = credential['privilege_escalation_password']
+    except:
+      credential_privilege_escalation_password = ""
+      
     data = {
         "name": credential_name,
         "description": credential_description,
