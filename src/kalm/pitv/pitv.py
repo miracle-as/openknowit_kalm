@@ -6,7 +6,14 @@ import redis
 from PIL import Image
 import subprocess
 import hashlib
+import hvac
 
+
+# init hashicorp vault
+vault_url = os.getenv("vault_URL", "https://vault.openknowit.com")
+vault_token = os.getenv("vault_token", "s.1J8Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z")
+vault = hvac.Client(url=vault_url, token=vault_token)
+vault.secrets.kv.v2.configure(max_versions=10, mount_point='pitv')
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 r=redis.Redis()
@@ -36,10 +43,13 @@ def service():
 def calculate_md5(filename, block_size=65536):
     if os.path.isfile(filename):
       md5_hash = hashlib.md5()
-      with open(filename, "rb") as file:
-        for block in iter(lambda: file.read(block_size), b""):
+      try:
+        with open(filename, "rb") as file:
+          for block in iter(lambda: file.read(block_size), b""):
             md5_hash.update(block)
-      return md5_hash.hexdigest()
+        return md5_hash.hexdigest()
+      except:
+        return None
     else:
       return None
 
@@ -120,6 +130,10 @@ def evacuate():
       # scp file remotehost:/files/
       if md5 is not None: 
         keys = "MD5:" + md5
+        vault.secrets.kv.v2.existing_version(keys)
+        if vault.secrets.kv.v2.get_secret_version(keys) is None:
+        vault.secrets.kv.v2.create_or_update_secret(keys, md5=md5, file=file)
+        
         redis.set(keys, filesize)
 
       if status == "1":
