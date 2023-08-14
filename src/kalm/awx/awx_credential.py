@@ -88,19 +88,47 @@ def awx_create_credential( credential , organization, mytoken, r):
 # type: machine 
 ######################################
   if( credential['kind'] == "ssh" ):
+    try:
+      credential_name = credential['name']
+    except:
+      credential_name = "credential"
+    try:
+      credential_description = credential['description']
+    except:
+      credential_description = ""
+    try:
+      credential_username = credential['username']
+    except:
+      credential_username = ""
+    try:
+      credential_password = credential['password']
+    except:
+      credential_password = ""
+    try:
+      credential_ssh_key_data = credential['ssh_key_data']
+    except:
+      credential_ssh_key_data = ""
+    try:
+      credential_privilege_escalation_method = credential['privilege_escalation_method']
+    except:
+      credential_privilege_escalation_method = ""
+    try:
+      credential_privilege_escalation_username = credential['privilege_escalation_username']
+    except:
+      credential_privilege_escalation_username = ""
     data = {
-        "name": credential['name'],
-        "description": credential['description'],
+        "name": credential_name,
+        "description": credential_description,
         "credential_type": credentialtypeid,
         "organization": orgid,
         "inputs":
           {
-            "ssh_key_data": credential['ssh_key_data'], 
-            "username": credential['username'],
-            "password": credential['password'],
-            "become_method": credential['privilege_escalation_method'],
-            "become_username": credential['privilege_escalation_username'],
-            "become_password": credential['privilege_escalation_password']
+            "ssh_key_data": credential_ssh_key_data, 
+            "username": credential_username,
+            "password": credential_password,
+            "become_method": credential_privilege_escalation_method,
+            "become_username": credential_privilege_escalation_username,
+            "become_password": credential_privilege_escalation_password
           },
         "kind": credential['kind']
         }
