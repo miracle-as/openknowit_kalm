@@ -13,6 +13,8 @@ import netifaces
 
 from ..common import prettyllog
 
+
+
 def convert_to_json(xml_output):
     # Convert XML to dictionary
     xml_dict = xmltodict.parse(xml_output)
@@ -215,8 +217,6 @@ def list_interfaces():
         print(f"Interface: {interface}")
         print(f"  IPv4 Address: {addr['addr']}")
 
-
-
 def list_dns():
     list_interfaces()
     print(get_my_ipify()  )
@@ -224,6 +224,10 @@ def list_dns():
     set_env()
     get_records()
     return True
+
+def get_my_ip():
+  myip = get_my_ethernet_interfaces()
+  return myip
 
 def get_my_ipify():
   r = requests.get("https://api.ipify.org")
@@ -261,7 +265,10 @@ def add_dns_record(record, record_type="A", record_value=""):
   url=os.getenv('KALM_DNS_URL')
   prettyllog("manage", "dns", record, "new", "000", "add dns record %s" % (record))
   dns_type=os.getenv('KALM_DNS_TYPE')
+
   token=os.getenv('KALM_DNS_TOKEN')
+  if token == None:
+    print("You need to setup KALM_DNS_TOKEN")  
 
   zoneurl = url + "/zones"
   headers = {
@@ -293,6 +300,7 @@ def add_dns_record(record, record_type="A", record_value=""):
         print("Error: " + str(r.status_code))
 
 def virtlib(args):
+   set_env()
    print("virtlib")
    print("get domains")
    print("get ip address")
