@@ -264,6 +264,12 @@ def awx_create_inventory(name, description, organization, inventorytype, variabl
   url = os.getenv("TOWER_HOST") + "/api/v2/inventories/%s/" % invid
   resp = requests.put(url,headers=headers, json=variables, verify=VERIFY_SSL)
   response = json.loads(resp.content)
+
+
+  ##########################################################################################
+  ##################### NETBOX #############################################################
+  ##########################################################################################
+
   if (inventorytype == "netbox"):
     print("Create hosts in netbox")
     nbtoken = os.getenv("NBTOKEN")
@@ -275,6 +281,9 @@ def awx_create_inventory(name, description, organization, inventorytype, variabl
       
     ipaddresses = nb.ipam.ip_addresses.all()
     vms = nb.virtualization.virtual_machines.all()
+    print("######################################################################################################")
+    print(vms)
+    print("######################################################################################################")
     for vm in vms:
       pri_ip = str(vm.primary_ip).split('/')[0]
       awx_create_host(pri_ip, str(vm.name), name,organization, mytoken, r)

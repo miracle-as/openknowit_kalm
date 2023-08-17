@@ -186,8 +186,8 @@ def connectiontest():
 def main():
     parser = argparse.ArgumentParser(description="Keep kalm and automate", usage="kalm <action> \n\n \
                \
-               version : 0.1.2 BETA \n                                              \
-               actions:\n                                                      \
+               version : 1.0.0\n\
+               actions:\n\
                core           Run kalm using the core/initial process to ensure the core environment is intact (/etc/kalm/kalm.json)\n  \
                seeder         Run kalm using the config files in (/etc/kalm.d)\n  \
                seed           Run kalm using the config specific configuration\n  \
