@@ -285,7 +285,7 @@ def awx_create_inventory(name, description, organization, inventorytype, variabl
     print(vms)
     print("######################################################################################################")
     for vm in vms:
-      print(vm.name + " " + str(vm.primary_ip))
+      print(vm)
       print("-------------------------------------------")
       pri_ip = str(vm.primary_ip).split('/')[0]
       awx_create_host(pri_ip, str(vm.name), name,organization, mytoken, r)
