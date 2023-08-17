@@ -22,7 +22,6 @@ pipeline {
                 sh 'pip install poetry'
                 sh 'rm -r dist || echo '
                 sh 'poetry update'
-                sh 'poetry version patch'
                 sh 'poetry build'
             }
         }
