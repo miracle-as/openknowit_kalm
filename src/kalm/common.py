@@ -30,6 +30,16 @@ def get_file_content_lines(file_path):
         return f.readlines()
 
 def prettyllog(function, action, item, organization, statuscode, text, severity="INFO"):
+  silence = False
+  try:
+    if os.getenv("KALM_SILENCE", "false").lower() == "true":
+      silence = True
+  except:
+    silence = False
+    
+  if silence:
+    return True
+
   d_date = datetime.datetime.now()
   reg_format_date = d_date.strftime("%Y-%m-%d %I:%M:%S %p")
   if severity == "INFO":
