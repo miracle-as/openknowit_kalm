@@ -37,12 +37,15 @@ def netboxdata(args):
 
     vm_data = []
     for vm in vms:
+        print("--------------------------")
+        print(vm['local_context_data'])
         vm_entry = {
             "name": vm["name"],
             "cluster": vm["cluster"]["name"] if vm.get("cluster") else "N/A",
             "disk_gb": vm["disk"],
             "cpu": vm["vcpus"],
             "memory_mb": vm["memory"]
+
         }
         vm_data.append(vm_entry)
 
