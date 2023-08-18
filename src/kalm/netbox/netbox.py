@@ -44,7 +44,8 @@ def netboxdata(args):
             "cluster": vm["cluster"]["name"] if vm.get("cluster") else "N/A",
             "disk_gb": vm["disk"],
             "cpu": vm["vcpus"],
-            "memory_mb": vm["memory"]
+            "memory_mb": vm["memory"],
+            "local_context_data": vm["local_context_data"]
 
         }
         vm_data.append(vm_entry)
@@ -67,7 +68,8 @@ def ansible_inventory(args):
             "cluster": vm["cluster"]["name"] if vm.get("cluster") else "N/A",
             "disk_gb": vm["disk"],
             "cpu": vm["vcpus"],
-            "memory_mb": vm["memory"]
+            "memory_mb": vm["memory"],
+            "local_context_data": vm["local_context_data"]
         }
         vm_data.append(vm_entry)
 
