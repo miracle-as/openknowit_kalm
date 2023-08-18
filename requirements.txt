@@ -1,0 +1,22 @@
+async-timeout==4.0.3
+blinker==1.6.2
+certifi==2023.7.22
+charset-normalizer==3.2.0
+click==8.1.6
+Flask==2.3.2
+hvac==1.1.1
+idna==3.4
+itsdangerous==2.1.2
+Jinja2==3.1.2
+kalm @ file:///home/jakhos/Projects/openknowit_kalm
+MarkupSafe==2.1.3
+netbox==0.0.2
+netifaces==0.11.0
+ping3==4.0.3
+pyhcl==0.4.4
+pynetbox==7.0.1
+redis==5.0.0
+requests==2.31.0
+urllib3==2.0.4
+Werkzeug==2.3.7
+xmltodict==0.13.0
