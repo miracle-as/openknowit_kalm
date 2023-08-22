@@ -182,6 +182,7 @@ def get_zone_id():
   r = requests.get(zoneurl, headers=headers)
   if r.status_code != 200:
     print("Error: " + str(r.status_code))
+    print(r.content)
     exit(1)
   
   records = r.content.decode("utf-8")
