@@ -330,9 +330,9 @@ def add_dns_record(record, record_type="A", record_value="", ttl=600, update=Tru
 
 def virtlib(args):
    set_env()
-   zoneid = get_zone_id()
-   records = get_records()
-   prettyllog("manage", "dns", "virtlib", "new", "000", "add dns record %s" % (zoneid))
+   ##zoneid = get_zone_id()
+   #3ecords = get_records()
+   #prettyllog("manage", "dns", "virtlib", "new", "000", "add dns record %s" % (zoneid))
    domain_ids = get_domains()
    for domain_id in domain_ids:
     prettyllog("manage", "dns", domain_id, "new", "000", "add dns record %s" % (domain_id))
