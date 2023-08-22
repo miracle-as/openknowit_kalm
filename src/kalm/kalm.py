@@ -1052,6 +1052,5 @@ def kalm(mytoken, r, realm="standalone", subproject=None):
         awx_create_schedule(schedulename, unified_job_template_id, description,tz, dtstart, run_frequency, run_every, dtend, scheduletype, orgname, mytoken, r)
     except:
       prettyllog("config", "initialize", "schedules", orgname, "000",  "No schedules found")
-prettyllog("config", "initialize", "end", "000", "000",  "Initialization complete")
 
 ### The end

@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+vault read -field=public_key ssh-host-signer/config/ca | sed "s/...$/\n/"|tr -d '"' |xargs -i{}  echo "@cert-authority *.traeckle.com  {} " > ~/.ssh/known_hosts
+vault read -field=public_key ssh-host-signer/config/ca | sed "s/...$/\n/"|tr -d '"' |xargs -i{}  echo "@cert-authority *.openknowit.com  {} " >> ~/.ssh/known_hosts
+rm ~/.ssh/disposeable 2>/dev/null
+ssh-keygen -b 2048 -t rsa -f  ~/.ssh/disposeable -q -N ""
+chmod 600 ~/.ssh/disposeable
+cd ~/.ssh
+PUBLICKEY=`cat  disposeable.pub`
+
+vault write -field=signed_key ssh-client-signer/sign/admin  public_key="${PUBLICKEY}" > signed-cert.pub
+chmod 600 signed-cert.pub
+sed -i "s/...$//" signed-cert.pub
+sed -i 's/^"//' signed-cert.pub
+
+ssh-keygen -lf signed-cert.pub
+if [[ $? == 0 ]];
+then
+	echo "`date`: Disposable key generated and signed"
+	exit 0
+else
+	echo "`date`: Signing failed"
+	exit 1
+fi
