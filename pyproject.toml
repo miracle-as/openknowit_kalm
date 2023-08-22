@@ -1,4 +1,4 @@
-9tool.poetry]
+[tool.poetry]
 name = "kalm"
 version = "0.8.51"
 description = "Knowit Automation lifecycle management"
@@ -6,6 +6,7 @@ authors = ["Jakob Holst <jakob.holst@knowit.dk>"]
 license = "MIT"
 homepage = "https://kalm.openknowit.com"
 repository = "https://github.com/miracle-as/openknowit_kalm.git"
+
 
 [tool.poetry.scripts]
 kalm = 'kalm:main'
