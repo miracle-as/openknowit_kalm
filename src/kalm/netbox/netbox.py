@@ -37,8 +37,6 @@ def netboxdata(args):
 
     vm_data = []
     for vm in vms:
-        print("--------------------------")
-        print(vm['local_context_data'])
         vm_entry = {
             "name": vm["name"],
             "cluster": vm["cluster"]["name"] if vm.get("cluster") else "N/A",
@@ -98,6 +96,14 @@ def ansible_inventory(args):
             }
 
     print(yaml.dump(data))
+
+
+def sshconfig(args):    
+    netboxdata = netboxdata(args)
+    for cluster in netboxdata["clusters"]:
+        print(f"Host {cluster}")
+
+
 
 
 

@@ -7,6 +7,7 @@ def main():
                version : 0.0.2 (netbox)\n\
                actions:\n\
                netboxdata                dump netbox data in json \n\
+               ssh_config                dump ssh_config\n\
                ansible_inventory         dump ansible inventory\n\
                refresh                   refresh core netbox content\n\
                \
@@ -20,7 +21,10 @@ def main():
         netbox.ansible_inventory(args)
         return 0
     
-
+    if args.action[0] == "ssh_config":
+        netbox.sshconfig(args)
+        return 0
+    
     if args.action[0] == "netboxdata":
         netbox.netboxdata(args)
         return 0
