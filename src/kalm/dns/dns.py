@@ -10,10 +10,28 @@ import subprocess
 import xmltodict
 import re
 import netifaces
+import paramiko
 
 from ..common import prettyllog
 
 
+def get_ssh_host_key_fingerprint(hostname, port=22):
+    ssh_client = paramiko.SSHClient()
+    ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+
+    try:
+        ssh_client.connect(hostname, port=port)
+        host_key = ssh_client.get_transport().get_remote_server_key()
+        fingerprint = ":".join([f"{b:02x}" for b in host_key.get_fingerprint()])
+        return fingerprint
+    except paramiko.AuthenticationException:
+        return "Authentication failed"
+    except paramiko.SSHException as e:
+        return str(e)
+    except Exception as e:
+        return str(e)
+    finally:
+        ssh_client.close()
 
 def convert_to_json(xml_output):
     # Convert XML to dictionary
@@ -301,12 +319,6 @@ def add_dns_record(record, record_type="A", record_value=""):
 
 def virtlib(args):
    set_env()
-   print("virtlib")
-   print("get domains")
-   print("get ip address")
-   print("get network")
-   print(args)
-   
    domain_ids = get_domains()
    for domain_id in domain_ids:
     prettyllog("manage", "dns", domain_id, "new", "000", "add dns record %s" % (domain_id))
@@ -320,11 +332,10 @@ def virtlib(args):
       mac_address = json_dict["domain"]["devices"]["interface"]["mac"]["@address"]
       network = json_dict["domain"]["devices"]["interface"]["source"]["@network"]
       ipaddress = get_dhcp_leases(network, mac_address)
+      fingerprint = get_ssh_host_key_fingerprint(ipaddress) 
       netid = get_network_id(network)
       prettyllog("manage", "dns", domain_name, "new", "000", "add dns record %s" % (domain_name + "." + network + ".openknowit.com"))
       ipaddress = { "domain_name" : domain_name, "network" : network, "ipaddress" : ipaddress }
-      print(ipaddress)
-
       ip4s.append(ipaddress)
     except:
       try:
@@ -338,9 +349,13 @@ def virtlib(args):
             ip4s.append(ipaddress)
       except:
         print("no network")
-
+    print("-------------------------------------")
+    print(ip4s)
+    print("-------------------------------------")
     for ip4 in ip4s:
-      print(ip4)
       prettyllog("manage", "dns", domain_name, "new", "000", "add dns record %s" % (ip4["domain_name"] + "." + ip4["network"] + ".openknowit.com"))
       add_dns_record(ip4["domain_name"], "A", ip4["ipaddress"])
+#      prettyllog("manage", "dns", domain_name, "new", "000", "add fingerprint record %s" % (ip4["domain_name"] + "." + ip4["network"] + ".openknowit.com"))
+#      add_dns_record(ip4["domain_name"], "TXT", ip4['fingerprint'])
+
 
