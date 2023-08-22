@@ -277,8 +277,20 @@ def sync_my_system():
     url = url[:-1]
   zoneurl = url + "/api/v1/zones"
 
+def get_dns_record(record):
+  domain = os.getenv('KALM_DNS_DOMAIN')
+  url=os.getenv('KALM_DNS_URL')
+  prettyllog("manage", "dns", record, "new", "000", "add dns record %s" % (record))
+  dns_type=os.getenv('KALM_DNS_TYPE')
 
-def add_dns_record(record, record_type="A", record_value=""):
+  token=os.getenv('KALM_DNS_TOKEN')
+  if token == None:
+    print("You need to setup KALM_DNS_TOKEN")  
+  
+  
+
+
+def add_dns_record(record, record_type="A", record_value="", ttl=600, update=True):
   domain = os.getenv('KALM_DNS_DOMAIN')
   url=os.getenv('KALM_DNS_URL')
   prettyllog("manage", "dns", record, "new", "000", "add dns record %s" % (record))
@@ -300,25 +312,27 @@ def add_dns_record(record, record_type="A", record_value=""):
   records = r.json()
   for zone in records['zones']:
     if zone['name'] == domain:
-      print("found domain")
       zone_id = zone['id']
-      print(zone_id)
       url = url + "/records"
-      print(url)
       data = {
         "name": record,
-        "ttl": 600,
+        "ttl": ttl,
         "type": record_type,
         "value": record_value,
         "zone_id": zone_id
       }
       r = requests.post(url, headers=headers, json=data)
+      print("-----------------------------------------------------------------------------------")
       print(r.content)
+      print("-----------------------------------------------------------------------------------")
       if r.status_code != 200:
         print("Error: " + str(r.status_code))
 
 def virtlib(args):
    set_env()
+   zoneid = get_zone_id()
+   records = get_records()
+   prettyllog("manage", "dns", "virtlib", "new", "000", "add dns record %s" % (zoneid))
    domain_ids = get_domains()
    for domain_id in domain_ids:
     prettyllog("manage", "dns", domain_id, "new", "000", "add dns record %s" % (domain_id))
