@@ -11,6 +11,16 @@ netbox_token = os.environ.get('NETBOX_TOKEN')
 NETBOX_URL = os.getenv("NETBOX_API_URL")
 NETBOX_TOKEN = os.getenv("NETBOX_API_TOKEN")
 
+ssh_config_template = """
+Host {hostname}
+    HostName {full_hostname}
+    User root
+    IdentityFile ~/.ssh/disposeablekey
+    IdentityFile ~/.ssh/disposeablekey.signed
+    Port 22
+    {proxy_jump}
+"""
+
 
 
 def get_clusters():
@@ -99,13 +109,25 @@ def ansible_inventory(args):
 
 
 def sshconfig(args):    
-    netboxdata = netboxdata(args)
-    for cluster in netboxdata["clusters"]:
-        print(f"Host {cluster}")
+    data = netboxdata(args)
+    virtual_machines = data["virtual_machines"]
+    ssh_config_entries = [generate_ssh_config_entry(vm) for vm in virtual_machines]
+    ssh_config_content = "\n".join(ssh_config_entries)
+    print(ssh_config_content)
 
 
 
 
 
+def generate_ssh_config_entry(vm):
+    proxy_jump = ""
+    if vm["cluster"] != vm["name"]:
+        proxy_jump = f"ProxyJump {vm['cluster']}"
+    
+    return ssh_config_template.format(
+        hostname=vm["name"],
+        full_hostname=vm["name"] + ".openknowit.com",
+        proxy_jump=proxy_jump
+    )
 
-   
+
