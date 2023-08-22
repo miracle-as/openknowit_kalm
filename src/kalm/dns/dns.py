@@ -14,6 +14,36 @@ import paramiko
 
 from ..common import prettyllog
 
+def get_default_gateway():
+    try:
+        # Use the socket library to get the default route
+        default_route = socket.gethostbyname(socket.gethostname())
+        
+        # Use the subprocess module to execute 'ip route' command and parse the output
+        result = subprocess.check_output(['ip', 'route'], universal_newlines=True)
+        lines = result.split('\n')
+        
+        for line in lines:
+            if default_route in line:
+                gateway = line.split(' ')[2]
+                return gateway
+    except Exception as e:
+        print("An error occurred:", e)
+        return None
+def get_my_ip(defaut=True):
+  if defaut:
+    print("get my ip")
+    dgw = get_default_gateway()
+    print(dgw)
+    return dgw
+  else:
+    return None
+  
+def default(args):
+   print(get_default_gateway())
+
+   
+    
 
 def get_ssh_host_key_fingerprint(hostname, port=22):
     ssh_client = paramiko.SSHClient()
