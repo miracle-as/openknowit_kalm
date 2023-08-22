@@ -62,8 +62,8 @@ def netboxdata(args):
         "clusters": [cluster["name"] for cluster in clusters],
         "virtual_machines": vm_data
     }
-
     print(json.dumps(data, indent=2))
+    return data
 
 def ansible_inventory(args):
     clusters = get_clusters()
