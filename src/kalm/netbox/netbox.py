@@ -113,6 +113,7 @@ def sshconfig(args):
     virtual_machines = data["virtual_machines"]
     ssh_config_entries = [generate_ssh_config_entry(vm) for vm in virtual_machines]
     ssh_config_content = "\n".join(ssh_config_entries)
+    open("~/.ssh/conf.d/openstack.conf", "w").write(ssh_config_content)
     print(ssh_config_content)
 
 
