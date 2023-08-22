@@ -16,8 +16,11 @@ def main():
     print("check if we are ready to go")
 
     if args.action[0] == "versions":
-        print("list versions")
         pypi.versions(args)
+
+    if args.action[0] == "poetry-dependencies":
+        pypi.poetry_dependensies()
+
 
 
     
