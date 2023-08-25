@@ -255,7 +255,7 @@ def get_records():
     for record in records:
       if record['type'] == 'A':
          print(record['value'] + " " + record['name'])
-    return True
+    return records
 
 
 def list_interfaces():
