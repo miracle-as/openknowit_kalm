@@ -386,7 +386,7 @@ def delete_dns_record(hostname):
     "Content-Type": "application/json",
     "Auth-API-Token": token
   }
-  r = requests.get(zoneurl, headers=headers)
+  r = requests.delete(zoneurl, headers=headers)
   if r.status_code != 200:
     print("Error: " + str(r.status_code))
     exit(1)
