@@ -202,7 +202,7 @@ def get_zone_id():
   token=os.getenv('KALM_DNS_TOKEN')
   if url.endswith("/"):
     url = url[:-1]
-  zoneurl = url + "/api/v1/zones" 
+  zoneurl = url + "/zones" 
   headers = {
     "Content-Type": "application/json",
     "Auth-API-Token": token
