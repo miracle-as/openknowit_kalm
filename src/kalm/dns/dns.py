@@ -209,6 +209,9 @@ def get_zone_id():
   }
   r = requests.get(zoneurl, headers=headers)
   print(zoneurl  )
+  print(r.content)
+  print("--------------------------------------------------------------------------------------") 
+
   if r.status_code != 200:
     print("Error: " + str(r.status_code))
     print(r.content)
