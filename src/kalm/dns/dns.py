@@ -236,6 +236,8 @@ def get_records():
   zoneid = get_zone_id()
   if zoneid != None:
     recordurl = url + "/api/v1/records?zone_id=" + zoneid 
+    print(recordurl)
+    print("--------------------------------------------------------------------------------------")
     #https://dns.hetzner.com/api/v1/records?zone_id=${ZONEID}"
     
     r = requests.get(recordurl, headers=headers)
