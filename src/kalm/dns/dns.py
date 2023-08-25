@@ -208,6 +208,7 @@ def get_zone_id():
     "Auth-API-Token": token
   }
   r = requests.get(zoneurl, headers=headers)
+  print(zoneurl  )
   if r.status_code != 200:
     print("Error: " + str(r.status_code))
     print(r.content)
