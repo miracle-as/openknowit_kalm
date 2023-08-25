@@ -45,6 +45,11 @@ def main():
         dns.default(args)
         ready = True
 
+    if args.action[0] == "clean":
+        print("set env")
+        dns.clean(args)
+        ready = True
+
 
         
 

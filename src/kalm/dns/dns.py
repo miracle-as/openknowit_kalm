@@ -270,6 +270,10 @@ def list_dns():
     set_env()
     get_records()
     return True
+def clean(args):
+  print(get_records())
+  return True
+
 
 def get_my_ip():
   myip = get_my_ethernet_interfaces()
