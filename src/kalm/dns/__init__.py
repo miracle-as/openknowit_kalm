@@ -37,7 +37,7 @@ def main():
     
     if args.action[0] == "libvirt":
         print("set env")
-        dns.virtlib(args)
+        dns.libvirt(args)
         ready = True
 
     if args.action[0] == "default":

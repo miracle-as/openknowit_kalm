@@ -363,17 +363,54 @@ def add_dns_record(record, record_type="A", record_value="", ttl=600, update=Tru
         "zone_id": zone_id
       }
       r = requests.post(url, headers=headers, json=data)
-      print("-----------------------------------------------------------------------------------")
-      print(r.content)
-      print("-----------------------------------------------------------------------------------")
       if r.status_code != 200:
         print("Error: " + str(r.status_code))
+def check_dns_record(hostname):
+  records = get_records
+  for record in records:
+    if record['name'] == hostname:
+      return True
+  return False
+def delete_dns_record(hostname):
+  set_env()
+  domain = os.getenv('KALM_DNS_DOMAIN')
+  url=os.getenv('KALM_DNS_URL')
+  prettyllog("manage", "dns", hostname, "new", "000", "delete dns record %s" % (hostname))
+  dns_type=os.getenv('KALM_DNS_TYPE')
+  token=os.getenv('KALM_DNS_TOKEN')
+  if token == None:
+    print("You need to setup KALM_DNS_TOKEN")  
+  zoneurl = url + "/zones"
+  headers = {
+    "Content-Type": "application/json",
+    "Auth-API-Token": token
+  }
+  r = requests.get(zoneurl, headers=headers)
+  if r.status_code != 200:
+    print("Error: " + str(r.status_code))
+    exit(1)
+  records = r.json()
+  for zone in records['zones']:
+    if zone['name'] == domain:
+      zone_id = zone['id']
+      url = url + "/records"
+      data = {
+        "name": hostname,
+        "zone_id": zone_id
+      }
+      r = requests.delete(url, headers=headers, json=data)
+      if r.status_code != 200:
+        print("Error: " + str(r.status_code))
+        exit(1)
+      return True
+  return False
 
-def virtlib(args):
+def libvirt(args):
    set_env()
-   ##zoneid = get_zone_id()
-   #3ecords = get_records()
-   #prettyllog("manage", "dns", "virtlib", "new", "000", "add dns record %s" % (zoneid))
+   zoneid = get_zone_id()
+   records = get_records()
+
+   prettyllog("manage", "dns", "virtlib", "new", "000", "add dns record %s" % (zoneid))
    domain_ids = get_domains()
    for domain_id in domain_ids:
     prettyllog("manage", "dns", domain_id, "new", "000", "add dns record %s" % (domain_id))
@@ -381,6 +418,12 @@ def virtlib(args):
     json_output = convert_to_json(xml_output)
     json_dict = json.loads(json_output)
     domain_name = json_dict["domain"]["name"]
+    print(check_dns_record(domain_name))
+    if check_dns_record(domain_name):
+      print("record exist")
+      delete_dns_record(domain_name)
+      prettyllog("manage", "dns", domain_name, "new", "000", "delete dns record %s" % (domain_name))
+
     prettyllog("manage", "dns", domain_name, "new", "000", "add dns record %s" % (domain_name))
     ip4s = []
     try:
