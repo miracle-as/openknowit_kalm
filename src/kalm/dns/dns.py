@@ -386,9 +386,10 @@ def delete_dns_record(hostname):
     "Content-Type": "application/json",
     "Auth-API-Token": token
   }
-  r = requests.delete(zoneurl, headers=headers)
+  r = requests.get(zoneurl, headers=headers)
   if r.status_code != 200:
-    print("Error: " + str(r.status_code))
+    print(r.content)
+    print("Error: Zone " + str(r.status_code))
     exit(1)
   records = r.json()
   for zone in records['zones']:
@@ -402,7 +403,7 @@ def delete_dns_record(hostname):
       r = requests.delete(url, headers=headers, json=data)
       if r.status_code != 200:
         print(r.content)
-        print("Error: " + str(r.status_code))
+        print("Error: Record " + str(r.status_code))
         exit(1)
       return True
   return False
