@@ -233,6 +233,7 @@ def get_records():
 
   if url.endswith("/"):
     url = url[:-1]
+  prettyllog("manage", "dns", domain, "new", "000", "get zone id %s" % (domain))
   zoneid = get_zone_id()
   if zoneid != None:
     recordurl = url + "/api/v1/records?zone_id=" + zoneid 
