@@ -42,7 +42,7 @@ def main():
 
     if args.action[0] == "default":
         print("set env")
-        dns.(args)
+        dns.default(args)
         ready = True
 
 

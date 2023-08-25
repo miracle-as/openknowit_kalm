@@ -11,7 +11,6 @@ import xmltodict
 import re
 import netifaces
 import paramiko
-
 from ..common import prettyllog
 
 def get_default_gateway():
@@ -30,6 +29,7 @@ def get_default_gateway():
     except Exception as e:
         print("An error occurred:", e)
         return None
+    
 def get_my_ip(defaut=True):
   if defaut:
     print("get my ip")
@@ -40,15 +40,13 @@ def get_my_ip(defaut=True):
     return None
   
 def default(args):
-   print(get_default_gateway())
+  print(get_default_gateway())
 
-   
-    
+
 
 def get_ssh_host_key_fingerprint(hostname, port=22):
     ssh_client = paramiko.SSHClient()
     ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-
     try:
         ssh_client.connect(hostname, port=port)
         host_key = ssh_client.get_transport().get_remote_server_key()
