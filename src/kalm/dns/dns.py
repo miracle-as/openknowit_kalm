@@ -272,7 +272,9 @@ def list_dns():
     set_env()
     get_records()
     return True
+
 def clean(args):
+  set_env()
   print(get_records())
   return True
 
