@@ -366,11 +366,12 @@ def add_dns_record(record, record_type="A", record_value="", ttl=600, update=Tru
       if r.status_code != 200:
         print("Error: " + str(r.status_code))
 def check_dns_record(hostname):
-  records = get_records
+  records = get_records()
   for record in records:
     if record['name'] == hostname:
       return True
   return False
+
 def delete_dns_record(hostname):
   set_env()
   domain = os.getenv('KALM_DNS_DOMAIN')
@@ -447,9 +448,6 @@ def libvirt(args):
             ip4s.append(ipaddress)
       except:
         print("no network")
-    print("-------------------------------------")
-    print(ip4s)
-    print("-------------------------------------")
     for ip4 in ip4s:
       prettyllog("manage", "dns", domain_name, "new", "000", "add dns record %s" % (ip4["domain_name"] + "." + ip4["network"] + ".openknowit.com"))
       add_dns_record(ip4["domain_name"], "A", ip4["ipaddress"])
