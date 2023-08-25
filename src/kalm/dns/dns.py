@@ -240,7 +240,7 @@ def get_records():
   prettyllog("manage", "dns", domain, "new", "000", "get zone id %s" % (domain))
   zoneid = get_zone_id()
   if zoneid != None:
-    recordurl = url + "/api/v1/records?zone_id=" + zoneid 
+    recordurl = url + "/records?zone_id=" + zoneid 
     print(recordurl)
     print("--------------------------------------------------------------------------------------")
     #https://dns.hetzner.com/api/v1/records?zone_id=${ZONEID}"
