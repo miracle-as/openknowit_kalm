@@ -404,15 +404,6 @@ def libvirt(args):
     json_output = convert_to_json(xml_output)
     json_dict = json.loads(json_output)
     domain_name = json_dict["domain"]["name"]
-    print(check_dns_record(domain_name))
-    if check_dns_record(domain_name):
-      print("record exist")
-      oldrecored = get_dns_record(domain_name)
-      print(oldrecored)
-      print(".....................................................")
-      #delete_dns_record(domain_name)
-      prettyllog("manage", "dns", domain_name, "new", "000", "delete dns record %s" % (domain_name))
-
     prettyllog("manage", "dns", domain_name, "new", "000", "add dns record %s" % (domain_name))
     ip4s = []
     try:
@@ -438,6 +429,21 @@ def libvirt(args):
         print("no network")
     for ip4 in ip4s:
       prettyllog("manage", "dns", domain_name, "new", "000", "add dns record %s" % (ip4["domain_name"] + "." + ip4["network"] + ".openknowit.com"))
+      if check_dns_record(ip4["domain_name"]):
+        old_record = get_dns_record(ip4["domain_name"])
+        if old_record['value'] != ip4['ipaddress']:
+          prettyllog("manage", "dns", domain_name, "new", "000", "update dns record %s" % (ip4["domain_name"] + "." + ip4["network"] + ".openknowit.com"))
+          delete_dns_record(ip4["domain_name"])
+          add_dns_record(ip4["domain_name"], "A", ip4["ipaddress"])
+        else:
+          prettyllog("manage", "dns", domain_name, "new", "000", "no change dns record %s" % (ip4["domain_name"] + "." + ip4["network"] + ".openknowit.com"))
+      else:
+        prettyllog("manage", "dns", domain_name, "new", "000", "add dns record %s" % (ip4["domain_name"] + "." + ip4["network"] + ".openknowit.com"))
+        add_dns_record(ip4["domain_name"], "A", ip4["ipaddress"])
+
+         
+
+
       add_dns_record(ip4["domain_name"], "A", ip4["ipaddress"])
       #prettyllog("manage", "dns", domain_name, "new", "000", "add fingerprint record %s" % (ip4["domain_name"] + "." + ip4["network"] + ".openknowit.com"))
       #add_dns_record(ip4["domain_name"], "TXT", ip4['fingerprint'])
