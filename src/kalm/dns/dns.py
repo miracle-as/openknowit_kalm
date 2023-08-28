@@ -365,11 +365,19 @@ def add_dns_record(record, record_type="A", record_value="", ttl=600, update=Tru
       r = requests.post(url, headers=headers, json=data)
       if r.status_code != 200:
         print("Error: " + str(r.status_code))
+
 def check_dns_record(hostname):
   records = get_records()
   for record in records:
     if record['name'] == hostname:
       return True
+  return False
+
+def get_dns_record(hostname):
+  records = get_records()
+  for record in records:
+    if record['name'] == hostname:
+      return record
   return False
 
 def delete_dns_record(hostname):
@@ -381,32 +389,7 @@ def delete_dns_record(hostname):
   token=os.getenv('KALM_DNS_TOKEN')
   if token == None:
     print("You need to setup KALM_DNS_TOKEN")  
-  zoneurl = url + "/zones"
-  headers = {
-    "Content-Type": "application/json",
-    "Auth-API-Token": token
-  }
-  r = requests.get(zoneurl, headers=headers)
-  if r.status_code != 200:
-    print(r.content)
-    print("Error: Zone " + str(r.status_code))
-    exit(1)
-  records = r.json()
-  for zone in records['zones']:
-    if zone['name'] == domain:
-      zone_id = zone['id']
-      url = url + "/records"
-      data = {
-        "name": hostname,
-        "zone_id": zone_id
-      }
-      r = requests.delete(url, headers=headers, json=data)
-      if r.status_code != 200:
-        print(r.content)
-        print("Error: Record " + str(r.status_code))
-        exit(1)
-      return True
-  return False
+
 
 def libvirt(args):
    set_env()
@@ -424,7 +407,10 @@ def libvirt(args):
     print(check_dns_record(domain_name))
     if check_dns_record(domain_name):
       print("record exist")
-      delete_dns_record(domain_name)
+      oldrecored = get_dns_record(domain_name)
+      print(oldrecored)
+      print(".....................................................")
+      #delete_dns_record(domain_name)
       prettyllog("manage", "dns", domain_name, "new", "000", "delete dns record %s" % (domain_name))
 
     prettyllog("manage", "dns", domain_name, "new", "000", "add dns record %s" % (domain_name))
