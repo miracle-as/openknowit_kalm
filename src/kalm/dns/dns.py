@@ -348,6 +348,8 @@ def add_dns_record(record, record_type="A", record_value="", ttl=600, update=Tru
   }
   r = requests.get(zoneurl, headers=headers)
   if r.status_code != 200:
+    print("Error: " + str(r.content))
+
     print("Error: " + str(r.status_code))
     exit(1)
   records = r.json()
@@ -364,6 +366,7 @@ def add_dns_record(record, record_type="A", record_value="", ttl=600, update=Tru
       }
       r = requests.post(url, headers=headers, json=data)
       if r.status_code != 200:
+        print("Error: " + str(r.content))
         print("Error: " + str(r.status_code))
 
 def check_dns_record(hostname):
@@ -395,7 +398,6 @@ def libvirt(args):
    set_env()
    zoneid = get_zone_id()
    records = get_records()
-
    prettyllog("manage", "dns", "virtlib", "new", "000", "add dns record %s" % (zoneid))
    domain_ids = get_domains()
    for domain_id in domain_ids:
