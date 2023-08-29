@@ -42,10 +42,10 @@ def check_access():
     headers = {
     "Authorization": bearer,
     "Content-Type": "application/json"
-  }
+    }
     print(headers)
     response = requests.get(url, headers=headers)
-    print(response.text)  # Print the response content
+    print(response.content)  # Print the response content
     if response.status_code == 200:
         return True
     else:
