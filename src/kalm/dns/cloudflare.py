@@ -40,6 +40,7 @@ def check_access():
     print(env["KALM_DNS_TOKEN"])
     headers = {
     "Authorization": "Bearer " + env["KALM_DNS_TOKEN"],
+    "Auth-API-Token": env["KALM_DNS_TOKEN"],
     "Content-Type": "application/json"
   }
     print(headers)
