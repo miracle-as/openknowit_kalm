@@ -71,6 +71,7 @@ def list_dns():
         print("Error: " + str(response.status_code))
         print(response.text)
         exit(1)
+
     return records
 def delete_record(name):
     myenv = getenv()
@@ -89,7 +90,7 @@ def add_record(record):
         value = None
     if value != None:
         delete_record(records[key]["id"])
-
+    print("add record")
 
     url = os.environ.get("KALM_DNS_URL") + "/client/v4/zones/" + os.environ.get("KALM_DNS_ZONEID") + "/dns_records"
     bearer = "Bearer " + os.environ.get("KALM_DNS_TOKEN", "")
@@ -105,7 +106,8 @@ def add_record(record):
     "comment": "DNS record created by KALM",
     "ttl": 360
     }
-    
+    print(data)
+
     response = requests.post(url, headers=headers, data=json.dumps(data))
     if response.status_code == 200:
         return True
