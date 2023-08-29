@@ -72,11 +72,25 @@ def list_dns():
         print(response.text)
         exit(1)
     return records
+def delete_record(name):
+    myenv = getenv()
+    print("delete record")
+    print(name)
+    
+
 
 def add_record(record):
     myenv = getenv()
     records = list_dns()
-    print(records)
+    key = record['name'] + os.environ.get("KALM_DNS_DOMAIN")   
+    try:
+      value =records[key]
+    except:
+        value = None
+    if value != None:
+        delete_record(records[key]["id"])
+
+
     url = os.environ.get("KALM_DNS_URL") + "/client/v4/zones/" + os.environ.get("KALM_DNS_ZONEID") + "/dns_records"
     bearer = "Bearer " + os.environ.get("KALM_DNS_TOKEN", "")
     headers = {
