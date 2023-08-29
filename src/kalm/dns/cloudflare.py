@@ -67,7 +67,7 @@ def list_dns():
     if response.status_code == 200:
         for record in response.json()["result"]:
             print(record)
-            records[record["name"]] = record["content"]
+            records[record["name"]] = record["id"]
     else:
         print("Error: " + str(response.status_code))
         print(response.text)
@@ -90,11 +90,8 @@ def add_record():
     except:
         value = None
     if value != None:
-        print("...................................")
-        print("DNS record already exists")
-        print(records[key])
-        print("...................................")
-        delete_record(records[key]["id"])
+        delete_record(records[key])
+        print("delete record")
     print("add record")
 
     url = os.environ.get("KALM_DNS_URL") + "/client/v4/zones/" + os.environ.get("KALM_DNS_ZONEID") + "/dns_records"
