@@ -19,6 +19,10 @@ def getenv():
     if env['KALM_DNS_URL'] == None:
         print("DNS URL not set")
         exit(1)
+    # if url ends with /, remove it
+    if env['KALM_DNS_URL'][-1] == "/":
+        env['KALM_DNS_URL'] = env['KALM_DNS_URL'][:-1]
+
     if env['KALM_DNS_TOKEN'] == None:
         print("DNS TOKEN not set")
         exit(1)
