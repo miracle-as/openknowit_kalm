@@ -76,7 +76,7 @@ def delete_record(name):
     myenv = getenv()
     print("delete record")
     print(name)
-    
+
 
 
 def add_record(record):
@@ -98,13 +98,14 @@ def add_record(record):
     "Content-Type": "application/json"
     }
     data = {
-    "content": "198.51.100.4",
-    "name": "demo",
+    "content": record["content"], 
+    "name": record["name"] + os.environ.get("KALM_DNS_DOMAIN"),
     "proxied": False,
     "type": "A",
-    "comment": "Domain verification record",
-    "ttl": 3600
+    "comment": "DNS record created by KALM",
+    "ttl": 360
     }
+    
     response = requests.post(url, headers=headers, data=json.dumps(data))
     if response.status_code == 200:
         return True

@@ -56,7 +56,7 @@ def main():
             record = {
                 "type": "A",
                 "name": "test",
-                "content": "123.123.123.123",
+                "content": "123.123.123.124",
                 "ttl": 300,
                 "proxied": False
             }
