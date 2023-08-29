@@ -76,7 +76,7 @@ def list_dns():
 def add_record(record):
     myenv = getenv()
     records = list_dns()
-    print(records['demo'])
+    print(records)
     url = os.environ.get("KALM_DNS_URL") + "/client/v4/zones/" + os.environ.get("KALM_DNS_ZONEID") + "/dns_records"
     bearer = "Bearer " + os.environ.get("KALM_DNS_TOKEN", "")
     headers = {
