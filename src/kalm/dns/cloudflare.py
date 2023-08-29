@@ -52,10 +52,11 @@ def check_access():
             return True
     else:
         return False
-    
+
 def list_dns():
     env = getenv()
-    url = env["KALM_DNS_URL"] + "/client/v4/zones/" + env["KALM_DNS_DOMAIN"] + "/dns_records"
+    #  --url https://api.cloudflare.com/client/v4/zones/zone_identifier/dns_records \
+    url = env["KALM_DNS_URL"] + "/client/v4/zones/" + env["KALM_DNS_ZONEID"] + "/dns_records"
     bearer = "Bearer " + os.environ.get("KALM_DNS_TOKEN", "")
     headers = {
     "Authorization": bearer,
@@ -70,6 +71,6 @@ def list_dns():
         print(response.text)
         exit(1)
 
-        
+
 
 
