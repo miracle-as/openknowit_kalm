@@ -42,6 +42,7 @@ def check_access():
     "Authorization": "Bearer " + env["KALM_DNS_TOKEN"],
     "Content-Type": "application/json"
   }
+    print(headers)
     response = requests.get(url, headers=headers)
     print(response.text)  # Print the response content
     if response.status_code == 200:
