@@ -100,7 +100,7 @@ def add_record(record):
     }
     data = {
     "content": record["content"], 
-    "name": record["name"] + os.environ.get("KALM_DNS_DOMAIN"),
+    "name": record["name"] + '.' + os.environ.get("KALM_DNS_DOMAIN"),
     "proxied": False,
     "type": "A",
     "comment": "DNS record created by KALM",
