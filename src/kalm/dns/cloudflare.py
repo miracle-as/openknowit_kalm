@@ -89,6 +89,10 @@ def add_record():
     except:
         value = None
     if value != None:
+        print("...................................")
+        print("DNS record already exists")
+        print(records[key])
+        print("...................................")
         delete_record(records[key]["id"])
     print("add record")
 
