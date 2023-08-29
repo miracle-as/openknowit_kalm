@@ -1,4 +1,6 @@
 from . import dns
+from . import cloudflare
+
 import argparse
 
 def main():
@@ -49,7 +51,9 @@ def main():
         dns.clean(args)
         ready = True
 
-
+    if args.action[0] == "cloudflare":
+        cloudflare.check_access()
+        ready = True
         
 
 
