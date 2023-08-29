@@ -85,7 +85,7 @@ def add_record(record):
     data = {
     "content": "198.51.100.4",
     "name": "example.com",
-    "proxied": false,
+    "proxied": False,
     "type": "A",
     "comment": "Domain verification record",
     "tags": [
