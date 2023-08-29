@@ -53,7 +53,16 @@ def main():
         
     if args.action[0] == "add_record":
         if(cloudflare.check_access()):
-            cloudflare.add_record()   
+            record = {
+                "type": "A",
+                "name": "test",
+                "content": "123.123.123.123",
+                "ttl": 300,
+                "proxied": False
+            }
+
+
+            cloudflare.add_record(record)   
             return True
 
 
