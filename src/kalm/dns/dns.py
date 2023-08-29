@@ -12,6 +12,9 @@ import re
 import netifaces
 import paramiko
 from ..common import prettyllog
+from . import cloudflare
+
+
 
 def get_default_gateway():
     try:
@@ -396,9 +399,6 @@ def delete_dns_record(hostname):
 
 def libvirt(args):
    set_env()
-   zoneid = get_zone_id()
-   records = get_records()
-   prettyllog("manage", "dns", "virtlib", "new", "000", "add dns record %s" % (zoneid))
    domain_ids = get_domains()
    for domain_id in domain_ids:
     prettyllog("manage", "dns", domain_id, "new", "000", "add dns record %s" % (domain_id))
@@ -431,17 +431,16 @@ def libvirt(args):
         print("no network")
     for ip4 in ip4s:
       prettyllog("manage", "dns", domain_name, "new", "000", "add dns record %s" % (ip4["domain_name"] + "." + ip4["network"] + ".openknowit.com"))
-      if check_dns_record(ip4["domain_name"]):
-        old_record = get_dns_record(ip4["domain_name"])
-        if old_record['value'] != ip4['ipaddress']:
-          prettyllog("manage", "dns", domain_name, "new", "000", "update dns record %s" % (ip4["domain_name"] + "." + ip4["network"] + ".openknowit.com"))
-          delete_dns_record(ip4["domain_name"])
-          add_dns_record(ip4["domain_name"], "A", ip4["ipaddress"])
-        else:
-          prettyllog("manage", "dns", domain_name, "new", "000", "no change dns record %s" % (ip4["domain_name"] + "." + ip4["network"] + ".openknowit.com"))
-      else:
-        prettyllog("manage", "dns", domain_name, "new", "000", "add dns record %s" % (ip4["domain_name"] + "." + ip4["network"] + ".openknowit.com"))
-        add_dns_record(ip4["domain_name"], "A", ip4["ipaddress"])
+      if os.environ.get("KALM_DNS_TYPE") == "cloudflare":
+       if(cloudflare.check_access()):
+         record = {
+                "type": "A",
+                "name": "test",
+                "content": "123.123.123.124",
+                "ttl": 300,
+                "proxied": False
+            }
+         cloudflare.add_record(record)
 
          
 
