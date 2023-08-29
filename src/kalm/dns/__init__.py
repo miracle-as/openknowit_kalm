@@ -2,6 +2,42 @@ from . import dns
 from . import cloudflare
 
 import argparse
+import os
+
+def check_env():
+    if os.environ.get("KALM_DNS_TYPE") == None:
+        print("KALM_DNS_TYPE not set")
+        exit(1)
+    if os.environ.get("KALM_DNS_URL") == None:
+        print("KALM_DNS_URL not set")
+        exit(1)
+    if os.environ.get("KALM_DNS_TOKEN") == None:
+        print("KALM_DNS_TOKEN not set")
+        exit(1)
+    if os.environ.get("KALM_DNS_DOMAIN") == None:
+        print("KALM_DNS_DOMAIN not set")
+        exit(1)
+    if os.environ.get("KALM_DNS_PROVIDER") == None:
+        print("KALM_DNS_PROVIDER not set")
+        exit(1)
+    if os.environ.get("KALM_DNS_ZONEID") == None:
+        print("KALM_DNS_ZONEID not set")
+        exit(1)
+    if os.environ.get("KALM_DNS_RECORD_NAME") == None:
+        print("KALM_DNS_RECORD_NAME not set")
+        exit(1)
+    if os.environ.get("KALM_DNS_RECORD_CONTENT") == None:
+        print("KALM_DNS_RECORD_CONTENT not set")
+        exit(1)
+    if os.environ.get("KALM_DNS_RECORD_TTL") == None:
+        os.environ.setdefault("KALM_DNS_RECORD_TTL", "300")
+    if os.environ.get("KALM_DNS_RECORD_TYPE") == None:
+        os.environ.setdefault("KALM_DNS_RECORD_TYPE", "A")
+    if os.environ.get("KALM_DNS_RECORD_PROXIED") == None:
+        os.environ.setdefault("KALM_DNS_RECORD_PROXIED", False )
+    return True
+
+
 
 def main():
     parser = argparse.ArgumentParser(description="Keep kalm and automate", usage="kalm_dns <action> \n\n\
@@ -52,17 +88,9 @@ def main():
             return True
         
     if args.action[0] == "add_record":
-        if(cloudflare.check_access()):
-            record = {
-                "type": "A",
-                "name": "test",
-                "content": "123.123.123.124",
-                "ttl": 300,
-                "proxied": False
-            }
-
-
-            cloudflare.add_record(record)   
+        if check_env():
+          if(cloudflare.check_access()):
+            cloudflare.add_record()   
             return True
 
 
