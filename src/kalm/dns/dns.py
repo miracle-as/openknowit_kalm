@@ -444,7 +444,13 @@ def libvirt(args):
 
          
 
-
+      os.environ.setdefault("KALM_DNS_RECORD_NAME", ip4["domain_name"])
+      os.environ.setdefault("KALM_DNS_RECORD_CONTENT", ip4["ipaddress"])
+      os.environ.setdefault("KALM_DNS_RECORD_TTL", "300")
+      os.environ.setdefault("KALM_DNS_RECORD_TYPE", "A")
+      os.environ.setdefault("KALM_DNS_RECORD_PROXIED", False )
+      
+                            
       add_dns_record(ip4["domain_name"], "A", ip4["ipaddress"])
       #prettyllog("manage", "dns", domain_name, "new", "000", "add fingerprint record %s" % (ip4["domain_name"] + "." + ip4["network"] + ".openknowit.com"))
       #add_dns_record(ip4["domain_name"], "TXT", ip4['fingerprint'])
