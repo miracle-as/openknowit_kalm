@@ -440,12 +440,4 @@ def libvirt(args):
           prettyllog("manage", "dns", domain_name, "new", "000", "add dns record %s" % (ip4["domain_name"] + "." + ip4["network"] + ".openknowit.com"))
           cloudflare.add_record()
 
-         
-
-
-                            
-      add_dns_record(ip4["domain_name"], "A", ip4["ipaddress"])
-      #prettyllog("manage", "dns", domain_name, "new", "000", "add fingerprint record %s" % (ip4["domain_name"] + "." + ip4["network"] + ".openknowit.com"))
-      #add_dns_record(ip4["domain_name"], "TXT", ip4['fingerprint'])
-
 

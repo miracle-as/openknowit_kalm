@@ -66,14 +66,13 @@ def list_dns():
     records = {}
     if response.status_code == 200:
         for record in response.json()["result"]:
-            print(record)
-            records[record["name"]] = record["id"]
+          records[record["name"]] = record["id"]
     else:
         print("Error: " + str(response.status_code))
         print(response.text)
         exit(1)
-
     return records
+
 def delete_record(name):
     myenv = getenv()
     print("delete record")
