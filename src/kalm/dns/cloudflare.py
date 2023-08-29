@@ -40,18 +40,16 @@ def getenv():
 def check_access():
     env = getenv()
     url = env["KALM_DNS_URL"] + "/client/v4/user/tokens/verify"
-    print(url)
-    print(env["KALM_DNS_TOKEN"])
     bearer = "Bearer " + os.environ.get("KALM_DNS_TOKEN", "")
     headers = {
     "Authorization": bearer,
     "Content-Type": "application/json"
     }
-    print(headers)
     response = requests.get(url, headers=headers)
-    print(response.content)  # Print the response content
     if response.status_code == 200:
-        return True
+        if response.json()["result"]["status"] == "active":
+            print("Access verified")
+            return True
     else:
         return False
 
