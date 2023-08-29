@@ -66,6 +66,7 @@ def list_dns():
     records = {}
     if response.status_code == 200:
         for record in response.json()["result"]:
+            print(record)
             records[record["name"]] = record["content"]
     else:
         print("Error: " + str(response.status_code))
