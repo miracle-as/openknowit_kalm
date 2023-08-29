@@ -38,9 +38,9 @@ def check_access():
     url = env["KALM_DNS_URL"] + "client/v4/user/tokens/verify"
     print(url)
     print(env["KALM_DNS_TOKEN"])
+    bearer = "Bearer " + env["KALM_DNS_TOKEN"]
     headers = {
-    "Authorization": "Bearer " + env["KALM_DNS_TOKEN"],
-    "Auth-API-Token": env["KALM_DNS_TOKEN"],
+    "Authorization": bearer,
     "Content-Type": "application/json"
   }
     print(headers)
