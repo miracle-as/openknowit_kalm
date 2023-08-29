@@ -84,13 +84,10 @@ def add_record(record):
     }
     data = {
     "content": "198.51.100.4",
-    "name": "example.com",
+    "name": "demo",
     "proxied": False,
     "type": "A",
     "comment": "Domain verification record",
-    "tags": [
-    "owner:kalm"
-     ],
     "ttl": 3600
     }
     response = requests.post(url, headers=headers, data=json.dumps(data))
