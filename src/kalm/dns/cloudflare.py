@@ -35,7 +35,7 @@ def getenv():
 
 def check_access():
     env = getenv()
-    url = env[˝KALM_DNS_URL"] + "client/v4/user/tokens/verify"
+    url = env["KALM_DNS_URL"] + "client/v4/user/tokens/verify"
     headers = {
     "Authorization": "Bearer " + env["KALM_DNS_TOKEN"],
     "Content-Type": "application/json"
