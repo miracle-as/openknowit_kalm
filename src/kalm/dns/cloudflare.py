@@ -57,21 +57,56 @@ def list_dns():
     myenv = getenv()
     #  --url https://api.cloudflare.com/client/v4/zones/zone_identifier/dns_records \
     url = os.environ.get("KALM_DNS_URL") + "/client/v4/zones/" + os.environ.get("KALM_DNS_ZONEID") + "/dns_records"
-    print(url + "\n"   )
-
     bearer = "Bearer " + os.environ.get("KALM_DNS_TOKEN", "")
     headers = {
     "Authorization": bearer,
     "Content-Type": "application/json"
     }
     response = requests.get(url, headers=headers)
+    records = []
     if response.status_code == 200:
         for record in response.json()["result"]:
-            print(record["name"] + " " + record["content"])
+            records.append(record)
     else:
         print("Error: " + str(response.status_code))
         print(response.text)
         exit(1)
+    return records
+
+def add_record(record):
+    myenv = getenv()
+    records = list_dns()
+    url = os.environ.get("KALM_DNS_URL") + "/client/v4/zones/" + os.environ.get("KALM_DNS_ZONEID") + "/dns_records"
+    bearer = "Bearer " + os.environ.get("KALM_DNS_TOKEN", "")
+    headers = {
+    "Authorization": bearer,
+    "Content-Type": "application/json"
+    }
+    data = {
+    "content": "198.51.100.4",
+    "name": "example.com",
+    "proxied": false,
+    "type": "A",
+    "comment": "Domain verification record",
+    "tags": [
+    "owner:kalm"
+     ],
+    "ttl": 3600
+    }
+    response = requests.post(url, headers=headers, data=json.dumps(data))
+    if response.status_code == 200:
+        print("Record added")
+        return True
+    else:
+        print("Error: " + str(response.status_code))
+        print(response.text)
+        exit(1)
+        return False
+
+
+
+
+
 
 
 

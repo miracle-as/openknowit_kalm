@@ -50,6 +50,11 @@ def main():
         if(cloudflare.check_access()):
             cloudflare.list_dns()   
             return True
+        
+    if args.action[0] == "add_record":
+        if(cloudflare.check_access()):
+            cloudflare.add_record()   
+            return True
 
 
     
