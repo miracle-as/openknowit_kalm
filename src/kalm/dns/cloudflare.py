@@ -80,10 +80,10 @@ def delete_record(name):
 
 
 
-def add_record(record):
+def add_record():
     myenv = getenv()
     records = list_dns()
-    key = record['name'] + os.environ.get("KALM_DNS_DOMAIN")   
+    key = os.environ.get("KALM_DNS_RECORD_NAME")+ '.' + os.environ.get("KALM_DNS_DOMAIN")   
     try:
       value =records[key]
     except:
