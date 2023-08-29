@@ -30,31 +30,29 @@ def main():
     if args.action[0] == "envcheck":
         print("env check")
         dns.env_check()
-        ready = True
 
     if args.action[0] == "setenv":
         print("set env")
         dns.set_env(args)
-        ready = True
     
     if args.action[0] == "libvirt":
         print("set env")
         dns.libvirt(args)
-        ready = True
 
     if args.action[0] == "default":
         print("set env")
         dns.default(args)
-        ready = True
 
     if args.action[0] == "clean":
         dns.clean(args)
-        ready = True
 
     if args.action[0] == "cloudflare":
         cloudflare.check_access()
-        ready = True
         
+    if args.action[0] == "list":
+        if(cloudflare.check_access()):
+            cloudflare.list_dns()   
+            return True
 
 
     

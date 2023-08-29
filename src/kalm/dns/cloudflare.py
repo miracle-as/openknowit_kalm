@@ -52,5 +52,24 @@ def check_access():
             return True
     else:
         return False
+    
+def list_dns():
+    env = getenv()
+    url = env["KALM_DNS_URL"] + "/client/v4/zones/" + env["KALM_DNS_DOMAIN"] + "/dns_records"
+    bearer = "Bearer " + os.environ.get("KALM_DNS_TOKEN", "")
+    headers = {
+    "Authorization": bearer,
+    "Content-Type": "application/json"
+    }
+    response = requests.get(url, headers=headers)
+    if response.status_code == 200:
+        for record in response.json()["result"]:
+            print(record["name"] + " " + record["content"])
+    else:
+        print("Error: " + str(response.status_code))
+        print(response.text)
+        exit(1)
+
+        
 
 
