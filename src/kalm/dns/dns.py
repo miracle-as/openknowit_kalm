@@ -434,7 +434,7 @@ def libvirt(args):
       os.environ.setdefault("KALM_DNS_RECORD_CONTENT", ip4["ipaddress"])
       os.environ.setdefault("KALM_DNS_RECORD_TTL", "300")
       os.environ.setdefault("KALM_DNS_RECORD_TYPE", "A")
-      os.environ.setdefault("KALM_DNS_RECORD_PROXIED", False )
+      os.environ.setdefault("KALM_DNS_RECORD_PROXIED", "False" )
       if os.environ.get("KALM_DNS_TYPE") == "cloudflare":
         if(cloudflare.check_access()):
           prettyllog("manage", "dns", domain_name, "new", "000", "add dns record %s" % (ip4["domain_name"] + "." + ip4["network"] + ".openknowit.com"))

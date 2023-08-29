@@ -101,7 +101,7 @@ def add_record(record):
     data = {
     "content": os.environ.get("KALM_DNS_RECORD_CONTENT"), 
     "name": os.environ.get("KALM_DNS_RECORD_NAME") + '.' + os.environ.get("KALM_DNS_DOMAIN"),
-    "proxied": str(os.environ.get("KALM_DNS_RECORD_PROXIED")),
+    "proxied": os.environ.get("KALM_DNS_RECORD_PROXIED"),
     "type": os.environ.get("KALM_DNS_RECORD_TYPE"),
     "comment": "DNS record created by KALM",
     "ttl": os.environ.get("KALM_DNS_RECORD_TTL")
