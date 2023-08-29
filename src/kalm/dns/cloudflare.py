@@ -39,7 +39,7 @@ def getenv():
 
 def check_access():
     env = getenv()
-    url = env["KALM_DNS_URL"] + "client/v4/user/tokens/verify"
+    url = env["KALM_DNS_URL"] + "/client/v4/user/tokens/verify"
     print(url)
     print(env["KALM_DNS_TOKEN"])
     bearer = "Bearer " + os.environ.get("KALM_DNS_TOKEN", "")
