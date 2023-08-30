@@ -5,13 +5,13 @@ import argparse
 
 def main():
     parser = argparse.ArgumentParser(description="Keep kalm and automate", usage="kalm_vault <action> \n\n\
-               \
-               version : 0.1.2 vault  \n\
+ \
+               version : 1.0.0 vault  \n\
                actions:\n\
                signssh </path/to/key>\n\
                install\n\
-               \
-               2023 Knowit Miracle\
+\n\
+               2023 Knowit Miracle\n\
                ")
     parser.add_argument('action', metavar='<action>', type=str, nargs='+', help='setup jenkis')
     args = parser.parse_args()
