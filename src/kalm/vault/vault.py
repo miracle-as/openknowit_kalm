@@ -3,7 +3,7 @@ import io
 import subprocess
 import requests
 import wget
-import tempdir
+import tempfile
 
 
 from datetime import datetime
@@ -29,7 +29,7 @@ VAULT_FORMAT = "json"
 VAULT_ADDR = os.getenv("VAULT_ADDR")
 
 def install(args):
-  tempdir = tempdir.TempDir()
+  tempdir = tempfile.mkdtemp()
   wget.download("https://apt.releases.hashicorp.com/gpg", tempdir + "/hashicorp-archive-keyring.gpg")
   os.system("sudo mkdir -p /usr/share/keyrings/")
   os.system("sudo cp " + tempdir + "/hashicorp-archive-keyring.gpg /usr/share/keyrings/")
