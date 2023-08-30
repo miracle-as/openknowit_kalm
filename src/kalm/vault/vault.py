@@ -43,8 +43,10 @@ def install(args):
     print("line exists")
   else:
     print("line does not exist")
-    with open("/etc/apt/sources.list", "a") as myfile:
+    myfilename = tempdir + "/sources.list"
+    with open(myfilename, "a") as myfile:
       myfile.write(myline)
+    os.system("sudo cp " + myfilename + " /etc/apt/sources.list.d/ || true")
   os.system("sudo apt-get update && sudo apt-get install vault -y")
   try:
     os.system("vault -autocomplete-install")
