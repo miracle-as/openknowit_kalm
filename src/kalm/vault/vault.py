@@ -4,7 +4,9 @@ import subprocess
 import requests
 import wget
 import tempfile
-import grep
+from ..common import line_in_file
+
+
 
 
 from datetime import datetime
@@ -37,7 +39,7 @@ def install(args):
   #python check if line exists in file
   mylsb = os.popen("lsb_release -cs").read()
   myline = "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com %s main" % mylsb
-  if grep.find(myline, "/etc/apt/sources.list"):
+  if line_in_file("/etc/apt/sources.list" , myline):
     print("line exists")
   else:
     print("line does not exist")

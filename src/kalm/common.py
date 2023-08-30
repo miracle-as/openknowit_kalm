@@ -21,6 +21,15 @@ if VERIFY_SSL == "false" or VERIFY_SSL == "False" or VERIFY_SSL == "FALSE" or VE
 else:
   VERIFY_SSL = True
 
+def line_in_file(file_path, search_text):
+    with open(file_path, 'r') as f:
+        for line in f:
+            if search_text in line:
+                return True
+    return False
+
+    
+
 def get_file_content(file_path):
     with open(file_path, 'r') as f:
         return f.read()
