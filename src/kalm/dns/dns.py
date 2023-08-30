@@ -426,6 +426,9 @@ def libvirt(args):
             netid = get_network_id(network)
             prettyllog("manage", "dns", domain_name, "new", "000", "add dns record %s" % (domain_name + "." + network + ".openknowit.com")) 
             ipaddress = { "domain_name" : domain_name, "network" : network, "ipaddress" : ipaddress , "fingerprint" : fingerprint }
+            print("--------------------------------------------------------------------------------------")
+            print(ipaddress)
+            print("--------------------------------------------------------------------------------------")
             ip4s.append(ipaddress)
       except:
         print("no network")
