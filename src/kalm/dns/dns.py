@@ -421,6 +421,10 @@ def libvirt(args):
       fingerprint = get_ssh_host_key_fingerprint(ipaddress) 
       netid = get_network_id(network)
       prettyllog("manage", "dns", domain_name, "new", "000", "add dns record %s" % (domain_name + "." + network + ".openknowit.com"))
+      print("--------------------------------------------------------------------------------------")
+      print(ipaddress)
+      print("--------------------------------------------------------------------------------------")
+      
       ipaddress = { "domain_name" : domain_name, "network" : network, "ipaddress" : ipaddress }
       ip4s.append(ipaddress)
     except:
