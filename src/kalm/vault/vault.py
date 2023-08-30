@@ -4,6 +4,7 @@ import subprocess
 import requests
 import wget
 import tempfile
+import grep
 
 
 from datetime import datetime
@@ -31,10 +32,18 @@ VAULT_ADDR = os.getenv("VAULT_ADDR")
 def install(args):
   tempdir = tempfile.mkdtemp()
   wget.download("https://apt.releases.hashicorp.com/gpg", tempdir + "/hashicorp-archive-keyring.gpg")
-  os.system("sudo mkdir -p /usr/share/keyrings/")
-  os.system("sudo cp " + tempdir + "/hashicorp-archive-keyring.gpg /usr/share/keyrings/")
-  os.system("echo \"deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main\" | sudo tee /etc/apt/sources.list.d/hashicorp.list")
-  os.system("apt-get update && sudo apt-get install vault -y")
+  os.system("sudo mkdir -p /usr/share/keyrings/ || true")
+  os.system("sudo cp " + tempdir + "/hashicorp-archive-keyring.gpg /usr/share/keyrings/ || true")
+  #python check if line exists in file
+  mylsb = os.popen("lsb_release -cs").read()
+  myline = "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com %s main" % mylsb
+  if grep.find(myline, "/etc/apt/sources.list"):
+    print("line exists")
+  else:
+    print("line does not exist")
+    with open("/etc/apt/sources.list", "a") as myfile:
+      myfile.write(myline)
+  os.system("sudo apt-get update && sudo apt-get install vault -y")
   try:
     os.system("vault -autocomplete-install")
     return True
