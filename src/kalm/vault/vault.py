@@ -2,6 +2,8 @@ import os
 import io
 import subprocess
 import requests
+import wget
+
 from datetime import datetime
 from cryptography import x509
 from cryptography.hazmat.backends import default_backend
@@ -24,6 +26,17 @@ VAULT_TOKEN = os.getenv("VAULT_TOKEN")
 VAULT_FORMAT = "json"
 VAULT_ADDR = os.getenv("VAULT_ADDR")
 
+def install(args):
+  wget.download("https://apt.releases.hashicorp.com/gpg", "/usr/share/keyrings/hashicorp-archive-keyring.gpg")
+  os.system("echo \"deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main\" | sudo tee /etc/apt/sources.list.d/hashicorp.list")
+  os.system("apt-get update && sudo apt-get install vault -y")
+  try:
+    os.system("vault -autocomplete-install")
+    return True
+  except:
+    return False
+
+   
 def extract_certificate_expiry(cert_path):
     with open(cert_path, 'rb') as cert_file:
         cert_data = cert_file.read()

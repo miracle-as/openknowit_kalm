@@ -9,6 +9,7 @@ def main():
                version : 0.1.2 vault  \n\
                actions:\n\
                signssh </path/to/key>\n\
+               install\n\
                \
                2023 Knowit Miracle\
                ")
@@ -23,6 +24,11 @@ def main():
     if args.action[0] == "signssh":
           vault.signkey(args)
           return 0
+    
+    if args.action[0] == "install":
+          vault.install(args)
+          return 0
+    
     
         
 
