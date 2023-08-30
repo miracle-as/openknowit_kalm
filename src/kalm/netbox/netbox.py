@@ -20,6 +20,18 @@ Host {hostname}
     Port 22
     {proxy_jump}
 """
+def vizulize(args):
+    cluseters = get_clusters()
+    vms = get_virtual_machines()
+    print("digraph G {")
+    for cluster in cluseters:
+        print(f"    {cluster['name']}")
+    for vm in vms:
+        print(f"    {vm['name']}")
+        if vm.get("cluster"):
+            print(f"    {vm['name']} -> {vm['cluster']['name']}")
+    print("}")
+
 
 
 

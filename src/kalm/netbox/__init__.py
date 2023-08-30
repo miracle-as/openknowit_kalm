@@ -29,6 +29,11 @@ def main():
         netbox.netboxdata(args)
         return 0
     
+    if args.action[0] == "vizualize":
+        netbox.vizulize(args)
+        return 0
+    
+    
     return 0
 
     
