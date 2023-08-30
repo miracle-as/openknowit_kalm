@@ -90,6 +90,10 @@ def get_domains():
 def get_dhcp_leases(network_name, mac_address):
     # Run virsh net-dhcp-leases command
     command = ["virsh", "net-dhcp-leases", network_name]
+    print("--------------------------------------------------------------------------------------")
+    print(command)
+    print("--------------------------------------------------------------------------------------")
+    
     process = subprocess.Popen(command, stdout=subprocess.PIPE)
     output, _ = process.communicate()
     for line in output.decode("utf-8").split("\n"):
@@ -424,7 +428,7 @@ def libvirt(args):
       print("--------------------------------------------------------------------------------------")
       print(ipaddress)
       print("--------------------------------------------------------------------------------------")
-      
+
       ipaddress = { "domain_name" : domain_name, "network" : network, "ipaddress" : ipaddress }
       ip4s.append(ipaddress)
     except:
