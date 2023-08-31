@@ -54,7 +54,7 @@ def add_vm():
         print("No VM disk provided (KALM_VM_DISK)")
         return False
     try:
-        vmcpu = os.environ.get('KALM_VM_CPU')
+        vmcpus = os.environ.get('KALM_VM_CPU')
     except:
         print("No VM cpu provided (KALM_VM_CPU)")
         return False
@@ -72,7 +72,7 @@ def add_vm():
         "name": vmname,
         "cluster": vmcluster,
         "disk": vmdisk,
-        "vcpus": vmvcpus,
+        "vcpus": vmcpus,
         "memory": vmmemory,
     }
     response = requests.post(f"{NETBOX_URL}/virtualization/virtual-machines/", headers=headers, data=data)
