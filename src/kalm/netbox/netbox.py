@@ -36,7 +36,7 @@ def vizulize(args):
 def add_vm():
     headers = {
         "Authorization": f"Token {NETBOX_TOKEN}",
-        "Accept": "application/json",
+        "Accept": "application/json"
     }
     try:
         vmname = os.environ.get('KALM_VM_NAME')
@@ -112,7 +112,7 @@ def add_vm():
 def get_clusters():
     headers = {
         "Authorization": f"Token {NETBOX_TOKEN}",
-        "Accept": "application/json",
+        "Accept": "application/json"
     }
     response = requests.get(f"{NETBOX_URL}/virtualization/clusters/", headers=headers)
     clusters = response.json()
@@ -121,7 +121,7 @@ def get_clusters():
 def get_virtual_machines():
     headers = {
         "Authorization": f"Token {NETBOX_TOKEN}",
-        "Accept": "application/json",
+        "Accept": "application/json"
     }
     response = requests.get(f"{NETBOX_URL}/virtualization/virtual-machines/", headers=headers)
     vms = response.json()
