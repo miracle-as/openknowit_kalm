@@ -31,9 +31,10 @@ def main():
     
     if args.action[0] == "vizualize":
         netbox.vizulize(args)
-        return 0
     
-    
+        return     
+    if args.action[0] == "add_vm":
+        return netbox.add_vm()    
     return 0
 
     

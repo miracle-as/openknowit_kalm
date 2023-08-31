@@ -33,7 +33,58 @@ def vizulize(args):
     print("}")
 
 
+def add_vm():
+    headers = {
+        "Authorization": f"Token {NETBOX_TOKEN}",
+        "Accept": "application/json",
+    }
+    try:
+        vmname = os.environ.get('KALM_VM_NAME')
+    except:
+        print("No VM name provided (KALM_VM_NAME)")
+        return False
+    try:
+        vmcluster = os.environ.get('KALM_VM_CLUSTER')
+    except:
+        print("No VM cluster provided (KALM_VM_CLUSTER)")
+        return False
+    try: 
+        vmdisk = os.environ.get('KALM_VM_DISK')
+    except:
+        print("No VM disk provided (KALM_VM_DISK)")
+        return False
+    try:
+        vmcpu = os.environ.get('KALM_VM_CPU')
+    except:
+        print("No VM cpu provided (KALM_VM_CPU)")
+        return False
+    try:
+        vmmemory = os.environ.get('KALM_VM_MEMORY')
+    except:
+        print("No VM memory provided (KALM_VM_MEMORY)")
+        return False
+    try:
+        vmip = os.environ.get('KALM_VM_IP') 
+    except:
+        print("No VM IP provided (KALM_VM_IP)")
+        return False
+    data = {
+        "name": vmname,
+        "cluster": vmcluster,
+        "disk": vmdisk,
+        "vcpus": vmvcpus,
+        "memory": vmmemory,
+    }
+    response = requests.post(f"{NETBOX_URL}/virtualization/virtual-machines/", headers=headers, data=data)
+    print(response)
+    if response.status_code == 200:
+        return True
+    else:
+        return False
 
+
+    
+    
 
 def get_clusters():
     headers = {
@@ -53,6 +104,7 @@ def get_virtual_machines():
     vms = response.json()
     return vms["results"]
 
+    
 def netboxdata(args):
     clusters = get_clusters()
     vms = get_virtual_machines()
