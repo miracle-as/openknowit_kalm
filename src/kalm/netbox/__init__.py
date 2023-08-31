@@ -9,6 +9,7 @@ def main():
                netboxdata                dump netbox data in json \n\
                ssh_config                dump ssh_config\n\
                ansible_inventory         dump ansible inventory\n\
+               add_vm                    add_vm to netbox\n\
                refresh                   refresh core netbox content\n\
                \
                2023 Knowit Miracle\
