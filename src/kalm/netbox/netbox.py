@@ -94,6 +94,7 @@ def add_vm():
         "memory": vmmemory,
     }
     print(data)
+    print(headers)
     response = requests.post(f"{NETBOX_URL}/virtualization/virtual-machines/", headers=headers, data=data)
     print(response)
     print(response.json())
