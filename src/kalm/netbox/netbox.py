@@ -58,7 +58,7 @@ def add_vm():
     try: 
         vmdisk = os.environ.get('KALM_VM_DISK')
         if vmdisk == None:
-            raise Exception("No VM disk provided (KALM_VM_DISK)")
+            vmdisk = 0
         print(vmdisk)
     except:
         print("No VM disk provided (KALM_VM_DISK)")
@@ -66,14 +66,16 @@ def add_vm():
     try:
         vmcpus = os.environ.get('KALM_VM_CPU')
         if vmcpus == None:
-            raise Exception("No VM cpu provided (KALM_VM_CPU)")
-        
+            vmcpus = 0
         print(vmcpus)
     except:
         print("No VM cpu provided (KALM_VM_CPU)")
         return False
     try:
         vmmemory = os.environ.get('KALM_VM_MEMORY')
+        if vmmemory == None:
+            vmmemory = 0
+
         print(vmmemory)
     except:
         print("No VM memory provided (KALM_VM_MEMORY)")
