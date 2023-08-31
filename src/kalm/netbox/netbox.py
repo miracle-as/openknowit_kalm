@@ -95,10 +95,12 @@ def add_vm():
             "ip": vmip
         }
     }
-    
+
     print(data)
     print(headers)
-    response = requests.post(f"{NETBOX_URL}/virtualization/virtual-machines/", headers=headers, data=data)
+    url = os.environ.get("NETBOX_API_URL") + "/virtualization/virtual-machines/"
+    response = requests.post(url, headers=headers, data=json.dumps(data))
+
     print(response)
     print(response.json())
     print(response.status_code) 
