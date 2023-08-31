@@ -77,6 +77,9 @@ def add_vm():
     }
     response = requests.post(f"{NETBOX_URL}/virtualization/virtual-machines/", headers=headers, data=data)
     print(response)
+    print(response.json())
+    print(response.status_code) 
+    print(response.content)    
     if response.status_code == 200:
         return True
     else:
