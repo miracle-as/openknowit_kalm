@@ -88,15 +88,39 @@ def add_vm():
         print("No VM IP provided (KALM_VM_IP)")
         return False
     data = {
-        "name": vmname,
-        "cluster": vmcluster,
-        "disk": vmdisk,
-        "vcpus": vmcpus,
-        "memory": vmmemory,
-        "local_context_data": {
-            "ip": vmip
-        }
+  "name": "string",
+  "status": "offline",
+  "site": 0,
+  "cluster": 0,
+  "device": 0,
+  "role": 0,
+  "tenant": 0,
+  "platform": 0,
+  "primary_ip4": 0,
+  "primary_ip6": 0,
+  "vcpus": 9999,
+  "memory": 2147483647,
+  "disk": 2147483647,
+  "description": "string",
+  "comments": "string",
+  "local_context_data": {
+    "additionalProp1": "string",
+    "additionalProp2": "string",
+    "additionalProp3": "string"
+  },
+  "tags": [
+    {
+      "name": "string",
+      "slug": "Hvxpc-MwFr9e_yu-JwWyS7KSZSF",
+      "color": "3c53c8"
     }
+  ],
+  "custom_fields": {
+    "additionalProp1": "string",
+    "additionalProp2": "string",
+    "additionalProp3": "string"
+  }
+}
 
     print(data)
     print(headers)
