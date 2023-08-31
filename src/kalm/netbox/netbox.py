@@ -40,6 +40,8 @@ def add_vm():
     }
     try:
         vmname = os.environ.get('KALM_VM_NAME')
+        if vmname == None:
+            raise Exception("No VM name provided (KALM_VM_NAME)")
         print(vmname)
     except:
 
@@ -47,19 +49,25 @@ def add_vm():
         return False
     try:
         vmcluster = os.environ.get('KALM_VM_CLUSTER')
+        if vmcluster == None:
+            raise Exception("No VM cluster provided (KALM_VM_CLUSTER)")
         print(vmcluster)
     except:
         print("No VM cluster provided (KALM_VM_CLUSTER)")
         return False
     try: 
         vmdisk = os.environ.get('KALM_VM_DISK')
+        if vmdisk == None:
+            raise Exception("No VM disk provided (KALM_VM_DISK)")
         print(vmdisk)
     except:
         print("No VM disk provided (KALM_VM_DISK)")
         return False
     try:
-        
         vmcpus = os.environ.get('KALM_VM_CPU')
+        if vmcpus == None:
+            raise Exception("No VM cpu provided (KALM_VM_CPU)")
+        
         print(vmcpus)
     except:
         print("No VM cpu provided (KALM_VM_CPU)")
