@@ -1,4 +1,4 @@
-4tool.poetry]
+[tool.poetry]
 name = "kalm"
 version = "0.8.134"
 description = "Knowit Automation lifecycle management"
