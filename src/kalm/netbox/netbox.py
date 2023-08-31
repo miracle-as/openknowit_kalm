@@ -35,8 +35,7 @@ def vizulize(args):
 
 def add_vm():
     headers = {
-        "Authorization": f"Token {NETBOX_TOKEN}",
-        "Accept": "application/json"
+        "Authorization": f"Token {NETBOX_TOKEN}"
     }
     try:
         vmname = os.environ.get('KALM_VM_NAME')
