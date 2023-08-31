@@ -91,7 +91,11 @@ def add_vm():
         "disk": vmdisk,
         "vcpus": vmcpus,
         "memory": vmmemory,
+        "local_context_data": {
+            "ip": vmip
+        }
     }
+    
     print(data)
     print(headers)
     response = requests.post(f"{NETBOX_URL}/virtualization/virtual-machines/", headers=headers, data=data)
