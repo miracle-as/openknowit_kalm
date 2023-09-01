@@ -124,6 +124,9 @@ def add_vm():
 
     print(data)
     print(headers)
+    if os.environ.get('NETBOX_API_URL') == None:
+        print("No NETBOX_API_URL provided")
+        return False
     url = os.environ.get("NETBOX_API_URL") + "/virtualization/virtual-machines/"
     print(url)
     response = requests.post(url, headers=headers, data=json.dumps(data))
