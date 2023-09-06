@@ -423,6 +423,11 @@ def libvirt(args):
     json_dict = json.loads(json_output)
     domain_name = json_dict["domain"]["name"]
     prettyllog("manage", "dns", domain_name, "new", "000", "add dns record %s" % (domain_name))
+    try:
+      mac_address = json_dict["domain"]["devices"]["interface"]["mac"]["@address"]
+    except:
+      mac_address == "None"   
+    prettyllog("manage", "macadress", domain_name, "new", "000", "add dns record %s" % (mac_address))
   
   for domain_id in domain_ids:
     xml_output = get_virsh_xmldump(domain_id)
