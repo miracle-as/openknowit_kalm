@@ -82,7 +82,7 @@ def delete_record(id):
     "Authorization": bearer,
     "Content-Type": "application/json"
     }
-    response = requests.post(url, headers=headers)
+    response = requests.delete(url, headers=headers)
     if response.status_code == 200:
         print("DNS record deleted")
         return True
