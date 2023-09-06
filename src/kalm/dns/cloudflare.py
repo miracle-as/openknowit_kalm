@@ -73,21 +73,24 @@ def list_dns():
         exit(1)
     return records
 
-def delete_record(name):
+def delete_record(id):
     myenv = getenv()
     print("delete record")
-    print(name)
-    dnsrecords = list_dns()
-    print("=============================================================")
-    print(name)
-    try:
-      
-      print(dnsrecords[name])
-      print("=============================================================")
+    url = os.environ.get("KALM_DNS_URL") + "/client/v4/zones/" + os.environ.get("KALM_DNS_ZONEID") + "/dns_records/" + id 
+    bearer = "Bearer " + os.environ.get("KALM_DNS_TOKEN", "")
+    headers = {
+    "Authorization": bearer,
+    "Content-Type": "application/json"
+    }
+    response = requests.post(url, headers=headers)
+    if response.status_code == 200:
+        print("DNS record deleted")
+        return True
+    else:
+        print("DNS record delete failed")
+        return False
+    
 
-    except:
-      print("======================ERROR=======================================")
-      return False
 
 
 
@@ -107,12 +110,6 @@ def add_record():
     print("add record")
 
     url = os.environ.get("KALM_DNS_URL") + "/client/v4/zones/" + os.environ.get("KALM_DNS_ZONEID") + "/dns_records"
-    print("-----------------------------------------------")
-    print(url)
-    print("-----------------------------------------------")
-
-
-
     bearer = "Bearer " + os.environ.get("KALM_DNS_TOKEN", "")
     headers = {
     "Authorization": bearer,
@@ -128,7 +125,6 @@ def add_record():
     "ttl": os.environ.get("KALM_DNS_RECORD_TTL")
     }
     response = requests.post(url, headers=headers, data=json.dumps(data))
-
     if response.status_code == 200:
         print("DNS record created")
         return True
