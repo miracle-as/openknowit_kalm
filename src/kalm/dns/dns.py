@@ -85,6 +85,9 @@ def get_domains():
     output, _ = process.communicate()
     mylist =  output.decode("utf-8").split("\n")
     mylist = list(filter(lambda x: x != "", mylist))
+    print("--------------------------------------------------------------------------------------")
+    print(mylist)
+    print("--------------------------------------------------------------------------------------")
     return mylist
 
 def get_dhcp_leases(network_name, mac_address):
