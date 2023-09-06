@@ -3,6 +3,7 @@ import json
 import os
 import base64
 import xml.etree.ElementTree as ET
+import platform
 import yaml
 
 netbox_url = os.environ.get('NETBOX_URL')
@@ -445,8 +446,39 @@ def create_tenant(tenant_name):
         return False
     
     
+def get_system_info():
+    system_info = platform.uname()
+    system_manufacturer = system_info.system
+    is_virtual = "QEMU" in system_manufacturer
 
+    return system_manufacturer, is_virtual
 
+def is_kvm_qemu_host():
+    # Check if KVM kernel module is loaded
+    kvm_module_loaded = os.path.exists('/dev/kvm')
+
+    # Check if QEMU-KVM process is running
+    qemu_process_running = False
+    with os.popen('pgrep -f qemu') as process:
+        qemu_process_running = process.read().strip() != ''
+
+    # Check for presence of QEMU virtualization tools
+    qemu_tools_installed = os.path.exists('/usr/bin/qemu-system-x86_64')
+
+    # Check if virt-what tool is available and if it reports "kvm" or "qemu"
+    virt_what_installed = os.path.exists('/usr/sbin/virt-what')
+    virt_what_result = None
+    if virt_what_installed:
+        with os.popen('/usr/sbin/virt-what') as process:
+            virt_what_result = process.read().strip()
+    return kvm_module_loaded or qemu_process_running or qemu_tools_installed or virt_what_result == "kvm" or virt_what_result == "qemu"
+
+def add_device():
+    headers = {
+        "Authorization": f"Token {NETBOX_TOKEN}",
+        "Accept": "application/json"
+    }
+    return False
 
 def add_vm():
     headers = {
@@ -454,68 +486,83 @@ def add_vm():
         "Accept": "application/json"
     }
     # Mandatory fields
-    vmname = os.environ.get('KALM_VM_NAME')
-    if vmname == None:
+    kvm_qemu_host = is_kvm_qemu_host()
+
+    manufacturer, is_virtual = get_system_info()
+    if manufacturer == "QEMU":
+        is_virtual = True
+    else:
+        is_virtual = False
+    if not is_virtual:
+      servername = os.environ.get("KALM_SERVER_NAME")
+      if servername == None:
+        servername = os.environ.get('HOSTNAME')
+      
+
+
+    if is_virtual:    
+      vmname = os.environ.get('KALM_VM_NAME')
+      if vmname == None:
         vmname = os.environ.get('HOSTNAME')
-    if vmname == None:  
+      if vmname == None:  
         raise Exception("No VM name provided (KALM_VM_NAME)")
-    vmcluster = os.environ.get('KALM_VM_CLUSTER')
-    if vmcluster == None:
+      vmcluster = os.environ.get('KALM_VM_CLUSTER')
+      if vmcluster == None:
         raise Exception("No VM cluster provided (KALM_VM_CLUSTER)")
-    # Optional fields
-    vmsite = os.environ.get('KALM_VM_SITE')
-    if vmsite == None:
+      # Optional fields
+      vmsite = os.environ.get('KALM_VM_SITE')
+      if vmsite == None:
         vmsite = "default"
-    vmrole = os.environ.get('KALM_VM_ROLE')
-    if vmrole == None:
+      vmrole = os.environ.get('KALM_VM_ROLE')
+      if vmrole == None:
         vmrole = "default"
-    vmtype = os.environ.get('KALM_VM_TYPE')
-    if vmtype == None:
+      vmtype = os.environ.get('KALM_VM_TYPE')
+      if vmtype == None:
         vmtype = "default"
-    vmplatform = os.environ.get('KALM_VM_PLATFORM')
-    if vmplatform == None:
+      vmplatform = os.environ.get('KALM_VM_PLATFORM')
+      if vmplatform == None:
         vmplatform = "default"
-    vmtentant = os.environ.get('KALM_VM_TENANT')
-    if vmtentant == None:
+      vmtentant = os.environ.get('KALM_VM_TENANT')
+      if vmtentant == None:
         vmtentant = "default"
-    vmdevice = os.environ.get('KALM_VM_DEVICE')
-    if vmdevice == None:
+      vmdevice = os.environ.get('KALM_VM_DEVICE')
+      if vmdevice == None:
         vmdevice = "default"
-    vmstatus = os.environ.get('KALM_VM_STATUS')
-    if vmstatus == None:
+      vmstatus = os.environ.get('KALM_VM_STATUS')
+      if vmstatus == None:
         vmstatus = "active"
-    vmdisk = os.environ.get('KALM_VM_DISK')
-    if vmdisk == None:
+      vmdisk = os.environ.get('KALM_VM_DISK')
+      if vmdisk == None:
         vmdisk = 1
-    vmcpus = os.environ.get('KALM_VM_CPU')
-    if vmcpus == None:
+      vmcpus = os.environ.get('KALM_VM_CPU')
+      if vmcpus == None:
         vmcpus = 1
-    vmmemory = os.environ.get('KALM_VM_MEMORY')
-    if vmmemory == None:
+      vmmemory = os.environ.get('KALM_VM_MEMORY')
+      if vmmemory == None:
         vmmemory = 1
-    vmip = os.environ.get('KALM_VM_IP') 
-    if vmip == None:
+      vmip = os.environ.get('KALM_VM_IP') 
+      if vmip == None:
         vmip = ""
-    vmip6 = os.environ.get('KALM_VM_IP6') 
-    if vmip6 == None:
+      vmip6 = os.environ.get('KALM_VM_IP6') 
+      if vmip6 == None:
         vmip6 = ""
-    vmdescription = os.environ.get('KALM_VM_DESCRIPTION')
-    if vmdescription == None:
+      vmdescription = os.environ.get('KALM_VM_DESCRIPTION')
+      if vmdescription == None:
         vmdescription = ""
 
-    vmcomments = os.environ.get('KALM_VM_COMMENTS')
-    if vmcomments == None:
+      vmcomments = os.environ.get('KALM_VM_COMMENTS')
+      if vmcomments == None:
         vmcomments = ""
 
-    vmlocal_context_data = os.environ.get('KALM_VM_LOCAL_CONTEXT_DATA')
-    if vmlocal_context_data == None:
+      vmlocal_context_data = os.environ.get('KALM_VM_LOCAL_CONTEXT_DATA')
+      if vmlocal_context_data == None:
         vmlocal_context_data = {}
     
-    vmtags = os.environ.get('KALM_VM_TAGS')
-    if vmtags == None:
+      vmtags = os.environ.get('KALM_VM_TAGS')
+      if vmtags == None:
         vmtags = []
-    vmcustom_fields = os.environ.get('KALM_VM_CUSTOM_FIELDS')
-    if vmcustom_fields == None:
+      vmcustom_fields = os.environ.get('KALM_VM_CUSTOM_FIELDS')
+      if vmcustom_fields == None:
         vmcustom_fields = {}
 
 
@@ -523,18 +570,18 @@ def add_vm():
 
     # Get the IDs from Netbox
     
-    cluster_id = get_cluster_id(vmcluster)
-    site_id = get_site_id(vmsite)
-    device_id = get_device_id(vmdevice)
-    role_id = get_role_id(vmrole)
-    type_id = get_type_id(vmtype)
-    platform_id = get_platform_id(vmplatform)
-    tenant_id = get_tenant_id(vmtentant)
-    ip4_id = get_ip4_id(vmip)
-    ip6_id = get_ip6_id(vmip6)
+      cluster_id = get_cluster_id(vmcluster)
+      site_id = get_site_id(vmsite)
+      device_id = get_device_id(vmdevice)
+      role_id = get_role_id(vmrole)
+      type_id = get_type_id(vmtype)
+      platform_id = get_platform_id(vmplatform)
+      tenant_id = get_tenant_id(vmtentant)
+      ip4_id = get_ip4_id(vmip)
+      ip6_id = get_ip6_id(vmip6)
 
 
-    data = {
+      data = {
             "name": vmname, 
             "status": vmstatus,
             "site": site_id,
@@ -554,27 +601,28 @@ def add_vm():
             "tags": vmtags,
             "custom_fields": vmcustom_fields
         }
-    if os.environ.get('NETBOX_API_URL') == None:
+      if os.environ.get('NETBOX_API_URL') == None:
         print("No NETBOX_API_URL provided")
         return False
-    if os.environ.get('NETBOX_API_TOKEN') == None:
+      if os.environ.get('NETBOX_API_TOKEN') == None:
         print("No NETBOX_API_TOKEN provided")
         return False
-    nburl=os.environ.get('NETBOX_API_URL')
-    if nburl.endswith("/"):
+      nburl=os.environ.get('NETBOX_API_URL')
+      if nburl.endswith("/"):
         nburl = nburl[:-1]
-    if not nburl.endswith("/api"):
+      if not nburl.endswith("/api"):
         nburl = nburl + "/api"
-    vmid = get_virtual_machine_id(vmname)
-    if vmid != None:
+      vmid = get_virtual_machine_id(vmname)
+      if vmid != None:
         return True
     
-    url = nburl + "/virtualization/virtual-machines/"
-    response = requests.post(url, headers=headers, json=data)
-    if response.status_code == 200:
+      url = nburl + "/virtualization/virtual-machines/"
+      response = requests.post(url, headers=headers, json=data)
+      if response.status_code == 200:
         return True
-    else:
+      else:
         return False
+
 
 def fix_url(apiurl):
     nburl=os.environ.get('NETBOX_API_URL')
