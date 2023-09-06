@@ -764,7 +764,9 @@ def get_virtual_machine(id):
         "Authorization": f"Token {NETBOX_TOKEN}",
         "Accept": "application/json"
     }
-    url = fix_url("virtualization/virtual_machines/" + str(id))
+    url = fix_url("/virtualization/virtual_machines/" + str(id))
+    print(url)
+    return None
     response = requests.get(url, headers)
     print(response.content)
     vm = response.json()
