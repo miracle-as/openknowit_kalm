@@ -108,6 +108,7 @@ def add_record():
     "ttl": os.environ.get("KALM_DNS_RECORD_TTL")
     }
     response = requests.post(url, headers=headers, data=json.dumps(data))
+    print(response.content)
     if response.status_code == 200:
         print("DNS record created")
         print(response.content)
