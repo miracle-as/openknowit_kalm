@@ -108,6 +108,9 @@ def add_record():
     "comment": "DNS record created by KALM",
     "ttl": os.environ.get("KALM_DNS_RECORD_TTL")
     }
+    print("--------------------------DNS------------------------------")
+    print(data)
+    print("--------------------------DNS------------------------------")
     response = requests.post(url, headers=headers, data=json.dumps(data))
     print("--------------------------DNS------------------------------")
     print(response.content)
