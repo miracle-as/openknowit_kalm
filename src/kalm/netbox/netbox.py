@@ -905,11 +905,17 @@ def generate_ssh_config_entry(vm):
     if vm["cluster"] != vm["name"]:
 
         proxy_jump = f"ProxyJump {vm['cluster']}".split("openknowit.com")[0]
-    
-    return ssh_config_template.format(
+        return ssh_config_template.format(
         hostname=vm["name"],
         full_hostname=vm["name"] + ".openknowit.com",
         proxy_jump=proxy_jump
     )
+    else:
+        return ssh_config_template.format(
+        hostname=vm["name"],
+        full_hostname=vm["name"] + ".openknowit.com"
+        )
+
+
 
 
