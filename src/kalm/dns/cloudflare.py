@@ -78,10 +78,15 @@ def delete_record(name):
     print("delete record")
     print(name)
     dnsrecords = list_dns()
+    print("=============================================================")
+    print(name)
     try:
-      print(dnsrecords[name])
       
+      print(dnsrecords[name])
+      print("=============================================================")
+
     except:
+      print("======================ERROR=======================================")
       return False
 
 
