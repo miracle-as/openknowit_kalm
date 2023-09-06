@@ -12,7 +12,8 @@ def main():
                create_manufacturer       create manufacturer\n\
                create_site               create site\n\
                create_device_type        create device type\n\
-               add_vm                    add_vm to netbox\n\
+               add_vm                    add device to netbox\n\
+               add_device                add device to netbox\n\
                refresh                   refresh core netbox content\n\
                sites                     list sites\n\
                \
@@ -71,9 +72,11 @@ def main():
         print(netbox.get_tenants())
         return 0
     
-    
     if args.action[0] == "add_vm":
         return netbox.add_vm()    
+    
+    if args.action[0] == "add_device":
+        return netbox.add_device()    
     return 0
 
     

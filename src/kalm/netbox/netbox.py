@@ -474,10 +474,10 @@ def is_kvm_qemu_host():
     return kvm_module_loaded or qemu_process_running or qemu_tools_installed or virt_what_result == "kvm" or virt_what_result == "qemu"
 
 def add_device():
-    headers = {
-        "Authorization": f"Token {NETBOX_TOKEN}",
-        "Accept": "application/json"
-    }
+    manufacturer, is_virtual = get_system_info()
+    print (is_virtual)
+
+
     return False
 
 def add_vm():
