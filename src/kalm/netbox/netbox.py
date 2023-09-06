@@ -850,11 +850,27 @@ def sshconfig(args):
     virtual_machines = data["virtual_machines"]
     ssh_config_entries = [generate_ssh_config_entry(vm) for vm in virtual_machines]
     ssh_config_content = "\n".join(ssh_config_entries)
-    configdir = os.path.expanduser("~/.ssh/config") + "conf.d"
+
+    configdir = os.path.expanduser("~/.ssh")
     if not os.path.exists(configdir):
         os.makedirs(configdir)
-    configfile = os.path.expanduser("~/.ssh/conf.d/openstack.conf")
+    configdir = os.path.expanduser("~/.ssh/conf.d")
+    if not os.path.exists(configdir):
+        os.makedirs(configdir)
+    if not os.path.isfile("~/.ssh/config"):
+        configfilemaster = "~/.ssh/config"
+        open(configfilemaster, "w").write("Include ~/.ssh/conf.d/*\n")
+    includeexists = False
+    with open(configfilemaster) as fh:
+        for line in fh:
+            if line.startswith("Include ~/.ssh/conf.d/*"):
+                includeexists = True
+    if not includeexists:
+        open(configfilemaster, "w").write("Include ~/.ssh/conf.d/*\n")
+
+    configfile = os.path.expanduser("~/.ssh/conf.d/kalm.conf")
     open(configfile, "w").write(ssh_config_content)
+
     print(ssh_config_content)
 
 
