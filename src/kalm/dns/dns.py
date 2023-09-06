@@ -412,6 +412,7 @@ def libvirt(args):
 
    set_env()
    domain_ids = get_domains()
+   ip4s = []
    for domain_id in domain_ids:
    
     prettyllog("manage", "dns", domain_id, "new", "000", "add dns record %s" % (domain_id))
@@ -420,7 +421,6 @@ def libvirt(args):
     json_dict = json.loads(json_output)
     domain_name = json_dict["domain"]["name"]
     prettyllog("manage", "dns", domain_name, "new", "000", "add dns record %s" % (domain_name))
-    ip4s = []
     try:
       mac_address = json_dict["domain"]["devices"]["interface"]["mac"]["@address"]
       network = json_dict["domain"]["devices"]["interface"]["source"]["@network"]
@@ -449,7 +449,7 @@ def libvirt(args):
             ip4s.append(ipaddress)
       except:
         print("no network")
-        
+
     print("--------------------------------------------------------------------------------------")
     print(ip4s)
     print("--------------------------------------------------------------------------------------")
