@@ -418,6 +418,11 @@ def libvirt(args):
   ip4s = []
   for domain_id in domain_ids:
     prettyllog("manage", "dns", domain_id, "new", "000", "START: add dns record %s" % (domain_id))
+    xml_output = get_virsh_xmldump(domain_id)
+    json_output = convert_to_json(xml_output)
+    json_dict = json.loads(json_output)
+    domain_name = json_dict["domain"]["name"]
+    prettyllog("manage", "dns", domain_name, "new", "000", "add dns record %s" % (domain_name))
   
   for domain_id in domain_ids:
     xml_output = get_virsh_xmldump(domain_id)
