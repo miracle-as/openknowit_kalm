@@ -795,17 +795,21 @@ def get_virtual_machines():
 def netboxdata(args):
     clusters = get_clusters()
     vms = get_virtual_machines()
-
     print(vms)
+
     vm_data = []
     for vm in vms:
         vmdata = get_virtual_machine(vms[vm])
+        try:
+            cluster = vmdata["cluster"]["name"]
+        except:
+            cluster = None
         print("---------------------------------------")
         print(vmdata['name'])
         print("---------------------------------------")
         vm_entry = {
             "name": vmdata['name'],
-            "cluster": vmdata["cluster"]["name"],
+            "cluster": cluster,
             "disk_gb": vmdata["disk"],
             "cpu": vmdata["vcpus"],
             "memory_mb": vmdata["memory"],
@@ -814,7 +818,6 @@ def netboxdata(args):
         vm_data.append(vm_entry)
 
     data = {
-        "clusters": [cluster["name"] for cluster in clusters],
         "virtual_machines": vm_data
     }
     print(json.dumps(data, indent=2))
@@ -868,16 +871,16 @@ def sshconfig(args):
     virtual_machines = data["virtual_machines"]
     ssh_config_entries = [generate_ssh_config_entry(vm) for vm in virtual_machines]
     ssh_config_content = "\n".join(ssh_config_entries)
-
-    configdir = os.path.expanduser("~/.ssh")
+    MYHOME = os.getenv("HOME")
+    configdir = os.path.expanduser(MYHOME + "/.ssh")
     if not os.path.exists(configdir):
         os.makedirs(configdir)
-    configdir = os.path.expanduser("~/.ssh/conf.d")
+    configdir = os.path.expanduser(MYHOME + "/.ssh/conf.d")
     if not os.path.exists(configdir):
         os.makedirs(configdir)
-    if not os.path.isfile("~/.ssh/config"):
-        configfilemaster = "~/.ssh/config"
-        open(configfilemaster, "w").write("Include ~/.ssh/conf.d/*\n")
+    if not os.path.isfile(MYHOME + "/.ssh/config"):
+        configfilemaster = MYHOME + "/.ssh/config"
+        open(configfilemaster, "x").write("Include ~/.ssh/conf.d/*\n")
     includeexists = False
     with open(configfilemaster) as fh:
         for line in fh:
@@ -885,10 +888,9 @@ def sshconfig(args):
                 includeexists = True
     if not includeexists:
         open(configfilemaster, "w").write("Include ~/.ssh/conf.d/*\n")
-
-    configfile = os.path.expanduser("~/.ssh/conf.d/kalm.conf")
+    MYHOME = os.getenv("HOME")
+    configfile = os.path.expanduser(MYHOME + "/.ssh/conf.d/kalm.conf")
     open(configfile, "w").write(ssh_config_content)
-
     print(ssh_config_content)
 
 
