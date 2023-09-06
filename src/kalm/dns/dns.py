@@ -427,17 +427,28 @@ def libvirt(args):
       mac_address = json_dict["domain"]["devices"]["interface"]["mac"]["@address"]
     except:
       mac_address = "None"   
-    prettyllog("manage", "macadress", domain_name, "new", "000", "add dns record %s" % (mac_address))
+    prettyllog("manage", "macadress", domain_name, "new", "000", "Macaddress %s" % (mac_address))
     try:
       network = json_dict["domain"]["devices"]["interface"]["source"]["@network"]
     except:
       network = "None"
-    prettyllog("manage", "network", domain_name, "new", "000", "add dns record %s" % (network))
+    prettyllog("manage", "network", domain_name, "new", "000", "network %s" % (network))
     try:
       ipaddress = get_dhcp_leases(network, mac_address)
     except:
       ipaddress = "None"
-    prettyllog("manage", "ipadress", domain_name, "new", "000", "add dns record %s" % (ipaddress))
+    prettyllog("manage", "ipadress", domain_name, "new", "000", "IP address %s" % (ipaddress))
+    try:
+      netid = get_network_id(network)
+    except:
+      netid = "None"
+    prettyllog("manage", "ipadress", domain_name, "new", "000", "Network id :  %s" % (netid))
+    myitem = { "domain_name" : domain_name, "network" : network, "ipaddress" : ipaddress }
+    print(myitem)
+
+
+
+
 
 
   
@@ -454,41 +465,15 @@ def libvirt(args):
       fingerprint = get_ssh_host_key_fingerprint(ipaddress) 
       netid = get_network_id(network)
       prettyllog("manage", "dns", domain_name, "new", "000", "add dns record %s" % (domain_name + "." + network + ".openknowit.com"))
-      print("--------------------------------------------------------------------------------------")
-      print(ipaddress)
-      print("--------------------------------------------------------------------------------------")
-
-      ipaddress = { "domain_name" : domain_name, "network" : network, "ipaddress" : ipaddress }
-      ip4s.append(ipaddress)
-    except:
-      try:
-        for interface in json_dict["domain"]["devices"]["interface"]:
-            mac_address = interface["mac"]["@address"]
-            network = interface["source"]["@network"]
-            ipaddress = get_dhcp_leases(network, mac_address)
-            netid = get_network_id(network)
-            prettyllog("manage", "dns", domain_name, "new", "000", "add dns record %s" % (domain_name + "." + network + ".openknowit.com")) 
-            ipaddress = { "domain_name" : domain_name, "network" : network, "ipaddress" : ipaddress , "fingerprint" : fingerprint }
-            print("--------------------------------------------------------------------------------------")
-            print(ipaddress)
-            print("--------------------------------------------------------------------------------------")
-            ip4s.append(ipaddress)
-      except:
-        print("no network")
-
-    print("--------------------------------------------------------------------------------------")
-    print(ip4s)
-    print("--------------------------------------------------------------------------------------")
-
-    for ip4 in ip4s:
-      os.environ.setdefault("KALM_DNS_RECORD_NAME", ip4["domain_name"])
-      os.environ.setdefault("KALM_DNS_RECORD_CONTENT", ip4["ipaddress"])
+      myitem = { "domain_name" : domain_name, "network" : network, "ipaddress" : ipaddress }
+      os.environ.setdefault("KALM_DNS_RECORD_NAME", domain_name)
+      os.environ.setdefault("KALM_DNS_RECORD_CONTENT", ipaddress)
       os.environ.setdefault("KALM_DNS_RECORD_TTL", "300")
       os.environ.setdefault("KALM_DNS_RECORD_TYPE", "A")
       os.environ.setdefault("KALM_DNS_RECORD_PROXIED", "False" )
       if os.environ.get("KALM_DNS_TYPE") == "cloudflare":
         if(cloudflare.check_access()):
-          prettyllog("manage", "dns", domain_name, "new", "000", "add dns record %s" % (ip4["domain_name"] + "." + ip4["network"] + ".openknowit.com"))
+          prettyllog("manage", "dns", domain_name, "new", "000", "add dns record %s" % (domain_name + "." + network + ".openknowit.com"))
           cloudflare.add_record()
     f.close()
     return True
