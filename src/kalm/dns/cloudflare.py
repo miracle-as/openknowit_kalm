@@ -77,6 +77,9 @@ def delete_record(name):
     myenv = getenv()
     print("delete record")
     print(name)
+    dnsrecords = list_dns()
+    print(dnsr
+          ecords)
 
 
 
