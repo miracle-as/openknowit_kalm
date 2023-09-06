@@ -758,6 +758,17 @@ def get_clusters():
         except:
            returnclusters[cluster["name"]] = cluster["id"]
     return returnclusters
+def get_virtual_machine(id):
+    returnvm = {}
+    headers = {
+        "Authorization": f"Token {NETBOX_TOKEN}",
+        "Accept": "application/json"
+    }
+    url = fix_url("virtualization/virtual_machines/" + str(id))
+    response = requests.get(url, headers)
+    print(response.content)
+    vm = response.json()
+    return vm
 
 def get_virtual_machines():
     returnvms = {}
@@ -774,6 +785,7 @@ def get_virtual_machines():
                 print("Duplicate vm name")
         except:
            returnvms[vm["name"]] = vm["id"]
+
     return returnvms
 
 
@@ -782,8 +794,12 @@ def netboxdata(args):
     clusters = get_clusters()
     vms = get_virtual_machines()
 
+    print(vms)
     vm_data = []
     for vm in vms:
+        vmdata = get_virtual_machine(vms[vm])
+        print(vmdata)
+        print(vm)
         vm_entry = {
             "name": vm["name"],
             "cluster": vm["cluster"]["name"] if vm.get("cluster") else "N/A",
