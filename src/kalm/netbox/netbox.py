@@ -111,6 +111,7 @@ def get_manufacturer_id(manufacturer_name):
             return manufacturers[manufacturer_name]
         else:
             return None
+        
 def get_virtual_machine_id(vm_name):
     vms = get_virtual_machines()
     try:
@@ -355,6 +356,15 @@ def create_type(type_name):
         "Authorization": f"Token {NETBOX_TOKEN}",
         "Accept": "application/json"
     }
+    manufacturer = os.environ.get("KALM_NETBOX_MANUFACTURER")
+    if manufacturer == None:
+        manufacturer == "noname"
+    manufacturer_id = get_manufacturer_id(manufacturer)
+
+
+
+
+    get_manufacturer_id = get_manufacturer_id()
     # Mandatory fields
 
     data = {
@@ -473,9 +483,33 @@ def is_kvm_qemu_host():
             virt_what_result = process.read().strip()
     return kvm_module_loaded or qemu_process_running or qemu_tools_installed or virt_what_result == "kvm" or virt_what_result == "qemu"
 
+def add_device_type():
+    device_type = os.environ.get("KALM_DEVICE_TYPE")
+    if device_type == "None":
+        device_type == "unknown"
+    
 def add_device():
     manufacturer, is_virtual = get_system_info()
     print (is_virtual)
+    if not is_virtual:
+      headers = {
+        "Authorization": f"Token {NETBOX_TOKEN}",
+        "Accept": "application/json"
+      }
+      device_type = os.environ.get("KALM_DEVICE_TYPE")
+    
+      data = {
+      "name": "ExampleDevice",
+      "device_type": 1,
+      "device_role": 1,
+      "site": 1,
+      "status": "active",  
+      "comments": "This is an example device in NetBox."
+      }
+      print(data)   
+      
+
+
 
 
     return False
