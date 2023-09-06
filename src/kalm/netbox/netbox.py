@@ -878,8 +878,8 @@ def sshconfig(args):
     configdir = os.path.expanduser(MYHOME + "/.ssh/conf.d")
     if not os.path.exists(configdir):
         os.makedirs(configdir)
-    if not os.path.isfile(MYHOME + "/.ssh/config"):
-        configfilemaster = MYHOME + "/.ssh/config"
+    configfilemaster = MYHOME + "/.ssh/config"
+    if not os.path.isfile(configfilemaster):
         open(configfilemaster, "x").write("Include ~/.ssh/conf.d/*\n")
     includeexists = False
     with open(configfilemaster) as fh:
