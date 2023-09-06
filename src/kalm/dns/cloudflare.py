@@ -99,16 +99,16 @@ def add_record():
     "Authorization": bearer,
     "Content-Type": "application/json"
     }
+    proxied = False
     data = {
     "content": os.environ.get("KALM_DNS_RECORD_CONTENT"), 
     "name": os.environ.get("KALM_DNS_RECORD_NAME") + '.' + os.environ.get("KALM_DNS_DOMAIN"),
-    "proxied": os.environ.get("KALM_DNS_RECORD_PROXIED"),
+    "proxied": proxied,
     "type": os.environ.get("KALM_DNS_RECORD_TYPE"),
     "comment": "DNS record created by KALM",
     "ttl": os.environ.get("KALM_DNS_RECORD_TTL")
     }
     response = requests.post(url, headers=headers, data=json.dumps(data))
-    print(response.content)
     if response.status_code == 200:
         print("DNS record created")
         print(response.content)
