@@ -449,6 +449,11 @@ def libvirt(args):
             ip4s.append(ipaddress)
       except:
         print("no network")
+        
+    print("--------------------------------------------------------------------------------------")
+    print(ip4s)
+    print("--------------------------------------------------------------------------------------")
+
     for ip4 in ip4s:
       os.environ.setdefault("KALM_DNS_RECORD_NAME", ip4["domain_name"])
       os.environ.setdefault("KALM_DNS_RECORD_CONTENT", ip4["ipaddress"])
