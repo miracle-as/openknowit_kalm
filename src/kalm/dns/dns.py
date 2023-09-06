@@ -445,37 +445,14 @@ def libvirt(args):
     prettyllog("manage", "ipadress", domain_name, "new", "000", "Network id :  %s" % (netid))
     myitem = { "domain_name" : domain_name, "network" : network, "ipaddress" : ipaddress }
     print(myitem)
-
-
-
-
-
-
-  
-  for domain_id in domain_ids:
-    xml_output = get_virsh_xmldump(domain_id)
-    json_output = convert_to_json(xml_output)
-    json_dict = json.loads(json_output)
-    domain_name = json_dict["domain"]["name"]
-    prettyllog("manage", "dns", domain_name, "new", "000", "add dns record %s" % (domain_name))
-    try:
-      mac_address = json_dict["domain"]["devices"]["interface"]["mac"]["@address"]
-      network = json_dict["domain"]["devices"]["interface"]["source"]["@network"]
-      ipaddress = get_dhcp_leases(network, mac_address)
-      fingerprint = get_ssh_host_key_fingerprint(ipaddress) 
-      netid = get_network_id(network)
-      prettyllog("manage", "dns", domain_name, "new", "000", "add dns record %s" % (domain_name + "." + network + ".openknowit.com"))
-      myitem = { "domain_name" : domain_name, "network" : network, "ipaddress" : ipaddress }
-      os.environ.setdefault("KALM_DNS_RECORD_NAME", domain_name)
-      os.environ.setdefault("KALM_DNS_RECORD_CONTENT", ipaddress)
-      os.environ.setdefault("KALM_DNS_RECORD_TTL", "300")
-      os.environ.setdefault("KALM_DNS_RECORD_TYPE", "A")
-      os.environ.setdefault("KALM_DNS_RECORD_PROXIED", "False" )
-      if os.environ.get("KALM_DNS_TYPE") == "cloudflare":
-        if(cloudflare.check_access()):
-          prettyllog("manage", "dns", domain_name, "new", "000", "add dns record %s" % (domain_name + "." + network + ".openknowit.com"))
-          cloudflare.add_record()
-    f.close()
-    return True
-   
-
+    os.environ.setdefault("KALM_DNS_RECORD_NAME", domain_name)
+    os.environ.setdefault("KALM_DNS_RECORD_CONTENT", ipaddress)
+    os.environ.setdefault("KALM_DNS_RECORD_TTL", "300")
+    os.environ.setdefault("KALM_DNS_RECORD_TYPE", "A")
+    os.environ.setdefault("KALM_DNS_RECORD_PROXIED", "False" )
+    if os.environ.get("KALM_DNS_TYPE") == "cloudflare":
+      if(cloudflare.check_access()):
+        prettyllog("manage", "dns", domain_name, "new", "000", "add dns record %s" % (domain_name + "." + network + ".openknowit.com"))
+        cloudflare.add_record()
+  f.close()
+  return True
