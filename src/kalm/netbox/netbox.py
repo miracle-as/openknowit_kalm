@@ -853,10 +853,10 @@ def sshconfig(args):
     configdir = os.path.expanduser("~/.ssh/config") + "conf.d"
     if not os.path.exists(configdir):
         os.makedirs(configdir)
-    configfile = os.path.expanduser("~/.ssh/conf.d/openstack.conf"
+    configfile = os.path.expanduser("~/.ssh/conf.d/openstack.conf")
     open(configfile, "w").write(ssh_config_content)
     print(ssh_config_content)
-    
+
 
 
 
