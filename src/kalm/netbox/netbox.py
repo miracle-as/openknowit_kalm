@@ -800,16 +800,16 @@ def netboxdata(args):
     vm_data = []
     for vm in vms:
         vmdata = get_virtual_machine(vms[vm])
-        print(vmdata)
-        print(vm)
+        print("---------------------------------------")
+        print(vmdata['name'])
+        print("---------------------------------------")
         vm_entry = {
-            "name": vm["name"],
-            "cluster": vm["cluster"]["name"] if vm.get("cluster") else "N/A",
-            "disk_gb": vm["disk"],
-            "cpu": vm["vcpus"],
-            "memory_mb": vm["memory"],
-            "local_context_data": vm["local_context_data"]
-
+            "name": vmdata['name'],
+            "cluster": vmdata["cluster"]["name"],
+            "disk_gb": vmdata["disk"],
+            "cpu": vmdata["vcpus"],
+            "memory_mb": vmdata["memory"],
+            "local_context_data": vmdata["local_context_data"]
         }
         vm_data.append(vm_entry)
 
