@@ -426,8 +426,20 @@ def libvirt(args):
     try:
       mac_address = json_dict["domain"]["devices"]["interface"]["mac"]["@address"]
     except:
-      mac_address == "None"   
+      mac_address = "None"   
     prettyllog("manage", "macadress", domain_name, "new", "000", "add dns record %s" % (mac_address))
+    try:
+      network = json_dict["domain"]["devices"]["interface"]["source"]["@network"]
+    except:
+      network = "None"
+    prettyllog("manage", "network", domain_name, "new", "000", "add dns record %s" % (network))
+    try:
+      ipaddress = get_dhcp_leases(network, mac_address)
+    except:
+      ipaddress = "None"
+    prettyllog("manage", "ipadress", domain_name, "new", "000", "add dns record %s" % (ipaddress))
+
+
   
   for domain_id in domain_ids:
     xml_output = get_virsh_xmldump(domain_id)
