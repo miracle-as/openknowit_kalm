@@ -412,6 +412,9 @@ def libvirt(args):
 
    set_env()
    domain_ids = get_domains()
+   print("------------------------------------------------------------------")
+   print(domain_ids)
+   print("------------------------------------------------------------------")
    ip4s = []
    for domain_id in domain_ids:
    
