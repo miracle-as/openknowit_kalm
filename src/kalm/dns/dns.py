@@ -407,9 +407,7 @@ def delete_dns_record(hostname):
 def libvirt(args):
   #open a file for writing in /tmp
   # open a file for writing
-  f = open("/tmp/dns.out", "w")   
   lines = []
-
   set_env()
   domain_ids = get_domains()
   print("------------------------------------------------------------------")
@@ -454,5 +452,4 @@ def libvirt(args):
       if(cloudflare.check_access()):
         prettyllog("manage", "dns", domain_name, "new", "000", "add dns record %s" % (domain_name + "." + network + ".openknowit.com"))
         cloudflare.add_record()
-  f.close()
   return True
