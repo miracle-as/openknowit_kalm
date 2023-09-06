@@ -766,9 +766,7 @@ def get_virtual_machine(id):
         "Accept": "application/json"
     }
     url = fix_url("/virtualization/virtual-machines/" + str(id))
-    print(url)
     response = requests.get(url, headers=headers)
-    print(response.content)
     vm = response.json()
     return vm
 
@@ -787,7 +785,6 @@ def get_virtual_machines():
                 print("Duplicate vm name")
         except:
            returnvms[vm["name"]] = vm["id"]
-
     return returnvms
 
 
@@ -795,8 +792,6 @@ def get_virtual_machines():
 def netboxdata(args):
     clusters = get_clusters()
     vms = get_virtual_machines()
-    print(vms)
-
     vm_data = []
     for vm in vms:
         vmdata = get_virtual_machine(vms[vm])
@@ -804,9 +799,6 @@ def netboxdata(args):
             cluster = vmdata["cluster"]["name"]
         except:
             cluster = None
-        print("---------------------------------------")
-        print(vmdata['name'])
-        print("---------------------------------------")
         vm_entry = {
             "name": vmdata['name'],
             "cluster": cluster,
