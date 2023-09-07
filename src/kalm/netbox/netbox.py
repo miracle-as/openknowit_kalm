@@ -5,6 +5,8 @@ import base64
 import xml.etree.ElementTree as ET
 import platform
 import yaml
+from ..common import prettyllog
+
 
 netbox_url = os.environ.get('NETBOX_URL')
 netbox_token = os.environ.get('NETBOX_TOKEN')
@@ -56,10 +58,13 @@ def get_site_id(site_name):
         return None
 
 def get_device_id(device_name):
+    prettyllog("manage", "netbox", "device", "new", "000", "Getting device id")
     devices = get_devices()
     try:    
+        prettyllog("manage", "netbox", "device", "new", "000", "Device id is %s" % devices[device_name])
         return devices[device_name]
     except:
+        prettyllog("manage", "netbox", "device", "new", "000", "Device id is None")
         return None
 
 def get_role_id(role_name):
@@ -75,8 +80,6 @@ def get_type_id(type_name):
     try:
         return types[type_name]
     except:
-        if create_type(type_name):
-            return types[type_name]
         return None
 
 def get_platform_id(platform_name):
@@ -98,20 +101,14 @@ def get_cluster_id(cluster_name):
     try: 
         return clusters[cluster_name]
     except:
-        if create_cluster(cluster_name):
-            return clusters[cluster_name]
-        else:
-            return None
+        return None
 
 def get_manufacturer_id(manufacturer_name):
     manufacturers = get_manufacturers()
     try:
         return manufacturers[manufacturer_name]
     except:
-        if create_manufacturer(manufacturer_name):
-            return manufacturers[manufacturer_name]
-        else:
-            return None
+        return None
         
 def get_virtual_machine_id(vm_name):
     vms = get_virtual_machines()
@@ -168,14 +165,17 @@ def create_manufacturer(manufacturer_name):
 
 
 def create_device_type(device_type_name):
+    prettyllog("manage", "netbox", "device", "new", "000", "Creating device type")
     headers = {
         "Authorization": f"Token {NETBOX_TOKEN}",
         "Accept": "application/json"
     }
     # Mandatory fields
+    prettyllog("manage", "netbox", "device", "new", "000", "Getting device type name")
     device_type_name = os.environ.get('KALM_DEVICE_TYPE_NAME')
     if device_type_name == None:
         device_type_name = "default"
+        
     device_type_model = os.environ.get('KALM_DEVICE_TYPE_MODEL')
     if device_type_model == None:
         device_type_model = "default"
@@ -210,7 +210,7 @@ def create_device_type(device_type_name):
         device_type_is_network_device = False
     device_type_subdevice_role = os.environ.get('KALM_DEVICE_TYPE_SUBDEVICE_ROLE')
     if device_type_subdevice_role == None:
-        device_type_subdevice_role = None
+        device_type_subdevice_role = "" 
     device_type_interface_ordering = os.environ.get('KALM_DEVICE_TYPE_INTERFACE_ORDERING')
     if device_type_interface_ordering == None:
         device_type_interface_ordering = None
@@ -308,23 +308,34 @@ def create_device():
     }
 
 def create_role():
+    prettyllog("manage", "netbox", "device", "new", "000", "Creating role")
     headers = {
         "Authorization": f"Token {NETBOX_TOKEN}",
         "Accept": "application/json"
     }
     # Mandatory fields
+    prettyllog("manage", "netbox", "device", "new", "000", "Getting role name")
     role_name = os.environ.get('KALM_ROLE_NAME')
     if role_name == None:
         role_name = "default"
+    prettyllog("manage", "netbox", "device", "new", "000", "Getting role name is %s" % role_name)
+    prettyllog("manage", "netbox", "device", "new", "000", "Getting role slug")
     role_slug = os.environ.get('KALM_ROLE_SLUG')
     if role_slug == None:
         role_slug = role_name.lower()
+    prettyllog("manage", "netbox", "device", "new", "000", "Getting role slug is %s" % role_slug)
+    prettyllog("manage", "netbox", "device", "new", "000", "Getting role description")
     role_description = os.environ.get('KALM_ROLE_DESCRIPTION')
     if role_description == None:
         role_description = ""
+    prettyllog("manage", "netbox", "device", "new", "000", "Getting role description is %s" % role_description)
+    prettyllog("manage", "netbox", "device", "new", "000", "Getting role comments")
+
     role_comments = os.environ.get('KALM_ROLE_COMMENTS')
     if role_comments == None:
         role_comments = ""
+    prettyllog("manage", "netbox", "device", "new", "000", "Getting role comments is %s" % role_comments)
+    prettyllog("manage", "netbox", "device", "new", "000", "assemble data")
     data = {
         "name": role_name,
         "slug": role_slug,
@@ -333,6 +344,7 @@ def create_role():
     }
     role_id = get_role_id(role_name)
     if role_id != None:
+        prettyllog("manage", "netbox", "device", "new", "000", "Role already exists")
         return True
     url = fix_url("/dcim/device-roles/")
     response = requests.post(url, headers=headers, json=data)
@@ -588,30 +600,108 @@ def is_kvm_qemu_host():
             virt_what_result = process.read().strip()
     return kvm_module_loaded or qemu_process_running or qemu_tools_installed or virt_what_result == "kvm" or virt_what_result == "qemu"
 
-def add_device_type():
-    device_type = os.environ.get("KALM_DEVICE_TYPE")
-    if device_type == "None":
-        device_type == "unknown"
-    
 def add_device():
+    prettyllog("manage", "netbox", "device", "new", "000", "Adding device to netbox")
+    prettyllog("manage", "netbox", "device", "new", "000", "Getting system info")
     manufacturer, is_virtual = get_system_info()
-    print (is_virtual)
+    prettyllog("manage", "netbox", "device", "new", "000", "The system is %s and %s " % (manufacturer, str(is_virtual)))
     if not is_virtual:
-      headers = {
-        "Authorization": f"Token {NETBOX_TOKEN}",
-        "Accept": "application/json"
-      }
-      device_type = os.environ.get("KALM_DEVICE_TYPE")
+        prettyllog("manage", "netbox", "device", "new", "000",  "Not a virtual machine, adding to netbox")
+        headers = {
+            "Authorization": f"Token {NETBOX_TOKEN}",
+            "Accept": "application/json"
+        }
+        # Mandatory fields
+        prettyllog("manage", "netbox", "device", "new", "000", "Getting device name")
+        device_name = os.environ.get("KALM_DEVICE_NAME")
+        if device_name == "None":
+            device_name = os.environ.get('HOSTNAME')
+        prettyllog("manage", "netbox", "device", "new", "000",  "Getting device name is %s" % device_name)
+
+        prettyllog("manage", "netbox", "device", "new", "000",  "Getting device type")    
+        device_type = os.environ.get("KALM_DEVICE_TYPE")
+        if device_type == None:
+            device_type = "default"
+        prettyllog("manage", "netbox", "device", "new", "000",  "Getting device type is %s" % device_type)
+
+        prettyllog("manage", "netbox", "device", "new", "000",  "Getting device role")    
+        device_role = os.environ.get("KALM_DEVICE_ROLE")
+        if device_role == None:
+            device_role = "default"
+        prettyllog("manage", "netbox", "device", "new", "000",  "Getting device role is %s" % device_role)   
+
+        prettyllog("manage", "netbox", "device", "new", "000",  "Getting device site")
+        device_site = os.environ.get("KALM_DEVICE_SITE")
+        if device_site == None:
+            device_site = "default"
+        prettyllog("manage", "netbox", "device", "new", "000",  "Getting device site is %s" % device_site)
+
+        prettyllog("manage", "netbox", "device", "new", "000",  "Getting device status")
+        device_status = os.environ.get("KALM_DEVICE_STATUS")
+        if device_status == None:
+            device_status = "active"
+        prettyllog("manage", "netbox", "device", "new", "000",  "Getting device status is %s" % device_status)
+
+
+        prettyllog("manage", "netbox", "device", "new", "000",  "Getting device comments")    
+        device_comments = os.environ.get("KALM_DEVICE_COMMENTS")
+        if device_comments == None:
+            device_comments = ""
+        prettyllog("manage", "netbox", "device", "new", "000",  "Getting device comments is %s" % device_comments)
+
+        prettyllog("manage", "netbox", "device", "new", "000",  "Getting device type id")
+        devicetype_id = get_type_id(device_type)
+        if devicetype_id == None:
+            prettyllog("manage", "netbox", "device", "new", "000",  "Creating device type")
+            create_device_type(device_type)
+            devicetype_id = get_type_id(device_type)
+        prettyllog("manage", "netbox", "device", "new", "000", "Getting device type id is %s" % devicetype_id)
+
+        prettyllog("manage", "netbox", "device", "new", "000", "Getting device role id")
+        device_role_id = get_role_id(device_role)
+        if device_role_id == None:
+            create_role()
+            device_role_id = get_role_id(device_role)
+        prettyllog("manage", "netbox", "device", "new", "000",  "Getting device role id is %s" % device_role_id)
+
+        prettyllog("manage", "netbox", "device", "new", "000",  "Getting device site id")
+        device_site_id = get_site_id(device_site)
+        if device_site_id == None:
+            create_site(device_site)
+            device_site_id = get_site_id(device_site)
+        prettyllog("manage", "netbox", "device", "new", "000",  "Getting device site id is %s" % device_site_id)
+
+        prettyllog("manage", "netbox", "device", "new", "000",  "Assembling device data")
+        data = {
+            "name": device_name,
+            "device_type": devicetype_id,
+            "role": device_role_id,
+            "device_role": device_role_id,
+            "site": device_site_id,
+            "status": device_status,
+            "comments": device_comments
+        }
+        prettyllog("manage", "netbox", "device", "new", "000",  "Assembled device data is %s" % data)
+        prettyllog("manage", "netbox", "device", "new", "000",  "Getting device id")
+        device_id = get_device_id(device_name)
+        if device_id != None:
+            prettyllog("manage", "netbox", "device", "new", "000",  "Device already exists")
+            return True
+        prettyllog("manage", "netbox", "device", "new", "000",  "Getting device id is %s" % device_id)
+
+        prettyllog("manage", "netbox", "device", "new", "000",  "Preparing to add device")
+        url = fix_url("/dcim/devices/")
+        response = requests.post(url, headers=headers, json=data)
+        prettyllog("manage", "netbox", "device", "new", "000",  "Api call status is %s" % response.status_code)
+        print(response.content)
+        if response.status_code == 200:
+            return True
+        else:
+            return False
+    else:
+        return True
     
-      data = {
-      "name": "ExampleDevice",
-      "device_type": 1,
-      "device_role": 1,
-      "site": 1,
-      "status": "active",  
-      "comments": "This is an example device in NetBox."
-      }
-      print(data)   
+        
       
 
 
@@ -771,6 +861,45 @@ def fix_url(apiurl):
         nburl = nburl + "/api"
     nburl = nburl + apiurl
     return nburl
+
+def get_roles():
+    returnroles = {}
+    #GET /api/dcim/device-roles/35/
+    headers = {
+        "Authorization": f"Token {NETBOX_TOKEN}",
+        "Accept": "application/json"
+    }
+    url = fix_url("/dcim/device-roles/")
+    response = requests.get(url, headers=headers)
+    roles = response.json()
+    for role in roles["results"]:
+        print(role)
+        try:
+            if returnroles[role["name"]]:
+                print("Duplicate role name")
+        except:
+           returnroles[role["name"]] = role["id"]
+    return returnroles
+
+
+
+def get_device_types():
+    returntypes = {}
+    headers = {
+        "Authorization": f"Token {NETBOX_TOKEN}",
+        "Accept": "application/json"
+    }
+    url = fix_url("/dcim/device-types/")
+    response = requests.get(url, headers=headers)
+    types = response.json()
+    for type in types["results"]:
+        print(type)
+        try:
+            if returntypes[type["display"]]:
+                print("Duplicate type name")
+        except:
+           returntypes[type["display"]] = type["id"]
+    return returntypes
 
 def get_tenants():
     returntenants = {}
