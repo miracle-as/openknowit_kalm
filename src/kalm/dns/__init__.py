@@ -66,7 +66,7 @@ def main():
 
     if args.action[0] == "setenv":
         print("set env")
-        dns.set_env(args)
+        dns.set_env()
     
     if args.action[0] == "libvirt":
         print("set env")

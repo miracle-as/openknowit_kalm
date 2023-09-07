@@ -1248,7 +1248,31 @@ def get_unique_sorted_items(filename):
     unique_sorted_items = sorted(set(first_columns))
     return unique_sorted_items
 
-
+def serve():
+    prettyllog("manage", "netbox", "serve", "000", "Starting netbox serve")
+    prettyllog("manage", "netbox", "serve", "000", "Getting netbox token")
+    global NETBOX_TOKEN
+    NETBOX_TOKEN = os.environ.get('NETBOX_API_TOKEN')
+    if NETBOX_TOKEN == None:
+        prettyllog("manage", "netbox", "serve", "000", "No netbox token found")
+        return False
+    prettyllog("manage", "netbox", "serve", "000", "Getting netbox url")
+    global NETBOX_URL
+    NETBOX_URL = os.environ.get('NETBOX_API_URL')
+    if NETBOX_URL == None:
+        prettyllog("manage", "netbox", "serve", "000", "No netbox url found")
+        return False
+    prettyllog("manage", "netbox", "serve", "000", "Read the /etc/kalm/kalm_netbox.json file")
+    data = {}
+    with open('/etc/kalm/kalm_netbox.json') as json_file:
+        data = json.load(json_file)
+        prettyllog("manage", "netbox", "serve", "000", "The data is %s" % data)
+        prettyllog("manage", "netbox", "serve", "000", "The data is %s" % data["netbox"])
+        prettyllog("manage", "netbox", "serve", "000", "The data is %s" % data["netbox"]["token"])
+        NETBOX_TOKEN = data["netbox"]["token"]
+        NETBOX_URL = data["netbox"]["url"]
+    
+    
 
 def inventory_upload():
     prettyllog("manage", "netbox", "inventory", "upload", "000", "Uploading inventory to netbox")

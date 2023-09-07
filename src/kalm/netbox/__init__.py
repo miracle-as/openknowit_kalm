@@ -24,6 +24,7 @@ def main():
                 add_vm                    add device to netbox\n\
                 add_device                add device to netbox\n\
                 refresh                   refresh core netbox content\n\
+                serve                     \n\
                \
                2023 Knowit Miracle\
                ")
@@ -31,6 +32,10 @@ def main():
     args = parser.parse_args()
     ready = False
 
+    if args.action[0] == "serve":
+        print("serve mode manintaon netbox data")
+        netbox.serve()
+        return 0
 
     if args.action[0] == "inventory_upload":
         print("inventory_upload")
