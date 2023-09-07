@@ -90,24 +90,30 @@ def get_domains():
     print("--------------------------------------------------------------------------------------")
     return mylist
 
-def get_dhcp_leases(network_name, mac_address):
-    # Run virsh net-dhcp-leases command
-    command = ["virsh", "net-dhcp-leases", network_name]
-    print("--------------------------------------------------------------------------------------")
-    print(command)
-    print("--------------------------------------------------------------------------------------")
-   
+def get_dhcp_leases():
+    command = ["virsh", "net-list", "--name"]
     process = subprocess.Popen(command, stdout=subprocess.PIPE)
     output, _ = process.communicate()
-    for line in output.decode("utf-8").split("\n"):
-        print("--------------------------------------------------------------------------------------")
-        print(line)
-        print("--------------------------------------------------------------------------------------")
-        if mac_address in line:
-          print("--------------------------------------------------------------------------------------") 
+    mynetworks =  output.decode("utf-8").split("\n")
+    myleases = {}
+    for mynetwork in mynetworks:
+       
+      # Run virsh net-dhcp-leases command
+      command = ["virsh", "net-dhcp-leases", mynetwork]
+   
+      process = subprocess.Popen(command, stdout=subprocess.PIPE)
+      output, _ = process.communicate()
+      for line in output.decode("utf-8").split("\n"):
+        if "ipv4" in line:
           ipaddress = extract_ip_address(line)
           if ipaddress != None:
-              return ipaddress
+              data = {
+                "ipaddress" : ipaddress,
+                "network" : mynetwork
+              }
+              myleases[ipaddress] = data
+    return myleases
+
 
 
 def extract_ip_address(line):
@@ -437,6 +443,12 @@ def libvirt(args):
     prettyllog("manage", "network", domain_name, "new", "000", "network %s" % (network))
     try:
       ipaddress = get_dhcp_leases(network, mac_address)
+      myleases = get_dhcp_leases()
+      ipaddress = myleases['ipaddress']
+      print("------------------------------------------------------------------")
+      print(ipaddress)
+      print("------------------------------------------------------------------")
+      
     except:
       ipaddress = "None"
     prettyllog("manage", "ipadress", domain_name, "new", "000", "IP address %s" % (ipaddress))
