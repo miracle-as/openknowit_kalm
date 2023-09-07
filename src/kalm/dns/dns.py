@@ -96,11 +96,15 @@ def get_dhcp_leases(network_name, mac_address):
     print("--------------------------------------------------------------------------------------")
     print(command)
     print("--------------------------------------------------------------------------------------")
-    
+   
     process = subprocess.Popen(command, stdout=subprocess.PIPE)
     output, _ = process.communicate()
     for line in output.decode("utf-8").split("\n"):
+        print("--------------------------------------------------------------------------------------")
+        print(line)
+        print("--------------------------------------------------------------------------------------")
         if mac_address in line:
+          print("--------------------------------------------------------------------------------------") 
           ipaddress = extract_ip_address(line)
           if ipaddress != None:
               return ipaddress
