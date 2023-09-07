@@ -106,6 +106,12 @@ def get_dhcp_leases():
       for line in output.decode("utf-8").split("\n"):
         if "ipv4" in line:
           ipaddress = extract_ip_address(line)
+          macaddress = extract_ip_address(line)
+          print("--------------------------------------------------------------------------------------") 
+          print(ipaddress)
+          print("--------------------------------------------------------------------------------------")
+          print(macaddress)
+          print("--------------------------------------------------------------------------------------")
           if ipaddress != None:
               data = {
                 "ipaddress" : ipaddress,
@@ -114,13 +120,18 @@ def get_dhcp_leases():
               myleases[ipaddress] = data
     return myleases
 
-
+def extract_mac_address(line):
+    # Regular expression pattern for matching an IP address
+    pattern = r"(\d{1,2}:\d{1,2}:\d{1,2}:\d{1,2}\d{1,2}:\d{1,2}:\d{1,2}:\d{1,2})"
+    match = re.search(pattern, line)
+    if match:
+        return match.group()
+    else:
+        return None
 
 def extract_ip_address(line):
     # Regular expression pattern for matching an IP address
     pattern = r"(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})"
-
-    # Search for the IP address in the line
     match = re.search(pattern, line)
     if match:
         return match.group()
