@@ -33,6 +33,7 @@ def main():
 
 
     if args.action[0] == "inventory_upload":
+        print("inventory_upload")
         netbox.inventory_upload()
         return 0
     
