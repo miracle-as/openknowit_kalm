@@ -175,7 +175,7 @@ def create_device_type(device_type_name):
     device_type_name = os.environ.get('KALM_DEVICE_TYPE_NAME')
     if device_type_name == None:
         device_type_name = "default"
-        
+
     device_type_model = os.environ.get('KALM_DEVICE_TYPE_MODEL')
     if device_type_model == None:
         device_type_model = "default"
@@ -1232,4 +1232,16 @@ def generate_ssh_config_entry(vm):
 
 
 
+def inventory_upload():
+    prettyllog("manage", "netbox", "inventory", "upload", "000", "Uploading inventory to netbox")
+    prettyllog("manage", "netbox", "inventory", "upload", "000", "locating inventory file")
+    inventory_file = os.environ.get("KALM_INVENTORY_FILE")
+    if inventory_file == None:
+        inventory_file = "inventory"
+    prettyllog("manage", "netbox", "inventory", "upload", "000", "inventory file is %s" % inventory_file)
+    prettyllog("manage", "netbox", "inventory", "upload", "000", "print the inventory file")
+    invfile = open(inventory_file, "r")
+    print(invfile.read())
+    prettyllog("manage", "netbox", "inventory", "upload", "000", "inventory file printed")
+    
 

@@ -7,6 +7,7 @@ def main():
                 version : 0.0.2 (netbox)\n\
                 actions:\n\
                 netboxdata                dump netbox data in json \n\
+                inventory_upload          upload ansible inventory to netbox \n\
                 ssh_config                dump ssh_config\n\
                 ansible_inventory         dump ansible inventory\n\
                 devices_types             list device types\n\
@@ -29,6 +30,12 @@ def main():
     parser.add_argument('action', metavar='<action>', type=str, nargs='+', help='setup jenkis')
     args = parser.parse_args()
     ready = False
+
+
+    if args.action[0] == "inventory_upload":
+        netbox.inventory_upload()
+        return 0
+    
     if args.action[0] == "help":
         print(parser.print_help())
         return 0
