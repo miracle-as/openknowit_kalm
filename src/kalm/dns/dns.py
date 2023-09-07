@@ -443,6 +443,10 @@ def libvirt(args):
     prettyllog("manage", "network", domain_name, "new", "000", "network %s" % (network))
     try:
       myleases = get_dhcp_leases()
+      print("------------------------------------------------------------------")
+      print(myleases)
+      print("------------------------------------------------------------------")
+      
       ipaddress = myleases['ipaddress']
       print("------------------------------------------------------------------")
       print(ipaddress)
