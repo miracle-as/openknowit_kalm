@@ -11,6 +11,7 @@ def main():
                ansible_inventory         dump ansible inventory\n\
                create_manufacturer       create manufacturer\n\
                create_site               create site\n\
+               create_role               create role\n\
                create_device_type        create device type\n\
                add_vm                    add device to netbox\n\
                add_device                add device to netbox\n\
@@ -38,6 +39,10 @@ def main():
     
     if args.action[0] == "create_device_type":
         netbox.create_device_type(args)
+        return 0
+    
+    if args.action[0] == "create_role":
+        netbox.create_role()
         return 0
     
     if args.action[0] == "create_site":

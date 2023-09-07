@@ -264,6 +264,12 @@ def awx_create_inventory(name, description, organization, inventorytype, variabl
   url = os.getenv("TOWER_HOST") + "/api/v2/inventories/%s/" % invid
   resp = requests.put(url,headers=headers, json=variables, verify=VERIFY_SSL)
   response = json.loads(resp.content)
+
+
+  ##########################################################################################
+  ##################### NETBOX #############################################################
+  ##########################################################################################
+
   if (inventorytype == "netbox"):
     print("Create hosts in netbox")
     nbtoken = os.getenv("NBTOKEN")
@@ -276,13 +282,15 @@ def awx_create_inventory(name, description, organization, inventorytype, variabl
     ipaddresses = nb.ipam.ip_addresses.all()
     vms = nb.virtualization.virtual_machines.all()
     for vm in vms:
-      pri_ip = str(vm.primary_ip).split('/')[0]
-      awx_create_host(pri_ip, str(vm.name), name,organization, mytoken, r)
-
-  prettyllog("manage", "inventories", name, organization, resp.status_code, response)
+      if ( vm.primary_ip != None ):
+        pri_ip = str(vm.primary_ip).split('/')[0]
+        awx_create_host(pri_ip, str(vm.name), name,organization, mytoken, r)
+        prettyllog("manage", "inventories", name, organization, resp.status_code, response)
+        
 
 
 def awx_create_host(name, description, inventory, organization, mytoken, r):
+  prettyllog("manage", "host", name, organization, "0", "Creating host %s" % name)
   try:  
     invid = (awx_get_id("inventories", inventory, r))
   except:
@@ -339,7 +347,32 @@ def awx_update_vault(ansiblevault, organization, mytoken, r):
     sshs = []
 
   for ssh in sshs:
-    sshkeyval = readthefile(ssh['ssh_private_key'])
+    try:
+      sshkeyval = readthefile(ssh['ssh_private_key'])
+    except:
+      sshkeyval = ""
+    try:
+      sshsingval = readthefile(ssh['ssh_signed_key'])
+    except:
+      sshsingval = ""
+    try:
+      test = ssh['name']
+    except:
+      ssh['name'] = "default"
+    try:
+      sshusername = ssh['username']
+    except:
+      sshusername = "root"
+    try:
+      sshpassword = ssh['password']
+    except:
+      sshpassword = ""
+    try:
+      sshdescription = ssh['description']
+    except:
+      sshdescription = "No data provided"
+
+
     credential = { 
       "name": ssh['name'], 
       "username": ssh['username'], 
@@ -347,7 +380,7 @@ def awx_update_vault(ansiblevault, organization, mytoken, r):
       "description": ssh['description'], 
       "type": "Machine", 
       "ssh_key_data": sshkeyval,
-      "privilege_escalation_method": ssh['privilege_escalation_method'],
+      "ssh_public_key_data": sshsingval,
       "privilege_escalation_username": ssh['privilege_escalation_username'],
       "privilege_escalation_password": ssh['privilege_escalation_password'],
       "kind": "ssh" 
@@ -406,12 +439,15 @@ def awx_create_schedule(name, unified_job_template,  description, tz, start, run
 ############################################################################################################################
 # Create job template
 ############################################################################################################################
+
 def awx_create_template(name, description, job_type, inventory,project,eename, credential, playbook, organization, mytoken, r):
+  prettyllog("Info", "template", name, organization, "666", "Creating template %s" % name, "INFO")
   orgid = (awx_get_id("organizations", organization,r))
   invid = (awx_get_id("inventories", inventory,r ))
   projid = (awx_get_id("projects", project,r ))
   credid = (awx_get_id("credentials", credential, r))
   eeid = (awx_get_id("execution_environments", eename, r))
+  prettyllog("Info", "template", name, organization, "666", "Organization %s has the id %s" % (organization, orgid))
   if eeid == "":
     eeid = 1
     errormessage = "Execution environment %s is not valid" % eename
@@ -461,6 +497,7 @@ def awx_create_template(name, description, job_type, inventory,project,eename, c
   url = os.getenv("TOWER_HOST") + "/api/v2/job_templates/"
   resp = requests.post(url,headers=headers, json=data, verify=VERIFY_SSL)
   response = json.loads(resp.content)
+  prettyllog("Info", "template", name, organization, resp.status_code, response, "DEBUG")  
   getawxdata("job_templates", mytoken, r)
   tmplid = awx_get_id("job_templates", name, r )
   if ( tmplid != "" ):
@@ -471,7 +508,7 @@ def awx_create_template(name, description, job_type, inventory,project,eename, c
       tmplid=response['id']
       prettyllog("update", "template", name, organization, resp.status_code, tmplid)
     except:
-      prettyllog("update", "template", name, organization, resp.status_code, response)
+      prettyllog("update", "template", name, organization, resp.status_code, response, "ERROR")
   getawxdata("job_templates", mytoken, r)
   tmplid = awx_get_id("job_templates", name ,r )
   getawxdata("credentials", mytoken, r)
@@ -789,6 +826,7 @@ def kalm(mytoken, r, realm="standalone", subproject=None):
   if (realm == "subproject" ):
           prettyllog("init", "runtime", "config", subproject, "003" , "running cusom config file")
           cfgfile = "/etc/kalm/kalm.d/%s" % subproject + ".json"
+  prettyllog("init", "runtime", "config", "master", "001", "loading config file %s" % cfgfile)
   
 
   f = open(cfgfile)
@@ -843,23 +881,6 @@ def kalm(mytoken, r, realm="standalone", subproject=None):
 
 
     ######################################
-    # Credentials   
-    ######################################
-    #try:
-     # credentials = org['credentials']
-     # for credential in credentials:
-      #  key = os.getenv("TOWER_HOST") +":credentials:orphan:" + credential['name']
-    #   r.delete(key)
-      #awx_create_credential( credential, orgname)
-      #loop = True
-      #while (loop):
-      #  credid = awx_get_id("credentials", credential['name'])
-      #  if ( credid != "" ):
-      #    loop = False
- # except:
- #   prettyllog("config", "initialize", "credentials", orgname, "000",  "No credentioals found")
-
-    ######################################
     # Projects
     ######################################
     masterproject = ""
@@ -874,14 +895,18 @@ def kalm(mytoken, r, realm="standalone", subproject=None):
       projectcred = project['credential']
       key = os.getenv("TOWER_HOST") +":projects:orphan:" + projectname
       r.delete(key)
+      prettyllog("config", "initialize", "projects", orgname, "000",  "Creating project %s" % projectname)
       awx_create_project(projectname, projectdesc, projecttype, projecturl, projectbrnc, projectcred, orgname, mytoken, r)
+      prettyllog("config", "initialize", "projects", orgname, "000",  "Getting project id for %s" % projectname)
       awx_get_id("projects", projectname, r)
       projid = (awx_get_id("projects", projectname, r))
+      prettyllog("config", "initialize", "projects", orgname, "000",  "project id %s for %s" % (projid, projectname))
     except:
       prettyllog("config", "initialize", "projects", orgname, "000",  "No projects found")
     ######################################
     # Subprojects
     ######################################
+    prettyllog("config", "initialize", "subprojects", orgname, "000",  "Checking for subprojects")
     try:
       subprojects = org['subprojects']
       print(subprojects)
@@ -906,6 +931,7 @@ def kalm(mytoken, r, realm="standalone", subproject=None):
   ######################################
   # inventories
   ######################################
+    prettyllog("config", "initialize", "inventories", orgname, "000",  "Checking for inventories")
     try: 
       inventories = org['inventories']
     except:
@@ -941,6 +967,7 @@ def kalm(mytoken, r, realm="standalone", subproject=None):
   ######################################
   # hosts
   ######################################
+    prettyllog("config", "initialize", "hosts", orgname, "000",  "Checking for hosts")
     try:
       hosts = org['hosts']
       for host in hosts:
@@ -955,6 +982,7 @@ def kalm(mytoken, r, realm="standalone", subproject=None):
     ######################################
     # users
     ######################################
+    prettyllog("config", "initialize", "users", orgname, "000",  "Checking for users")
     try:
       users = org['users']
     except:
@@ -974,9 +1002,11 @@ def kalm(mytoken, r, realm="standalone", subproject=None):
     ######################################
     # Templates
     ######################################
+    prettyllog("config", "initialize", "templates", orgname, "000",  "Checking for templates")
     try:
       templates = org['templates']
       for template in templates:
+        prettyllog("config", "initialize", "templates", orgname, "000",  "Creating template %s" % template['name'])
         templatename = template['name']
         templatedescription = template['description']
         templatejob_type = template['job_type']
@@ -992,6 +1022,7 @@ def kalm(mytoken, r, realm="standalone", subproject=None):
     ######################################
     # Schedules
     ######################################
+    prettyllog("config", "initialize", "schedules", orgname, "000",  "Checking for schedules")
     try:
       schedules = org['schedules']
       for schedule in schedules:
@@ -1021,4 +1052,5 @@ def kalm(mytoken, r, realm="standalone", subproject=None):
         awx_create_schedule(schedulename, unified_job_template_id, description,tz, dtstart, run_frequency, run_every, dtend, scheduletype, orgname, mytoken, r)
     except:
       prettyllog("config", "initialize", "schedules", orgname, "000",  "No schedules found")
+
 ### The end

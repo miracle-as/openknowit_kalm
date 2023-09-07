@@ -9,6 +9,37 @@ import json
 import argparse
 import requests
 
+class suppress_stdout_stderr(object):
+    '''
+    A context manager for doing a "deep suppression" of stdout and stderr in 
+    Python, i.e. will suppress all print, even if the print originates in a 
+    compiled C/Fortran sub-function.
+       This will not suppress raised exceptions, since exceptions are printed
+    to stderr just before a script exits, and after the context manager has
+    exited (at least, I think that is why it lets exceptions through).      
+
+    '''
+    def __init__(self):
+        # Open a pair of null files
+        self.null_fds =  [os.open(os.devnull,os.O_RDWR) for x in range(2)]
+        # Save the actual stdout (1) and stderr (2) file descriptors.
+        self.save_fds = [os.dup(1), os.dup(2)]
+
+    def __enter__(self):
+        # Assign the null pointers to stdout and stderr.
+        os.dup2(self.null_fds[0],1)
+        os.dup2(self.null_fds[1],2)
+
+    def __exit__(self, *_):
+        # Re-assign the real stdout/stderr back to (1) and (2)
+        os.dup2(self.save_fds[0],1)
+        os.dup2(self.save_fds[1],2)
+        # Close all file descriptors
+        for fd in self.null_fds + self.save_fds:
+            os.close(fd)
+
+
+
 def runme(command):
   commandlist = command.split(" ")
   result = subprocess.run(commandlist, capture_output=True)
@@ -155,8 +186,8 @@ def connectiontest():
 def main():
     parser = argparse.ArgumentParser(description="Keep kalm and automate", usage="kalm <action> \n\n \
                \
-               version : 0.1.2 BETA \n                                              \
-               actions:\n                                                      \
+               version : 1.0.0\n\
+               actions:\n\
                core           Run kalm using the core/initial process to ensure the core environment is intact (/etc/kalm/kalm.json)\n  \
                seeder         Run kalm using the config files in (/etc/kalm.d)\n  \
                seed           Run kalm using the config specific configuration\n  \

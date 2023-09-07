@@ -32,6 +32,7 @@ def vizulize(args):
         if vm.get("cluster"):
             print(f"    {vm['name']} -> {vm['cluster']['name']}")
     print("}")
+
 def get_ip4_id(ip4_address):
     ip4s = get_ip4s()
     try:
@@ -257,6 +258,112 @@ def create_device_type(device_type_name):
     else:
         return False
     
+def create_device():
+    headers = {
+        "Authorization": f"Token {NETBOX_TOKEN}",
+        "Accept": "application/json"
+    }
+
+    # Mandatory fields
+    device_name = os.environ.get('KALM_DEVICE_NAME')
+    if device_name == None:
+        device_name = "default"
+    device_type = os.environ.get('KALM_DEVICE_TYPE')
+    if device_type == None:
+        device_type = "default"
+    device_role = os.environ.get('KALM_DEVICE_ROLE')
+    if device_role == None:
+        device_role = "default"
+    device_site = os.environ.get('KALM_DEVICE_SITE')
+    if device_site == None:
+        device_site = "default"
+    device_status = os.environ.get('KALM_DEVICE_STATUS')
+    if device_status == None:
+        device_status = "active"
+    device_comments = os.environ.get('KALM_DEVICE_COMMENTS')
+    if device_comments == None:
+        device_comments = ""
+    devicetype_id = get_type_id(device_type)
+    if devicetype_id == None:
+        create_device_type(device_type)
+        devicetype_id = get_type_id(device_type)
+    device_role_id = get_role_id(device_role)
+    if device_role_id == None:
+        create_role(device_role)
+        device_role_id = get_role_id(device_role)
+    device_site_id = get_site_id(device_site)
+    if device_site_id == None:
+        create_site(device_site)
+        device_site_id = get_site_id(device_site)
+
+
+
+    data = {
+        "name": device_name,
+        "device_type": 1,
+        "device_role": 1,
+        "site": 1,
+        "status": "active",  
+        "comments": "This is an example device in NetBox."
+    }
+
+def create_role():
+    headers = {
+        "Authorization": f"Token {NETBOX_TOKEN}",
+        "Accept": "application/json"
+    }
+    # Mandatory fields
+    role_name = os.environ.get('KALM_ROLE_NAME')
+    if role_name == None:
+        role_name = "default"
+    role_slug = os.environ.get('KALM_ROLE_SLUG')
+    if role_slug == None:
+        role_slug = role_name.lower()
+    role_description = os.environ.get('KALM_ROLE_DESCRIPTION')
+    if role_description == None:
+        role_description = ""
+    role_comments = os.environ.get('KALM_ROLE_COMMENTS')
+    if role_comments == None:
+        role_comments = ""
+    data = {
+        "name": role_name,
+        "slug": role_slug,
+        "description": role_description,
+        "comments": role_comments
+    }
+    role_id = get_role_id(role_name)
+    if role_id != None:
+        return True
+    url = fix_url("/dcim/device-roles/")
+    response = requests.post(url, headers=headers, json=data)
+    print(response)
+    print(response.json())
+    print(response.status_code)
+    print(response.content)
+    if response.status_code == 200:
+        return True
+    else:
+        return False
+
+def create_platform(platform_name):
+    headers = {
+        "Authorization": f"Token {NETBOX_TOKEN}",
+        "Accept": "application/json"
+    }
+    # Mandatory fields
+    platform_name = os.environ.get('KALM_PLATFORM_NAME')
+    if platform_name == None:
+        platform_name = "default"
+    platform_slug = os.environ.get('KALM_PLATFORM_SLUG')
+    if platform_slug == None:
+        platform_slug = platform_name.lower()
+    platform_description = os.environ.get('KALM_PLATFORM_DESCRIPTION')
+    if platform_description == None:
+        platform_description = ""
+    platform_comments = os.environ.get('KALM_PLATFORM_COMMENTS')
+    if platform_comments == None:
+        platform_comments = ""
+
 
 
 def create_site(site_name):
@@ -360,17 +467,14 @@ def create_type(type_name):
     if manufacturer == None:
         manufacturer == "noname"
     manufacturer_id = get_manufacturer_id(manufacturer)
-
-
-
-
-    get_manufacturer_id = get_manufacturer_id()
-    # Mandatory fields
+    if manufacturer_id == None:
+        create_manufacturer(manufacturer)
+        manufacturer_id = get_manufacturer_id(manufacturer)
 
     data = {
         "name": type_name, 
         "model": type_name,
-        "manufacturer": 1,
+        "manufacturer": manufacturer_id,
         "slug": type_name,
         "u_height": 1,
         "is_full_depth": True,
@@ -390,6 +494,7 @@ def create_type(type_name):
         return True
     else:
         return False
+
     
 
 def create_cluster(cluster_name):
