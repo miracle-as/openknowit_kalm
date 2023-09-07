@@ -1230,6 +1230,24 @@ def generate_ssh_config_entry(vm):
         full_hostname=vm["name"] + ".openknowit.com"
         )
 
+import subprocess
+
+def get_unique_sorted_items(filename):
+
+# Run the 'cat inventory' command and capture its output
+    cat_process = subprocess.Popen(['cat', 'inventory'], stdout=subprocess.PIPE)
+    inventory_output, _ = cat_process.communicate()
+
+# Split the output into lines, filter out lines starting with "[", and containing lowercase letters
+    filtered_lines = [line for line in inventory_output.decode().splitlines() if not line.startswith('[') and any(c.islower() for c in line)]
+
+# Extract the first column from each line
+    first_columns = [line.split()[0] for line in filtered_lines]
+
+# Remove duplicate entries and sort the result
+    unique_sorted_items = sorted(set(first_columns))
+    return unique_sorted_items
+
 
 
 def inventory_upload():
@@ -1243,5 +1261,11 @@ def inventory_upload():
     invfile = open(inventory_file, "r")
     print(invfile.read())
     prettyllog("manage", "netbox", "inventory", "upload", "000", "inventory file printed")
-    
+    items = get_unique_sorted_items(inventory_file)
+    for item in items:
+        prettyllog("manage", "netbox", "inventory", "upload", "000", "Adding %s to netbox" % item)
+        os.environ["KALM_DEVICE_NAME"] = item
+        add_device()
+
+
 
