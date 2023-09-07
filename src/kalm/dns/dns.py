@@ -442,13 +442,12 @@ def libvirt(args):
       network = "None"
     prettyllog("manage", "network", domain_name, "new", "000", "network %s" % (network))
     try:
-      ipaddress = get_dhcp_leases(network, mac_address)
       myleases = get_dhcp_leases()
       ipaddress = myleases['ipaddress']
       print("------------------------------------------------------------------")
       print(ipaddress)
       print("------------------------------------------------------------------")
-      
+
     except:
       ipaddress = "None"
     prettyllog("manage", "ipadress", domain_name, "new", "000", "IP address %s" % (ipaddress))
