@@ -614,7 +614,7 @@ def add_device():
         # Mandatory fields
         prettyllog("manage", "netbox", "device", "new", "000", "Getting device name")
         device_name = os.environ.get("KALM_DEVICE_NAME")
-        if device_name == "None":
+        if device_name == None:
             device_name = os.environ.get('HOSTNAME')
         prettyllog("manage", "netbox", "device", "new", "000",  "Getting device name is %s" % device_name)
 
