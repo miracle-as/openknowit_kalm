@@ -855,6 +855,10 @@ def add_vm():
 
 def fix_url(apiurl):
     nburl=os.environ.get('NETBOX_API_URL')
+    if nburl == None:
+        print("No NETBOX_API_URL provided")
+        return False
+
     if nburl.endswith("/"):
         nburl = nburl[:-1]
     if not nburl.endswith("/api"):

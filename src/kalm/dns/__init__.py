@@ -84,7 +84,7 @@ def main():
         
     if args.action[0] == "list":
         if(cloudflare.check_access()):
-            cloudflare.list_dns()   
+            print(cloudflare.list_dns())
             return True
         
     if args.action[0] == "add_record":
