@@ -96,11 +96,14 @@ def get_dhcp_leases():
 
     myleases = {}
     for mynetwork in mynetworks:
+      prettyllog("manage", "network", mynetwork, "new", "000", "get dhcp leases %s" % (mynetwork))
       # Run virsh net-dhcp-leases command
       command = ["virsh", "net-dhcp-leases", mynetwork ]
+      prettyllog("manage", "network", mynetwork, "new", "000", "get dhcp leases %s" % (command)
       process = subprocess.Popen(command, stdout=subprocess.PIPE)
       output, _ = process.communicate()
       for line in output.decode("utf-8").split("\n"):
+        prettyllog("manage", "network", mynetwork, "new", "000", "get dhcp leases %s" % (line))
         if "ipv4" in line:
           ipaddress = extract_ip_address(line)
           macaddress = extract_mac_address(line)
