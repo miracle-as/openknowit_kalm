@@ -429,6 +429,7 @@ def libvirt(args):
       network = "None"
     prettyllog("manage", "network", domain_name, "new", "000", "network %s" % (network))
     myleases = get_dhcp_leases()
+    print(myleases)
     prettyllog("manage", "network", domain_name, "new", "000", "number of leases %s" % (len(myleases)))
     try:
       ipaddress = myleases[mac_address]['ipaddress']
