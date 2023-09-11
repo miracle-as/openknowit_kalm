@@ -128,7 +128,7 @@ def extract_mac_address(line):
     print(myline)
     print("----------------------------------------------")
     # Regular expression pattern for matching an IP address
-    pattern = r"(\d{1,2}:\d{1,2}:\d{1,2}:\d{1,2}\d{1,2}:\d{1,2}:\d{1,2}:\d{1,2})"
+    pattern = r"(\d{1,2}:\d{1,2}:\d{1,2}:\d{1,2}:\d{1,2}:\d{1,2})"
     match = re.search(pattern, myline)
     if match:
         return match.group()
