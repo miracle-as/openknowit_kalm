@@ -85,9 +85,6 @@ def get_domains():
     output, _ = process.communicate()
     mylist =  output.decode("utf-8").split("\n")
     mylist = list(filter(lambda x: x != "", mylist))
-    print("--------------------------------------------------------------------------------------")
-    print(mylist)
-    print("--------------------------------------------------------------------------------------")
     return mylist
 
 def get_dhcp_leases():
@@ -97,21 +94,14 @@ def get_dhcp_leases():
     mynetworks =  output.decode("utf-8").split("\n")
     myleases = {}
     for mynetwork in mynetworks:
-       
       # Run virsh net-dhcp-leases command
       command = ["virsh", "net-dhcp-leases", mynetwork]
-   
       process = subprocess.Popen(command, stdout=subprocess.PIPE)
       output, _ = process.communicate()
       for line in output.decode("utf-8").split("\n"):
         if "ipv4" in line:
           ipaddress = extract_ip_address(line)
           macaddress = extract_mac_address(line)
-          print("--------------------------------------------------------------------------------------") 
-          print(ipaddress)
-          print("--------------------------------------------------------------------------------------")
-          print(macaddress)
-          print("--------------------------------------------------------------------------------------")
           if ipaddress != None:
               data = {
                 "ipaddress" : ipaddress,
@@ -178,7 +168,6 @@ def init_redis():
 
 
 def env_check():
-  print("env check")
   domain = os.getenv('KALM_DNS_DOMAIN')
   url=os.getenv('KALM_DNS_URL')
   dns_type=os.getenv('KALM_DNS_TYPE')
@@ -195,10 +184,6 @@ def env_check():
   if token is None:
     print("Error: KALM_DNS_TOKEN is not set")
     exit(1)
-  print("KALM_DNS_DOMAIN: " + domain)
-  print("KALM_DNS_URL: " + url)
-  print("KALM_DNS_TYPE: " + dns_type)
-  print("KALM_DNS_TOKEN: " + token)
 
 def set_env():
   domain = os.getenv('KALM_DNS_DOMAIN')
@@ -238,9 +223,6 @@ def get_zone_id():
     "Auth-API-Token": token
   }
   r = requests.get(zoneurl, headers=headers)
-  print(zoneurl  )
-  print(r.content)
-  print("--------------------------------------------------------------------------------------") 
 
   if r.status_code != 200:
     print("Error: " + str(r.status_code))
@@ -271,10 +253,6 @@ def get_records():
   zoneid = get_zone_id()
   if zoneid != None:
     recordurl = url + "/records?zone_id=" + zoneid 
-    print(recordurl)
-    print("--------------------------------------------------------------------------------------")
-    #https://dns.hetzner.com/api/v1/records?zone_id=${ZONEID}"
-    
     r = requests.get(recordurl, headers=headers)
     if r.status_code != 200:
       print("Error: " + str(r.status_code))
