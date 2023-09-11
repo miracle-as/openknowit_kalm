@@ -123,7 +123,10 @@ def get_dhcp_leases():
     return myleases
 
 def extract_mac_address(line):
-    myline = line.split(" ")[2]
+    myline = line.split(" ")
+    print("----------------------------------------------")
+    print(myline)
+    print("----------------------------------------------")
     # Regular expression pattern for matching an IP address
     pattern = r"(\d{1,2}:\d{1,2}:\d{1,2}:\d{1,2}\d{1,2}:\d{1,2}:\d{1,2}:\d{1,2})"
     match = re.search(pattern, myline)
