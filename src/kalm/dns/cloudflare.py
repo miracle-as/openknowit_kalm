@@ -163,7 +163,7 @@ def add_record(myitem = None):
     "proxied": proxied,
     "type": recordtype,
     "comment": "DNS record created by KALM",
-    "ttl": recordttl)
+    "ttl": recordttl
     }
     print(data)
     response = requests.post(url, headers=headers, data=json.dumps(data))
