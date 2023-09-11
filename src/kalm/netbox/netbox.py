@@ -713,6 +713,7 @@ def create_iprange(iprange_description = "default"):
 
     url = fix_url("/ipam/ip-ranges/")
     response = requests.post(url, headers=headers, json=data)
+    print(response.content)
     if response.status_code == 200:
         return True
     else:
