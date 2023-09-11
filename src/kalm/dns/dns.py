@@ -95,7 +95,7 @@ def get_dhcp_leases():
     myleases = {}
     for mynetwork in mynetworks:
       # Run virsh net-dhcp-leases command
-      command = ["virsh", "net-dhcp-leases", mynetwork , "|", "grep", "ipv4" , "|", "awk" , "'{print $3 }'"]
+      command = ["virsh", "net-dhcp-leases", mynetwork "]
       process = subprocess.Popen(command, stdout=subprocess.PIPE)
       output, _ = process.communicate()
       for line in output.decode("utf-8").split("\n"):
@@ -111,9 +111,10 @@ def get_dhcp_leases():
     return myleases
 
 def extract_mac_address(line):
+    myline = line.split(" ")[2]
     # Regular expression pattern for matching an IP address
     pattern = r"(\d{1,2}:\d{1,2}:\d{1,2}:\d{1,2}\d{1,2}:\d{1,2}:\d{1,2}:\d{1,2})"
-    match = re.search(pattern, line)
+    match = re.search(pattern, myline)
     if match:
         return match.group()
     else:
