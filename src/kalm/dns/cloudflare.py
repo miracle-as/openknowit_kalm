@@ -100,10 +100,38 @@ def delete_record(id):
 
 def add_record(myitem = None):
     prettyllog("manage", "network", "DNS", "new", "000", "add record")
+
     
     myenv = getenv()
     records = list_dns()
     prettyllog("manage", "network", "DNS", "new", "000", "list dns records : " + str(len(records))) 
+    if os.environ.get("KALM_DNS_RECORD_NAME") == None:
+        recordname = myitem["name"]
+    else:
+        recordname = os.environ.get("KALM_DNS_RECORD_NAME")
+
+    if os.environ.get("KALM_DNS_DOMAIN") == None:
+        domain = myitem["domain"]
+    else:
+        domain = os.environ.get("KALM_DNS_DOMAIN")
+    
+    if os.environ.get("KALM_DNS_RECORD_TYPE") == None:
+        recordtype = myitem["type"]
+    else:
+        recordtype = os.environ.get("KALM_DNS_RECORD_TYPE")
+
+    if os.environ.get("KALM_DNS_RECORD_TTL") == None:
+        recordttl = myitem["ttl"]
+    else:
+        recordttl = os.environ.get("KALM_DNS_RECORD_TTL")
+
+    if os.environ.get("KALM_DNS_RECORD_PROXIED") == None:
+        recordproxied = myitem["proxied"]
+    else:
+        recordproxied = os.environ.get("KALM_DNS_RECORD_PROXIED")
+
+    
+
     key = os.environ.get("KALM_DNS_RECORD_NAME")+ '.' + os.environ.get("KALM_DNS_DOMAIN")   
     prettyllog("manage", "network", "DNS", "new", "000", "check if record exists : " + key)
     try:
@@ -131,11 +159,11 @@ def add_record(myitem = None):
 
     data = {
     "content": content, 
-    "name": os.environ.get("KALM_DNS_RECORD_NAME") + '.' + os.environ.get("KALM_DNS_DOMAIN"),
+    "name": key,
     "proxied": proxied,
-    "type": os.environ.get("KALM_DNS_RECORD_TYPE"),
+    "type": recordtype,
     "comment": "DNS record created by KALM",
-    "ttl": os.environ.get("KALM_DNS_RECORD_TTL")
+    "ttl": recordttl)
     }
     print(data)
     response = requests.post(url, headers=headers, data=json.dumps(data))
