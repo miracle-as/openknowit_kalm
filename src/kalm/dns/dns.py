@@ -96,6 +96,8 @@ def get_dhcp_leases():
 
     myleases = {}
     for mynetwork in mynetworks:
+      if mynetwork == "":
+        continue
       prettyllog("manage", "network", mynetwork, "new", "000", "get dhcp leases %s" % (mynetwork))
       # Run virsh net-dhcp-leases command
       command = ["virsh", "net-dhcp-leases", mynetwork ]
@@ -113,6 +115,9 @@ def get_dhcp_leases():
                 "network" : mynetwork
               }
               myleases[macaddress] = data
+    print("my leases")
+    print(myleases)
+    print("my leases END")
     return myleases
 
 def extract_mac_address(line):
