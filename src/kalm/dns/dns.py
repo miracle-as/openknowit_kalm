@@ -441,11 +441,11 @@ def libvirt(args):
       netid = "None"
     prettyllog("manage", "ipadress", domain_name, "new", "000", "Network id :  %s" % (netid))
     myitem = { "domain_name" : domain_name, "network" : network, "ipaddress" : ipaddress }
-    os.environ.setdefault("KALM_DNS_RECORD_NAME", domain_name)
-    os.environ.setdefault("KALM_DNS_RECORD_CONTENT", ipaddress)
-    os.environ.setdefault("KALM_DNS_RECORD_TTL", "300")
-    os.environ.setdefault("KALM_DNS_RECORD_TYPE", "A")
-    os.environ.setdefault("KALM_DNS_RECORD_PROXIED", "False" )
+    os.environ["KALM_DNS_RECORD_NAME"], domain_name
+    os.environ['KALM_DNS_RECORD_CONTENT'] = ipaddress
+    os.environ["KALM_DNS_RECORD_TTL"], "300"
+    os.environ["KALM_DNS_RECORD_TYPE"], "A"
+    os.environ["KALM_DNS_RECORD_PROXIED"], "False" 
     if os.environ.get("KALM_DNS_TYPE") == "cloudflare":
       if(cloudflare.check_access()):
         prettyllog("manage", "dns", domain_name, "new", "000", "add dns record %s" % (domain_name + "." + network + ".openknowit.com"))

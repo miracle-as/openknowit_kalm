@@ -130,6 +130,7 @@ def add_record():
     }
     print(data)
     response = requests.post(url, headers=headers, data=json.dumps(data))
+    print
     if response.status_code == 200:
         print("DNS record created")
         return True
