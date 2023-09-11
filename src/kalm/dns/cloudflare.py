@@ -99,10 +99,12 @@ def delete_record(id):
 
 
 def add_record():
-    
+    prettyllog("manage", "network", "DNS", "new", "000", "add record")
     myenv = getenv()
     records = list_dns()
+    prettyllog("manage", "network", "DNS", "new", "000", "list dns records : " + str(len(records))) 
     key = os.environ.get("KALM_DNS_RECORD_NAME")+ '.' + os.environ.get("KALM_DNS_DOMAIN")   
+    prettyllog("manage", "network", "DNS", "new", "000", "check if record exists : " + key)
     try:
       value =records[key]
     except:
@@ -110,8 +112,7 @@ def add_record():
     if value != None:
         delete_record(records[key])
         print("delete record")
-    print("add record")
-
+    prettyllog("manage", "network", "DNS", "new", "000", "adding : " + key)
     url = os.environ.get("KALM_DNS_URL") + "/client/v4/zones/" + os.environ.get("KALM_DNS_ZONEID") + "/dns_records"
     bearer = "Bearer " + os.environ.get("KALM_DNS_TOKEN", "")
     headers = {
@@ -127,6 +128,7 @@ def add_record():
     "comment": "DNS record created by KALM",
     "ttl": os.environ.get("KALM_DNS_RECORD_TTL")
     }
+    print(data)
     response = requests.post(url, headers=headers, data=json.dumps(data))
     if response.status_code == 200:
         print("DNS record created")
