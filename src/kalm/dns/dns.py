@@ -99,7 +99,7 @@ def get_dhcp_leases():
       prettyllog("manage", "network", mynetwork, "new", "000", "get dhcp leases %s" % (mynetwork))
       # Run virsh net-dhcp-leases command
       command = ["virsh", "net-dhcp-leases", mynetwork ]
-      prettyllog("manage", "network", mynetwork, "new", "000", "get dhcp leases %s" % (command)
+      prettyllog("manage", "network", mynetwork, "new", "000", "get dhcp leases %s" % (command))
       process = subprocess.Popen(command, stdout=subprocess.PIPE)
       output, _ = process.communicate()
       for line in output.decode("utf-8").split("\n"):
