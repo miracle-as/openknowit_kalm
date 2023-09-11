@@ -91,7 +91,9 @@ def get_dhcp_leases():
     command = ["virsh", "net-list", "--name"]
     process = subprocess.Popen(command, stdout=subprocess.PIPE)
     output, _ = process.communicate()
+    print(output)
     mynetworks =  output.decode("utf-8").split("\n")
+
     myleases = {}
     for mynetwork in mynetworks:
       # Run virsh net-dhcp-leases command
