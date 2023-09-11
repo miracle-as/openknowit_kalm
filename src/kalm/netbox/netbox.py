@@ -629,34 +629,47 @@ def create_virtual_machine(vm_name):
         return False
     
 def create_iprange(iprange_description = "default"):
+    prettyllog("manage", "netbox", "iprange", "new", "000", "Creating iprange")
     headers = {
         "Authorization": f"Token {NETBOX_TOKEN}",
         "Accept": "application/json"
     }
     # Mandatory fields
+    prettyllog("manage", "netbox", "iprange", "new", "000", "Getting iprange start address")
     ip_start_address = os.environ.get('KALM_IP_START_ADDRESS')
     if ip_start_address == None:
         ip_start_address = ""
+    prettyllog("manage", "netbox", "iprange", "new", "000", "Getting iprange end address")
     ip_end_address = os.environ.get('KALM_IP_END_ADDRESS')
     if ip_end_address == None:
         ip_end_address = ""
+    prettyllog("manage", "netbox", "iprange", "new", "000", "Getting iprange status")
     ip_status = os.environ.get('KALM_IP_STATUS')
     if ip_status == None:
         ip_status = "active"
+    prettyllog("manage", "netbox", "iprange", "new", "000", "Getting iprange vrf")
+
     ip_vrf = os.environ.get('KALM_IP_VRF')
     if ip_vrf == None:
         ip_vrf = "Global"
+    prettyllog("manage", "netbox", "iprange", "new", "000", "Getting iprange role")
     ip_role = os.environ.get('KALM_IP_ROLE')
     if ip_role == None:
         ip_role = "loopback"
+
+    prettyllog("manage", "netbox", "iprange", "new", "000", "Getting iprange tenant")
     ip_tenant = os.environ.get('KALM_IP_TENANT')
     if ip_tenant == None:
         ip_tenant = "default"
     ip_tenant_id = get_tenant_id(ip_tenant)
+    prettyllog("manage", "netbox", "iprange", "new", "000", "Getting iprange tenana id")
     if ip_tenant_id == None:
         create_tenant(ip_tenant)
         ip_tenant_id = get_tenant_id(ip_tenant)
+    prettyllog("manage", "netbox", "iprange", "new", "000", "Getting iprange description")
     iprange_description = os.environ.get('KALM_IPRANGE_DESCRIPTION')
+    prettyllog("manage", "netbox", "iprange", "new", "000", "Getting iprange description is %s" % iprange_description)
+    prettyllog("manage", "netbox", "iprange", "new", "000", "Getting iprange iprange id")
     iprange_description_id = get_iprange_id(iprange_description)
     if iprange_description_id == None:
         create_iprange(iprange_description)
