@@ -671,9 +671,9 @@ def create_iprange(iprange_description = "default"):
     prettyllog("manage", "netbox", "iprange", "new", "000", "Getting iprange description is %s" % iprange_description)
     prettyllog("manage", "netbox", "iprange", "new", "000", "Getting iprange iprange id")
     iprange_description_id = get_iprange_id(iprange_description)
-    if iprange_description_id == None:
-        create_iprange(iprange_description)
-        iprange_description_id = get_iprange_id(iprange_description)
+    if iprange_description_id != None:
+        prettyllog("manage", "netbox", "iprange", "new", "000", "Ip range already exists")
+        return True
 
 
 #            "id": 2,
