@@ -106,7 +106,7 @@ def get_dhcp_leases():
       for line in output.decode("utf-8").split("\n"):
         if "ipv4" in line:
           ipaddress = extract_ip_address(line)
-          macaddress = extract_ip_address(line)
+          macaddress = extract_mac_address(line)
           print("--------------------------------------------------------------------------------------") 
           print(ipaddress)
           print("--------------------------------------------------------------------------------------")
