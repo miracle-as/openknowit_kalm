@@ -117,7 +117,7 @@ def get_dhcp_leases():
                 "ipaddress" : ipaddress,
                 "network" : mynetwork
               }
-              myleases[ipaddress] = data
+              myleases[macaddress] = data
     return myleases
 
 def extract_mac_address(line):
