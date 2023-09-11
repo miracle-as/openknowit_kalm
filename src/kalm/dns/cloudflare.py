@@ -99,6 +99,7 @@ def delete_record(id):
 
 
 def add_record():
+    
     myenv = getenv()
     records = list_dns()
     key = os.environ.get("KALM_DNS_RECORD_NAME")+ '.' + os.environ.get("KALM_DNS_DOMAIN")   

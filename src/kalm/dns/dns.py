@@ -218,7 +218,6 @@ def set_env():
   if token is None:
     print("Error: KALM_DNS_TOKEN is not set")
     exit(1)
-
   os.environ['KALM_DNS_DOMAIN'] = domain
   os.environ['KALM_DNS_URL'] = url
   os.environ['KALM_DNS_TYPE'] = dns_type
@@ -426,14 +425,13 @@ def delete_dns_record(hostname):
 
 
 def libvirt(args):
+  prettyllog("manage", "dns", "libvirt", "new", "000", "libvirt")
   #open a file for writing in /tmp
   # open a file for writing
   lines = []
   set_env()
   domain_ids = get_domains()
-  print("------------------------------------------------------------------")
-  print(domain_ids)
-  print("------------------------------------------------------------------")
+  prettyllog("manage", "dns", "libvirt", "new", "000", "get domains ids")
   ip4s = []
   for domain_id in domain_ids:
     prettyllog("manage", "dns", domain_id, "new", "000", "START: add dns record %s" % (domain_id))
@@ -452,17 +450,13 @@ def libvirt(args):
     except:
       network = "None"
     prettyllog("manage", "network", domain_name, "new", "000", "network %s" % (network))
+    myleases = get_dhcp_leases()
+    prettyllog("manage", "network", domain_name, "new", "number of leases %s" % (len(myleases)))
+    print("--------------------------> Myleases")
+    print(myleases)
+    print("--------------------------> Myleases")
     try:
-      myleases = get_dhcp_leases()
-      print("------------------------------------------------------------------")
-      print(myleases)
-      print("------------------------------------------------------------------")
-      
       ipaddress = myleases['ipaddress']
-      print("------------------------------------------------------------------")
-      print(ipaddress)
-      print("------------------------------------------------------------------")
-
     except:
       ipaddress = "None"
     prettyllog("manage", "ipadress", domain_name, "new", "000", "IP address %s" % (ipaddress))
