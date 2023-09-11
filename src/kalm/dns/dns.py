@@ -430,9 +430,6 @@ def libvirt(args):
     prettyllog("manage", "network", domain_name, "new", "000", "network %s" % (network))
     myleases = get_dhcp_leases()
     prettyllog("manage", "network", domain_name, "new", "000", "number of leases %s" % (len(myleases)))
-    print("---------------------> My leases")
-    print(myleases)
-    print("---------------------> My leases")
     try:
       ipaddress = myleases[mac_address]['ipaddress']
     except:
@@ -444,7 +441,6 @@ def libvirt(args):
       netid = "None"
     prettyllog("manage", "ipadress", domain_name, "new", "000", "Network id :  %s" % (netid))
     myitem = { "domain_name" : domain_name, "network" : network, "ipaddress" : ipaddress }
-    print(myitem)
     os.environ.setdefault("KALM_DNS_RECORD_NAME", domain_name)
     os.environ.setdefault("KALM_DNS_RECORD_CONTENT", ipaddress)
     os.environ.setdefault("KALM_DNS_RECORD_TTL", "300")
@@ -453,5 +449,8 @@ def libvirt(args):
     if os.environ.get("KALM_DNS_TYPE") == "cloudflare":
       if(cloudflare.check_access()):
         prettyllog("manage", "dns", domain_name, "new", "000", "add dns record %s" % (domain_name + "." + network + ".openknowit.com"))
-        cloudflare.add_record()
+        result = cloudflare.add_record()
+        print(result)
+        print("-----------------------------  ")
+
   return True
