@@ -451,10 +451,10 @@ def libvirt(args):
       network = "None"
     prettyllog("manage", "network", domain_name, "new", "000", "network %s" % (network))
     myleases = get_dhcp_leases()
-    prettyllog("manage", "network", domain_name, "new", "number of leases %s" % (len(myleases)))
-    print("--------------------------> Myleases")
+    prettyllog("manage", "network", domain_name, "new", "000", "number of leases %s" % (len(myleases)))
+    print("---------------------> My leases")
     print(myleases)
-    print("--------------------------> Myleases")
+    print("---------------------> My leases")
     try:
       ipaddress = myleases['ipaddress']
     except:
