@@ -98,8 +98,9 @@ def delete_record(id):
 
 
 
-def add_record():
+def add_record(myitem = None):
     prettyllog("manage", "network", "DNS", "new", "000", "add record")
+    
     myenv = getenv()
     records = list_dns()
     prettyllog("manage", "network", "DNS", "new", "000", "list dns records : " + str(len(records))) 
@@ -120,8 +121,16 @@ def add_record():
     "Content-Type": "application/json"
     }
     proxied = False
+    if os.environ.get("KALM_DNS_RECORD_PROXIED") == "true":
+        proxied = True
+    if os.environ.get("KALM_DNS_CONTENT") == None:
+        print("DNS CONTENT not set")
+        content = myitem["content"]
+    else:
+        content = os.environ.get("KALM_DNS_CONTENT")
+
     data = {
-    "content": os.environ.get("KALM_DNS_RECORD_CONTENT"), 
+    "content": content, 
     "name": os.environ.get("KALM_DNS_RECORD_NAME") + '.' + os.environ.get("KALM_DNS_DOMAIN"),
     "proxied": proxied,
     "type": os.environ.get("KALM_DNS_RECORD_TYPE"),
