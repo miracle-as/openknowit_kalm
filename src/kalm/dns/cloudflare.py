@@ -55,7 +55,6 @@ def check_access():
 
 def list_dns():
     domain = os.environ.get("KALM_DNS_DOMAIN")
-    prettyllog("manage", "dns", "cloudflare", "list", "000",  "List DNS records for " + domain)    
     myenv = getenv()
     #  --url https://api.cloudflare.com/client/v4/zones/zone_identifier/dns_records \
     url = os.environ.get("KALM_DNS_URL") + "/client/v4/zones/" + os.environ.get("KALM_DNS_ZONEID") + "/dns_records"

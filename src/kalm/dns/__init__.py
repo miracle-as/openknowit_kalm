@@ -42,7 +42,7 @@ def check_env():
 def main():
     parser = argparse.ArgumentParser(description="Keep kalm and automate", usage="kalm_dns <action> \n\n\
 \
-               version : 0.1.2 BETA \n\
+               version : 0.9.15 \n\
                actions:\n\
                envcheck    check if env is set \n\
                setenv      set env \n\
