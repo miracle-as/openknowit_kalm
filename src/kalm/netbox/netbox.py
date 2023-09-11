@@ -116,6 +116,14 @@ def get_virtual_machine_id(vm_name):
         return vms[vm_name]
     except:
         return None
+    
+def get_interface_id(interface_name):
+    interfaces = get_interfaces()
+    try:
+        return interfaces[interface_name]
+    except:
+        return None
+    
 
 def create_manufacturer(manufacturer_name):
     headers = {
@@ -506,6 +514,252 @@ def create_type(type_name):
         return True
     else:
         return False
+    
+def create_platform(platform_name):
+    headers = {
+        "Authorization": f"Token {NETBOX_TOKEN}",
+        "Accept": "application/json"
+    }
+    # Mandatory fields
+    platform_name = os.environ.get('KALM_PLATFORM_NAME')
+    if platform_name == None:
+        platform_name = "default"
+    platform_slug = os.environ.get('KALM_PLATFORM_SLUG')
+    if platform_slug == None:
+        platform_slug = platform_name.lower()
+    platform_description = os.environ.get('KALM_PLATFORM_DESCRIPTION')
+    if platform_description == None:
+        platform_description = ""
+    platform_comments = os.environ.get('KALM_PLATFORM_COMMENTS')
+    if platform_comments == None:
+        platform_comments = ""
+    platform_napalm_driver = os.environ.get('KALM_PLATFORM_NAPALM_DRIVER')
+    if platform_napalm_driver == None:
+        platform_napalm_driver = ""
+    platform_napalm_args = os.environ.get('KALM_PLATFORM_NAPALM_ARGS')
+    if platform_napalm_args == None:
+        platform_napalm_args = ""
+    data = {
+        "name": platform_name,
+        "slug": platform_slug,
+        "napalm_driver": platform_napalm_driver,
+        "napalm_args": platform_napalm_args,
+        "description": platform_description,
+        "comments": platform_comments
+    }
+    platform_id = get_platform_id(platform_name)
+    if platform_id != None:
+        return True
+    url = fix_url("/dcim/platforms/")
+    response = requests.post(url, headers=headers, json=data)
+    print(response)
+    print(response.json())
+    print(response.status_code)
+    print(response.content)
+    if response.status_code == 200:
+        return True
+    else:
+        return False
+    
+def create_virtual_machine(vm_name):
+    headers = {
+        "Authorization": f"Token {NETBOX_TOKEN}",
+        "Accept": "application/json"
+    }
+    # Mandatory fields
+    vm_name = os.environ.get('KALM_VM_NAME')
+    if vm_name == None:
+        vm_name = "default"
+
+    vm_cluster = os.environ.get('KALM_VM_CLUSTER')
+    if vm_cluster == None:
+        vm_cluster = "default"
+    vm_tenant = os.environ.get('KALM_VM_TENANT')
+    if vm_tenant == None:
+        vm_tenant = "default"
+    vm_role = os.environ.get('KALM_VM_ROLE')
+    if vm_role == None:
+        vm_role = "default"
+    vm_status = os.environ.get('KALM_VM_STATUS')
+    if vm_status == None:
+        vm_status = "active"
+    vm_comments = os.environ.get('KALM_VM_COMMENTS')
+    if vm_comments == None:
+        vm_comments = ""
+    vm_custom_fields = os.environ.get('KALM_VM_CUSTOM_FIELDS')
+    if vm_custom_fields == None:
+        vm_custom_fields = {}
+    vm_type = os.environ.get('KALM_VM_TYPE')
+    if vm_type == None:
+        vm_type = "default"
+    vm_type_id = get_type_id(vm_type)
+    if vm_type_id == None:
+        create_type(vm_type)
+        vm_type_id = get_type_id(vm_type)
+    vm_tenant_id = get_tenant_id(vm_tenant)
+    if vm_tenant_id == None:
+        create_tenant(vm_tenant)
+        vm_tenant_id = get_tenant_id(vm_tenant)
+    vm_role_id = get_role_id(vm_role)
+    if vm_role_id == None:
+        create_role(vm_role)
+        vm_role_id = get_role_id(vm_role)
+    vm_cluster_id = get_cluster_id(vm_cluster)
+    if vm_cluster_id == None:
+        create_cluster(vm_cluster)
+        vm_cluster_id = get_cluster_id(vm_cluster)
+    data = {
+        "name": vm_name,
+        "cluster": vm_cluster_id,
+        "tenant": vm_tenant_id,
+        "role": vm_role_id,
+        "status": vm_status,
+        "comments": vm_comments,
+        "custom_fields": vm_custom_fields,
+        "type": vm_type_id
+    }
+    vm_id = get_virtual_machine_id(vm_name)
+    if vm_id != None:
+        return True
+    url = fix_url("/virtualization/virtual-machines/")
+    response = requests.post(url, headers=headers, json=data)
+    if response.status_code == 200:
+        return True
+    else:
+        return False
+    
+def create_iprange(iprange_description = "default"):
+    headers = {
+        "Authorization": f"Token {NETBOX_TOKEN}",
+        "Accept": "application/json"
+    }
+    # Mandatory fields
+    ip_start_address = os.environ.get('KALM_IP_START_ADDRESS')
+    if ip_start_address == None:
+        ip_start_address = ""
+    ip_end_address = os.environ.get('KALM_IP_END_ADDRESS')
+    if ip_end_address == None:
+        ip_end_address = ""
+    ip_status = os.environ.get('KALM_IP_STATUS')
+    if ip_status == None:
+        ip_status = "active"
+    ip_vrf = os.environ.get('KALM_IP_VRF')
+    if ip_vrf == None:
+        ip_vrf = "Global"
+    ip_role = os.environ.get('KALM_IP_ROLE')
+    if ip_role == None:
+        ip_role = "loopback"
+    ip_tenant = os.environ.get('KALM_IP_TENANT')
+    if ip_tenant == None:
+        ip_tenant = "default"
+    ip_tenant_id = get_tenant_id(ip_tenant)
+    if ip_tenant_id == None:
+        create_tenant(ip_tenant)
+        ip_tenant_id = get_tenant_id(ip_tenant)
+    iprange_description = os.environ.get('KALM_IPRANGE_DESCRIPTION')
+    iprange_description_id = get_iprange_id(iprange_description)
+    if iprange_description_id == None:
+        create_iprange(iprange_description)
+        iprange_description_id = get_iprange_id(iprange_description)
+
+
+#            "id": 2,
+#            "url": "http://netbox.openknowit.com/api/ipam/ip-ranges/2/",
+#            "display": "192.168.86.0-255/24",
+#            "family": {
+#                "value": 4,
+#                "label": "IPv4"
+#            },
+#            "start_address": "192.168.86.0/24",
+#           "end_address": "192.168.86.255/24",
+#            "size": 256,
+#            "vrf": null,
+#            "tenant": null,
+#            "status": {
+#                "value": "active",
+#                "label": "Active"
+#            },
+#            "role": null,
+#            "description": "",
+#            "comments": "",
+#           "tags": [],
+#            "custom_fields": {},
+#            "created": "2023-09-09T21:00:01.355556Z",
+#            "last_updated": "2023-09-09T21:00:01.355576Z",
+#            "mark_utilized": false
+
+    data  = {
+        "start_address": ip_start_address,
+        "end_address": ip_end_address,
+        "status": ip_status,
+        "vrf": ip_vrf,
+        "role": ip_role,
+        "tenant": ip_tenant_id,
+        "description": iprange_description
+    }
+
+    url = fix_url("/ipam/ip-ranges/")
+    response = requests.post(url, headers=headers, json=data)
+    if response.status_code == 200:
+        return True
+    else:
+        return False
+    
+
+
+
+
+    
+def create_ip4(ip4_address = "default"):
+    headers = {
+        "Authorization": f"Token {NETBOX_TOKEN}",
+        "Accept": "application/json"
+    }
+
+    # Mandatory fields
+    ip_address = os.environ.get('KALM_IP_ADDRESS')
+    if ip_address == None:
+        ip_address = "127.0.0.1"
+    ip4_status = os.environ.get('KALM_IP_STATUS')
+    if ip_status == None:  
+        ip_status = "active"
+    ip4_role = os.environ.get('KALM_IP4_ROLE')
+    if ip_role == None:
+        ip_role = "loopback"
+    tenant = os.environ.get('KALM_NETBOX_TENANT')   
+    if ip_tenant == None:
+        ip_tenant = "default"
+    tenant_id = get_tenant_id(ip_tenant)
+    if tenant_id == None:
+        create_tenant(tenant)
+        tenant_id = get_tenant_id(tenant)
+
+
+
+
+
+def create_virtual_interface(interface_name):
+    headers = {
+        "Authorization": f"Token {NETBOX_TOKEN}",
+        "Accept": "application/json"
+    }
+    # Mandatory fields
+    interface_name = os.environ.get('KALM_VINTERFACE_NAME')
+    if interface_name == None:
+        interface_name = "default"
+    interface_type = os.environ.get('KALM_INTERFACE_TYPE')
+    if interface_type == None:
+        interface_type = "virtual"
+    interface_mac_address = os.environ.get('KALM_INTERFACE_MAC_ADDRESS')
+    if interface_mac_address == None:
+        interface_mac_address = ""
+    interface_mtu = os.environ.get('KALM_INTERFACE_MTU')
+    if interface_mtu == None:
+        interface_mtu = ""
+    interface_description = os.environ.get('KALM_INTERFACE_DESCRIPTION')
+    if interface_description == None:
+        interface_description = ""
+    interface_mode = os.environ.get('KALM_INTERFACE_MODE')
 
     
 
@@ -865,6 +1119,52 @@ def fix_url(apiurl):
         nburl = nburl + "/api"
     nburl = nburl + apiurl
     return nburl
+
+def get_iprange_id(iprange_description):
+    ipranges =  get_ipranges(iprange_description)
+    try:
+        return ipranges[iprange_description]
+    except:
+        return None
+
+
+def get_ipranges():
+    returnipranges = {}
+    headers = {
+        "Authorization": f"Token {NETBOX_TOKEN}",
+        "Accept": "application/json"
+    }
+    url = fix_url("/ipam/ip-ranges/")
+    response = requests.get(url, headers=headers)
+    ipranges = response.json()
+    for iprange in ipranges["results"]:
+        try:
+            if returnipranges[iprange["description"]]:
+                print("Duplicate iprange name")
+        except:
+           returnipranges[iprange["description"]] = iprange["id"]
+    return returnipranges
+
+
+
+def get_interfaces():
+    returninterfaces = {}
+    headers = {
+        "Authorization": f"Token {NETBOX_TOKEN}",
+        "Accept": "application/json"
+    }
+    url = fix_url("/dcim/interfaces/")
+    response = requests.get(url, headers=headers)
+    interfaces = response.json()
+    for interface in interfaces["results"]:
+        try:
+            if returninterfaces[interface["name"]]:
+                print("Duplicate interface name")
+        except:
+           returninterfaces[interface["name"]] = interface["id"]
+    return returninterfaces
+
+
 
 def get_roles():
     returnroles = {}

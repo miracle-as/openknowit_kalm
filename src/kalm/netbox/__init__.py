@@ -13,15 +13,20 @@ def main():
                 devices_types             list device types\n\
                 manufacturers             list manufacturers\n\
                 tenants                   list tenants\n\
+                roles                     list roles\n\
                 sites                     list sites\n\
+                ipranges                  list ip ranges\n\
+                ips                       list ips\n\
                 create_cluster            create cluster\n\
                 create_tenant_group       create tenant group\n\
                 create_tenant             create tenant\n\
                 create_manufacturer       create manufacturer\n\
                 create_site               create site\n\
                 create_role               create role\n\
+                create_ip                 create ip address\n\
+                create_iprange            create ip range address\n\
                 create_device_type        create device type\n\
-                add_vm                    add device to netbox\n\
+                add_vm                    add virtual server to netbox\n\
                 add_device                add device to netbox\n\
                 refresh                   refresh core netbox content\n\
                 serve                     \n\
@@ -71,6 +76,15 @@ def main():
     if args.action[0] == "refresh":
         netbox.refresh()
         return 0
+    
+    if args.action[0] == "create_iprange":
+        netbox.create_iprange(args)
+        return 0
+
+    if args.action[0] == "create_ip":
+        netbox.create_ip4(args)
+        return 0
+    
     if args.action[0] == "create_cluster":
         netbox.create_cluster(args)
         return 0
