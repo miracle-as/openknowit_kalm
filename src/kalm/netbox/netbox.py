@@ -1121,7 +1121,7 @@ def fix_url(apiurl):
     return nburl
 
 def get_iprange_id(iprange_description):
-    ipranges =  get_ipranges(iprange_description)
+    ipranges =  get_ipranges()
     try:
         return ipranges[iprange_description]
     except:
