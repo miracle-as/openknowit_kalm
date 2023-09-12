@@ -430,6 +430,9 @@ def libvirt(args):
     json_output = convert_to_json(xml_output)
     json_dict = json.loads(json_output)
     domain_name = json_dict["domain"]["name"]
+    print("--------------------------------------------------")
+    print(json_dict)
+    print("--------------------------------------------------")
     prettyllog("manage", "dns", domain_name, "new", "000", "add dns record %s" % (domain_name))
     try:
       mac_address = json_dict["domain"]["devices"]["interface"]["mac"]["@address"]
