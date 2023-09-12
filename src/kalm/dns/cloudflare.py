@@ -153,7 +153,7 @@ def add_record(myitem = None):
         proxied = True
     if os.environ.get("KALM_DNS_CONTENT") == None:
         print("DNS CONTENT not set")
-        content = myitem["content"]
+        content = myitem["ipaddress"]
     else:
         content = os.environ.get("KALM_DNS_CONTENT")
 
