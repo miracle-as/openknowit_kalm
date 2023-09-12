@@ -132,7 +132,7 @@ def add_record(myitem = None):
 
     
 
-    key = os.environ.get("KALM_DNS_RECORD_NAME")+ '.' + os.environ.get("KALM_DNS_DOMAIN")   
+    key = recordname + "." + domain   
     prettyllog("manage", "network", "DNS", "new", "000", "check if record exists : " + key)
     try:
       value =records[key]
