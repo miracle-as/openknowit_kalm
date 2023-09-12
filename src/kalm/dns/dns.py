@@ -437,7 +437,20 @@ def libvirt(args):
     try:
       mac_address = json_dict["domain"]["devices"]["interface"]["mac"]["@address"]
     except:
-      mac_address = "None"   
+      try:
+        mac_address = json_dict["domain"]["device"]["interface"][0]["mac"]["@address"]
+      except:
+        try:
+          mac_address = json_dict["domain"]["device"]["interfaces"][0]["mac"]["@address"]
+        except:
+          mac_address = "None"   
+          try:
+            mac_address = json_dict["domain"]["devices"]["interfaces"][0]["mac"]["@address"]
+          except:
+            mac_address = "None"   
+         
+
+
     prettyllog("manage", "macadress", domain_name, "new", "000", "Macaddress %s" % (mac_address))
     try:
       network = json_dict["domain"]["devices"]["interface"]["source"]["@network"]
