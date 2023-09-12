@@ -454,7 +454,7 @@ def libvirt(args):
     except:
       netid = "None"
     prettyllog("manage", "ipadress", domain_name, "new", "000", "Network id :  %s" % (netid))
-    myitem = { "name" : domain_name, "network" : network, "ipaddress" : ipaddress }
+    myitem = { "name" : domain_name, "type": "A", "ttl": 300, "network" : network, "ipaddress" : ipaddress }
     print(myitem)
     if os.environ.get("KALM_DNS_TYPE") == "cloudflare":
       if(cloudflare.check_access()):
