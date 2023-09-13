@@ -457,6 +457,8 @@ def libvirt(args):
       network = "None"
     prettyllog("manage", "network", domain_name, "new", "000", "network %s" % (network))
     mymacs = list(libvirt_leases())
+    print(libvirt_leases)
+    print("........................................................................2")
     try:
       ipaddress = libvirt_leases[mac_address]["ipaddress"]
     except:
