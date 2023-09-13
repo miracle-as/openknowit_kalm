@@ -415,9 +415,11 @@ def libvirt_leases():
   myleases = get_dhcp_leases()
   mymacs = list(myleases.keys())
   print(mymacs)
-
-  print(myleases)
-
+  mac2ip = {}
+  for mac in mymacs:
+    if mac is not None:
+      mac2ip[mac] = myleases[mac]['ipaddress']  
+  return mac2ip
 
 
 def libvirt(args):
@@ -435,9 +437,6 @@ def libvirt(args):
     json_output = convert_to_json(xml_output)
     json_dict = json.loads(json_output)
     domain_name = json_dict["domain"]["name"]
-    print("--------------------------------------------------")
-    print(json_dict)
-    print("--------------------------------------------------")
     prettyllog("manage", "dns", domain_name, "new", "000", "add dns record %s" % (domain_name))
     try:
       mac_address = json_dict["domain"]["devices"]["interface"]["mac"]["@address"]
@@ -462,14 +461,14 @@ def libvirt(args):
     except:
       network = "None"
     prettyllog("manage", "network", domain_name, "new", "000", "network %s" % (network))
-    myleases = get_dhcp_leases()
-    print(myleases)
-    prettyllog("manage", "network", domain_name, "new", "000", "number of leases %s" % (len(myleases)))
+    mymacs = list(libvirt_leases())
     try:
-      ipaddress = myleases[mac_address]['ipaddress']
+      ipaddress = mymacs[mac_address]
     except:
       ipaddress = "None"
+    print("-------------------------------------------------------------------------------------")
     prettyllog("manage", "ipadress", domain_name, "new", "000", "IP address %s" % (ipaddress))
+    print("-------------------------------------------------------------------------------------")
     try:
       netid = get_network_id(network)
     except:
