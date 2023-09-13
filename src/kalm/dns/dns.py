@@ -102,7 +102,11 @@ def get_dhcp_leases():
       output, _ = process.communicate()
       for line in output.decode("utf-8").split("\n"):
         if "ipv4" in line:
-          ipaddress = extract_ip_address(line)
+          ipaddress = line.split("   ipv4")[0]
+          print(ipaddress)
+          print("=000000000000000000000000000000000000000000000000000====")
+          
+
           macaddress = extract_mac_address(line)
           if ipaddress != None:
               data = {
