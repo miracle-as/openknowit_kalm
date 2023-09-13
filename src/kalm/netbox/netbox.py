@@ -1493,7 +1493,9 @@ def ansible_inventory(args):
 
 
 def sshconfig(args):    
+    prettyllog("manage", "netbox", "sshconfig", "000", "Getting netbox data")
     data = netboxdata(args)
+    prettyllog("manage", "netbox", "sshconfig", "000", "Get virtual machines")
     virtual_machines = data["virtual_machines"]
     ssh_config_entries = [generate_ssh_config_entry(vm) for vm in virtual_machines]
     ssh_config_content = "\n".join(ssh_config_entries)
