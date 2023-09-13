@@ -419,6 +419,7 @@ def libvirt_leases():
 
 def libvirt(args):
   prettyllog("manage", "dns", "libvirt", "new", "000", "libvirt")
+  myleases = libvirt_leases()
   #open a file for writing in /tmp
   # open a file for writing
   lines = []
@@ -456,11 +457,9 @@ def libvirt(args):
     except:
       network = "None"
     prettyllog("manage", "network", domain_name, "new", "000", "network %s" % (network))
-    mymacs = list(libvirt_leases())
-    print(libvirt_leases)
-    print("........................................................................2")
+    
     try:
-      ipaddress = libvirt_leases[mac_address]["ipaddress"]
+      ipaddress = myleases[mac_address]["ipaddress"]
     except:
       ipaddress = "None"
     print("-------------------------------------------------------------------------------------")
