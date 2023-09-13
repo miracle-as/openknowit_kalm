@@ -98,14 +98,11 @@ def get_dhcp_leases():
     for mynetwork in mynetworks:
       if mynetwork == "":
         continue
-      prettyllog("manage", "network", mynetwork, "new", "000", "get dhcp leases %s" % (mynetwork))
       # Run virsh net-dhcp-leases command
       command = ["virsh", "net-dhcp-leases", mynetwork ]
-      prettyllog("manage", "network", mynetwork, "new", "000", "get dhcp leases %s" % (command))
       process = subprocess.Popen(command, stdout=subprocess.PIPE)
       output, _ = process.communicate()
       for line in output.decode("utf-8").split("\n"):
-        prettyllog("manage", "network", mynetwork, "new", "000", "get dhcp leases %s" % (line))
         if "ipv4" in line:
           ipaddress = extract_ip_address(line)
           macaddress = extract_mac_address(line)
@@ -115,6 +112,8 @@ def get_dhcp_leases():
                 "network" : mynetwork
               }
               myleases[macaddress] = data
+    print(myleases)
+    print(list(myleases.keys()))
     return myleases
 
 def extract_mac_address(line):
@@ -468,7 +467,6 @@ def libvirt(args):
       ipaddress = "None"
     print("-------------------------------------------------------------------------------------")
     prettyllog("manage", "ipadress", domain_name, "new", "000", "IP address %s" % (ipaddress))
-    print("-------------------------------------------------------------------------------------")
     try:
       netid = get_network_id(network)
     except:
