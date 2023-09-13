@@ -76,9 +76,7 @@ def list_dns():
 
 def delete_record(id):
     myenv = getenv()
-    print("delete record")
     url = os.environ.get("KALM_DNS_URL") + "/client/v4/zones/" + os.environ.get("KALM_DNS_ZONEID") + "/dns_records/" + id 
-    print(url)
     bearer = "Bearer " + os.environ.get("KALM_DNS_TOKEN", "")
     headers = {
     "Authorization": bearer,
@@ -86,7 +84,6 @@ def delete_record(id):
     }
     response = requests.delete(url, headers=headers)
     if response.status_code == 200:
-        print("DNS record deleted")
         return True
     else:
         print("DNS record delete failed")
@@ -100,8 +97,6 @@ def delete_record(id):
 
 def add_record(myitem = None):
     prettyllog("manage", "network", "DNS", "new", "000", "add record")
-
-    
     myenv = getenv()
     records = list_dns()
     prettyllog("manage", "network", "DNS", "new", "000", "list dns records : " + str(len(records))) 
@@ -140,7 +135,6 @@ def add_record(myitem = None):
         value = None
     if value != None:
         delete_record(records[key])
-        print("delete record")
     prettyllog("manage", "network", "DNS", "new", "000", "adding : " + key)
     url = os.environ.get("KALM_DNS_URL") + "/client/v4/zones/" + os.environ.get("KALM_DNS_ZONEID") + "/dns_records"
     bearer = "Bearer " + os.environ.get("KALM_DNS_TOKEN", "")
@@ -152,7 +146,6 @@ def add_record(myitem = None):
     if os.environ.get("KALM_DNS_RECORD_PROXIED") == "true":
         proxied = True
     if os.environ.get("KALM_DNS_CONTENT") == None:
-        print("DNS CONTENT not set")
         content = myitem["ipaddress"]
     else:
         content = os.environ.get("KALM_DNS_CONTENT")
@@ -169,15 +162,10 @@ def add_record(myitem = None):
     response = requests.post(url, headers=headers, data=json.dumps(data))
     print
     if response.status_code == 200:
-        print("DNS record created")
         return True
     else:
         return False
     
-
-
-
-
 
 
 
