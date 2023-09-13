@@ -462,6 +462,9 @@ def libvirt(args):
       ipaddress = myleases[mac_address]["ipaddress"]
     except:
       ipaddress = "None"
+    print(myleases[mac_address])
+    print(myleases)
+
     print("-------------------------------------------------------------------------------------")
     prettyllog("manage", "ipadress", domain_name, "new", "000", "IP address %s" % (ipaddress))
     try:
