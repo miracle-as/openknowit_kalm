@@ -418,6 +418,9 @@ def delete_dns_record(hostname):
 def libvirt_leases():
   prettyllog("manage", "dns", "libvirt", "new", "000", "libvirt")
   myleases = get_dhcp_leases()
+  mymacs = list(myleases.keys())
+  print(mymacs)
+
   print(myleases)
 
 
