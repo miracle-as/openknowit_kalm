@@ -109,17 +109,12 @@ def get_dhcp_leases():
         if "ipv4" in line:
           ipaddress = extract_ip_address(line)
           macaddress = extract_mac_address(line)
-          print("ipaddress : " + str(ipaddress))
-          print("macaddress : " + str(macaddress))
           if ipaddress != None:
               data = {
                 "ipaddress" : ipaddress,
                 "network" : mynetwork
               }
               myleases[macaddress] = data
-    print("my leases")
-    print(myleases)
-    print("my leases END")
     return myleases
 
 def extract_mac_address(line):
