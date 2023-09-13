@@ -459,13 +459,9 @@ def libvirt(args):
     prettyllog("manage", "network", domain_name, "new", "000", "network %s" % (network))
     
     try:
-      ipaddress = myleases[mac_address]["ipaddress"]
+      ipaddress = myleases[mac_address]
     except:
       ipaddress = "None"
-    print(myleases[mac_address])
-    print(myleases)
-
-    print("-------------------------------------------------------------------------------------")
     prettyllog("manage", "ipadress", domain_name, "new", "000", "IP address %s" % (ipaddress))
     try:
       netid = get_network_id(network)
