@@ -48,7 +48,6 @@ def check_access():
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
         if response.json()["result"]["status"] == "active":
-            print("Access verified")
             return True
     else:
         return False
@@ -70,7 +69,6 @@ def list_dns():
           records[record["name"]] = record["id"]
     else:
         print("Error: " + str(response.status_code))
-        print(response.text)
         exit(1)
     return records
 
@@ -158,9 +156,7 @@ def add_record(myitem = None):
     "comment": "DNS record created by KALM",
     "ttl": recordttl
     }
-    print(data)
     response = requests.post(url, headers=headers, data=json.dumps(data))
-    print
     if response.status_code == 200:
         return True
     else:
