@@ -35,9 +35,7 @@ def get_default_gateway():
     
 def get_my_ip(defaut=True):
   if defaut:
-    print("get my ip")
     dgw = get_default_gateway()
-    print(dgw)
     return dgw
   else:
     return None
@@ -122,7 +120,6 @@ def extract_mac_address(line):
         return None
 
 def extract_ip_address(line):
-    print(line)
     # Regular expression pattern for matching an IP address
     pattern = r"(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})"
     match = re.search(pattern, line)
@@ -409,7 +406,6 @@ def libvirt_leases():
   prettyllog("manage", "dns", "libvirt", "new", "000", "libvirt")
   myleases = get_dhcp_leases()
   mymacs = list(myleases.keys())
-  print(mymacs)
   mac2ip = {}
   for mac in mymacs:
     if mac is not None:
@@ -469,12 +465,9 @@ def libvirt(args):
       netid = "None"
     prettyllog("manage", "ipadress", domain_name, "new", "000", "Network id :  %s" % (netid))
     myitem = { "name" : domain_name, "type": "A", "proxied": "False", "ttl": 300, "network" : network, "ipaddress" : ipaddress }
-    print(myitem)
     if os.environ.get("KALM_DNS_TYPE") == "cloudflare":
       if(cloudflare.check_access()):
         prettyllog("manage", "dns", domain_name, "new", "000", "add dns record %s" % (domain_name + "." + network + ".openknowit.com"))
         result = cloudflare.add_record(myitem)
-        print(result)
-        print("-----------------------------  ")
 
   return True
