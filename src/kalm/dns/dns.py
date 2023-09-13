@@ -91,9 +91,7 @@ def get_dhcp_leases():
     command = ["virsh", "net-list", "--name"]
     process = subprocess.Popen(command, stdout=subprocess.PIPE)
     output, _ = process.communicate()
-    print(output)
     mynetworks =  output.decode("utf-8").split("\n")
-
     myleases = {}
     for mynetwork in mynetworks:
       if mynetwork == "":
@@ -112,8 +110,6 @@ def get_dhcp_leases():
                 "network" : mynetwork
               }
               myleases[macaddress] = data
-    print(myleases)
-    print(list(myleases.keys()))
     return myleases
 
 def extract_mac_address(line):
@@ -462,7 +458,7 @@ def libvirt(args):
     prettyllog("manage", "network", domain_name, "new", "000", "network %s" % (network))
     mymacs = list(libvirt_leases())
     try:
-      ipaddress = mymacs[mac_address]
+      ipaddress = mymacs[mac_address]["ipaddress"]
     except:
       ipaddress = "None"
     print("-------------------------------------------------------------------------------------")
