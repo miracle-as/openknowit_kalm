@@ -44,11 +44,12 @@ def main():
 \
                version : 0.9.15 \n\
                actions:\n\
-               envcheck    check if env is set \n\
-               setenv      set env \n\
-               list        list dns records \n\
-               sync        sync dns record\n\
-               libvirt     create dns records for virtlib\n\
+               envcheck            check if env is set \n\
+               setenv              set env \n\
+               list                list dns records \n\
+               sync                sync dns record\n\
+               libvirt             create dns records for virtlib\n\
+               libvirt_leases      create dns records for virtlib\n\
 \n\
                2023 Knowit Miracle\n\
                ")
@@ -68,6 +69,10 @@ def main():
         print("set env")
         dns.set_env()
     
+    if args.action[0] == "libvirt_leases":
+        print("set env")
+        dns.libvirt(args)
+
     if args.action[0] == "libvirt":
         print("set env")
         dns.libvirt(args)

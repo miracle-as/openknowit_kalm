@@ -415,6 +415,13 @@ def delete_dns_record(hostname):
     print("You need to setup KALM_DNS_TOKEN")  
 
 
+def libvirt_leases():
+  prettyllog("manage", "dns", "libvirt", "new", "000", "libvirt")
+  myleases = get_dhcp_leases()
+  print(myleases)
+
+
+
 def libvirt(args):
   prettyllog("manage", "dns", "libvirt", "new", "000", "libvirt")
   #open a file for writing in /tmp
