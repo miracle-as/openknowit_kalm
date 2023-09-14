@@ -412,6 +412,20 @@ def libvirt_leases():
       mac2ip[mac] = myleases[mac]['ipaddress']  
   return mac2ip
 
+def register():
+  prettyllog("manage", "dns", "register", "new", "000", "register")
+  domain_name = os.environ.get("HOSTNAME")
+  network = "default"
+  ipaddress = get_my_ip()
+  myitem = { "name" : domain_name, "type": "A", "proxied": "False", "ttl": 300, "network" : network, "ipaddress" : ipaddress }
+  if os.environ.get("KALM_DNS_TYPE") == "cloudflare":
+    if(cloudflare.check_access()):
+      prettyllog("manage", "dns", domain_name, "new", "000", "add dns record %s" % (domain_name + "." + network + ".openknowit.com"))
+      result = cloudflare.add_record(myitem)
+      print(result)
+  return True
+
+
 
 def libvirt(args):
   prettyllog("manage", "dns", "libvirt", "new", "000", "libvirt")

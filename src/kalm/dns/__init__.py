@@ -50,6 +50,7 @@ def main():
                sync                sync dns record\n\
                libvirt             create dns records for virtlib\n\
                libvirt_leases      create dns records for virtlib\n\
+               register            register dns record for this host\n\
 \n\
                2023 Knowit Miracle\n\
                ")
@@ -76,6 +77,10 @@ def main():
     if args.action[0] == "libvirt":
         print("set env")
         dns.libvirt(args)
+
+    if args.action[0] == "register":
+        dns.register()
+
 
     if args.action[0] == "default":
         print("set env")
