@@ -440,6 +440,16 @@ def virtlightning():
   if not os.path.isfile(vlfullpath):
     print("Error: " + vlfullpath + " not found")
     exit(1)
+  prettyllog("manage", "dns", "virtlightning", "new", "000", "virtlightning file found %s" % (vlfullpath))
+  command = ["virt-lightning", "status" ]
+  process = subprocess.Popen(command, stdout=subprocess.PIPE)
+  output, _ = process.communicate()
+  mylist =  output.decode("utf-8").split("\n")
+  mylist = list(filter(lambda x: x != "", mylist))
+  prettyllog("manage", "dns", "virtlightning", "new", "000", "virtlightning list %s" % (mylist))
+  for myitem in mylist:
+    print(myitem)
+
 
   
 
