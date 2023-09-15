@@ -448,7 +448,11 @@ def virtlightning():
   mylist = list(filter(lambda x: x != "", mylist))
   prettyllog("manage", "dns", "virtlightning", "new", "000", "virtlightning list %s" % (mylist))
   for myitem in mylist:
-    print(myitem)
+    myname = myitem.split(" ")[1]
+    myip = myitem.split('@')[1].split(' ')[0]
+    myos = myitem.split('[')[1].split(']')[0]
+    print(myname + " " + myip + " " + myos)
+
 
 
   
