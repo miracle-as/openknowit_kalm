@@ -425,7 +425,23 @@ def register():
       print(result)
   return True
 
+def virtlightning():
+  prettyllog("manage", "dns", "virtlightning", "new", "000", "virtlightning")  
+  set_env()
+  vlfile = os.getenv('KALM_VIRT_LIGHTNING_FILE')
+  if vlfile == None:
+    print("You need to setup KALM_VIRT_LIGHTNING_FILE")  
+    exit(1)
+  vldir = os.getenv('KALM_VIRT_LIGHTNING_DIR')
+  if vldir == None:
+    print("You need to setup KALM_VIRT_LIGHTNING_DIR")  
+    exit(1)
+  vlfullpath = vldir + "/" + vlfile
+  if not os.path.isfile(vlfullpath):
+    print("Error: " + vlfullpath + " not found")
+    exit(1)
 
+  
 
 def libvirt(args):
   prettyllog("manage", "dns", "libvirt", "new", "000", "libvirt")

@@ -74,6 +74,10 @@ def main():
         print("set env")
         dns.libvirt_leases()
 
+    if args.action[0] == "virtlightning":
+        print("set env")
+        dns.virtlightning()
+
     if args.action[0] == "libvirt":
         print("set env")
         dns.libvirt(args)
