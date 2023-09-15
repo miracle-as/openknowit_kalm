@@ -451,7 +451,13 @@ def virtlightning():
     myname = myitem.split(" ")[1]
     myip = myitem.split('@')[1].split(' ')[0]
     myos = myitem.split('[')[1].split(']')[0]
+    mynetwork = "default"
     print(myname + " " + myip + " " + myos)
+    myitem = { "name" : myname, "type": "A", "proxied": "False", "ttl": 300, "network" : mynetwork, "ipaddress" : myip }
+    if os.environ.get("KALM_DNS_TYPE") == "cloudflare":
+      if(cloudflare.check_access()):
+        prettyllog("manage", "dns", myname, "new", "000", "add dns record %s" % (myname +  ".openknowit.com"))
+        result = cloudflare.add_record(myitem)
 
 
 
