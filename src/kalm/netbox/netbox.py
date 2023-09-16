@@ -1493,9 +1493,7 @@ def ansible_inventory(args):
 
 
 def sshconfig(args):    
-    prettyllog("manage", "netbox", "sshconfig", "000", "Getting netbox data")
     data = netboxdata(args)
-    prettyllog("manage", "netbox", "sshconfig", "000", "Get virtual machines")
     virtual_machines = data["virtual_machines"]
     ssh_config_entries = [generate_ssh_config_entry(vm) for vm in virtual_machines]
     ssh_config_content = "\n".join(ssh_config_entries)
@@ -1521,7 +1519,8 @@ def sshconfig(args):
     os.chmod(configfilemaster, 0o0600)
     os.chmod(configfile, 0o0600)
     open(configfile, "w").write(ssh_config_content)
-    print(ssh_config_content)
+    prettyllog("ssh_config", "update ssh config", "~/.ssh/conf.d/organisation", "organization", "000", "new ssh config written", "INFO")
+
 
 
 
