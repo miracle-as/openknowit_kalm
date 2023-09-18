@@ -236,7 +236,11 @@ def main():
         setupkalm(force)
 
     if args.action[0] == "service":
-        r = redis.Redis( db=15)
+        redis_host = os.getenv("REDIS_HOST", "localhost")
+        redis_port = os.getenv("REDIS_PORT", "6379")
+        redis_db = os.getenv("REDIS_DB", "0")
+        redis_password = os.getenv("REDIS_PASSWORD", "")
+        r = redis.Redis( host=redis_host, port=redis_port, db=redis_db, password=redis_password)
         r.flushdb()
         servicefile = open("/etc/kalm/kalm.service.token", mode="r")
         cfgfile="/etc/kalm/kalm.json"
