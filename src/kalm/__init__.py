@@ -208,6 +208,14 @@ def main():
     print("check if we are ready to go")
     ready  = connectiontest()
 
+    if args.action[0] == "netbox":
+        print("netbox")
+        if ready:
+            print("We have the access we need")
+            exit(0)
+        else:
+            exit(1)
+
     if args.action[0] == "check":
         if ready:
             print("We have the access we need")
