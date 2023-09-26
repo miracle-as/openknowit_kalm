@@ -6,6 +6,7 @@ import xml.etree.ElementTree as ET
 import platform
 import yaml
 from ..common import prettyllog
+import pprint
 
 
 ZABBIX_API_URL = os.environ.get('ZABBIX_URL') + "/api_jsonrpc.php"
@@ -43,6 +44,8 @@ def list_host_groups():
           "output": "extend"},
         "auth": AUTHTOKEN
     })
+    pprint.pprint(r.result)
+    
     print(json.dumps(r.json(), indent=4, sort_keys=True))
 
 def create_host_group():
