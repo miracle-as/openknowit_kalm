@@ -44,7 +44,7 @@ def list_host_groups():
           "output": "extend"},
         "auth": AUTHTOKEN
     })
-    pprint.pprint(r.result)
+    pprint.pprint(r.content)
     
     print(json.dumps(r.json(), indent=4, sort_keys=True))
 
