@@ -1,27 +1,72 @@
-[tool.poetry]
+[project]
 name = "kalm"
 version = "0.10.20"
+description = "Knowit automation lifecycle management"
+readme = "README.md"
+requires-python = ">=3.7"
+keywords = [ "kalm", "awx", "ansible", "automation",]
+classifiers = [ "Development Status :: 3 - Alpha", "Intended Audience :: Developers", "Topic :: Software Development :: Libraries :: Python Modules", "License :: OSI Approved :: MIT License", "Programming Language :: Python :: 3",]
+dependencies = [ "redis", "flask", "pynetbox", "wheel", "hvac", "xmltodict", "netbox", "urllib3", "cryptography", "PyYAML",]
+[[project.authors]]
+name = "Jakob Holst"
+email = "jho@miracle.dk"
+
+[[project.maintainers]]
+name = "Jakob Holst"
+email = "jho@miracle.dk"
+
+[build-system]
+requires = [ "setuptools>=43.0.0", "wheel",]
+build-backend = "setuptools.build_meta"
+
+[tool.poetry]
+name = "kalm"
+version = "0.10.21"
 description = "Knowit Automation lifecycle management"
-authors = ["Jakob Holst <jakob.holst@knowit.dk>"]
+authors = [ "Jakob Holst <jakob.holst@knowit.dk>",]
 license = "MIT"
 homepage = "https://kalm.openknowit.com"
 repository = "https://github.com/miracle-as/openknowit_kalm.git"
 
+[project.license]
+file = "LICENSE.txt"
+
+[project.optional-dependencies]
+dev = [ "check-manifest",]
+test = [ "coverage",]
+
+[project.urls]
+Homepage = "https://github.com/JakobHolstDK/kalm"
+"Bug Reports" = "https://github.com/JakobHolstDK/kalm/issues"
+Source = "https://github.com/JakobHolstDK/kalm"
+
+[project.scripts]
+kalm = "kalm:main"
+kalm_bump = "kalm.bump:main"
+kalm_jenkins = "kalm.jenkins:main"
+kalm_pitv = "kalm.pitv:main"
+kalm_vault = "kalm.vault:main"
+kalm_airflow = "kalm.airflow:main"
+kalm_gitea = "kalm.gitea:main"
+kalm_inabox = "kalm.inabox:main"
+kalm_netbox = "kalm.netbox:main"
+kalm_zabbix = "kalm.zabbix:main"
+kalm_traefik = "kalm.traefik:main"
+kalm_dns = "kalm.dns:main"
 
 [tool.poetry.scripts]
-kalm = 'kalm:main'
-kalm_airflow = 'kalm.airflow:main'
-kalm_bump = 'kalm.airflow:main'
-kalm_pitv = 'kalm.pitv:main'
-kalm_jenkins = 'kalm.jenkins:main'
-kalm_gitea = 'kalm.gitea:main'
-kalm_inabox = 'kalm.inabox:main'
-kalm_netbox = 'kalm.netbox:main'
-kalm_zabbix = 'kalm.zabbix:main'
-kalm_traefik = 'kalm.traefik:main'
-kalm_vault = 'kalm.vault:main'
-kalm_dns = 'kalm.dns:main'
-
+kalm = "kalm:main"
+kalm_airflow = "kalm.airflow:main"
+kalm_bump = "kalm.airflow:main"
+kalm_pitv = "kalm.pitv:main"
+kalm_jenkins = "kalm.jenkins:main"
+kalm_gitea = "kalm.gitea:main"
+kalm_inabox = "kalm.inabox:main"
+kalm_netbox = "kalm.netbox:main"
+kalm_zabbix = "kalm.zabbix:main"
+kalm_traefik = "kalm.traefik:main"
+kalm_vault = "kalm.vault:main"
+kalm_dns = "kalm.dns:main"
 
 [tool.poetry.dependencies]
 python = "^3.8"
@@ -39,76 +84,5 @@ PyYAML = "^6.0.1"
 cryptography = "^41.0.2"
 paramiko = "^3.3.1"
 
-
-
-
-
-[project]
-name = "kalm"  
-version = "0.10.20"
-description = "Knowit automation lifecycle management"
-readme = "README.md" # Optional
-requires-python = ">=3.7"
-license = {file = "LICENSE.txt"}
-keywords = ["kalm", "awx", "ansible", "automation"]  
-authors = [
-  {name = "Jakob Holst", email = "jho@miracle.dk" }
-]
-maintainers = [
-  {name = "Jakob Holst", email = "jho@miracle.dk" }
-]
-
-classifiers = [  # Optional
-  # How mature is this project? Common values are
-  #   3 - Alpha
-  #   4 - Beta
-  #   5 - Production/Stable
-  "Development Status :: 3 - Alpha",
-  "Intended Audience :: Developers",
-  "Topic :: Software Development :: Libraries :: Python Modules",
-  "License :: OSI Approved :: MIT License",
-  "Programming Language :: Python :: 3",
-]
-
-dependencies = [ # Optional
-  "redis",
-  "flask",
-  "pynetbox",
-  "wheel",
-  "hvac",
-  "xmltodict",
-  "netbox",
-  "urllib3",
-  "cryptography",
-  "PyYAML"
-]
-
-[project.optional-dependencies] # Optional
-dev = ["check-manifest"]
-test = ["coverage"]
-
-[project.urls]  # Optional
-"Homepage" = "https://github.com/JakobHolstDK/kalm"
-"Bug Reports" = "https://github.com/JakobHolstDK/kalm/issues"
-"Source" = "https://github.com/JakobHolstDK/kalm"
-
-[project.scripts]  # Optional
-kalm = "kalm:main"
-kalm_bump = 'kalm.bump:main'
-kalm_jenkins = 'kalm.jenkins:main'
-kalm_pitv = 'kalm.pitv:main'
-kalm_vault = 'kalm.vault:main'
-kalm_airflow = 'kalm.airflow:main'
-kalm_gitea = 'kalm.gitea:main'
-kalm_inabox = 'kalm.inabox:main'
-kalm_netbox = 'kalm.netbox:main'
-kalm_zabbix = 'kalm.zabbix:main'
-kalm_traefik = 'kalm.traefik:main'
-kalm_dns = 'kalm.dns:main'
-
-[tool.setuptools]
-package-data = {"kalm" = ["*.dat"]}
-
-[build-system]
-requires = ["setuptools>=43.0.0", "wheel"]
-build-backend = "setuptools.build_meta"
+[tool.setuptools.package-data]
+kalm = [ "*.dat",]
