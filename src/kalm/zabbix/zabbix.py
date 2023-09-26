@@ -41,11 +41,12 @@ def list_host_groups():
           "jsonrpc": "2.0",     
           "method": "hostgroup.get",     
           "params": {         
-          "output": "extend"},
+          "output": "extend",
                  "filter": {
                  "name": [
-            ]
-            },
+            ] 
+            }
+        },
         "auth": AUTHTOKEN
     })
     pprint.pprint(r.content)
