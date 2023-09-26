@@ -31,6 +31,9 @@ def major():
             new_version = f'{major}.{minor}.{patch}'
             data['tool']['poetry']['version'] = new_version
     # Save the modified pyproject.toml file
+    print(data['project']['version'])
+    print(data['tool']['poetry']['version'])
+
     with open('pyproject.toml', 'w') as toml_file:
         toml.dump(data, toml_file)
 
@@ -57,12 +60,15 @@ def minor():
             major, minor, patch = map(int, parts)
             minor += 1  
             patch = 0
-            
+
             new_version = f'{major}.{minor}.{patch}'
             data['tool']['poetry']['version'] = new_version
     # Save the modified pyproject.toml file
+    print(data['project']['version'])
+    print(data['tool']['poetry']['version'])
     with open('pyproject.toml', 'w') as toml_file:
         toml.dump(data, toml_file)
+
 
 def patch():
   with open('pyproject.toml', 'r') as toml_file:
@@ -88,5 +94,7 @@ def patch():
         data['tool']['poetry']['version'] = new_version
 
   # Save the modified pyproject.toml file
+  print(data['project']['version'])
+  print(data['tool']['poetry']['version'])
   with open('pyproject.toml', 'w') as toml_file:
     toml.dump(data, toml_file)
