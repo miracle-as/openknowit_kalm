@@ -36,6 +36,7 @@ def list_host_group():
     print(json.dumps(r.json(), indent=4, sort_keys=True))
 
 def list_host_groups():
+    prettyllog("List host groups","info",   "zabbix", "list_host_groups", "zabbix.py", "kalm")
     r = requests.post(ZABBIX_API_URL,
     json= {     
           "jsonrpc": "2.0",     
