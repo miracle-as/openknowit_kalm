@@ -57,23 +57,9 @@ def create_host_group():
     })
     print(json.dumps(r.json(), indent=4, sort_keys=True))
 
-print("\nHost group create : Linux")
-r = requests.post(ZABBIX_API_URL,
-        json={
-    "jsonrpc": "2.0",
-    "method": "hostgroup.create",
-    "params": {
-        "name": "Linux servers"
-    },
-    "id": 1,
-    "auth": AUTHTOKEN
-})
-
-
-
-
-print("\nCreate host")
-r = requests.post(ZABBIX_API_URL,
+def create_host():
+  print("\nCreate host")
+  r = requests.post(ZABBIX_API_URL,
                   json={
     "jsonrpc": "2.0",
     "method": "host.create",
@@ -108,6 +94,5 @@ r = requests.post(ZABBIX_API_URL,
     },
     "id": 2,
     "auth": AUTHTOKEN
-})
-
-print(json.dumps(r.json(), indent=4, sort_keys=True))
+  })
+  print(json.dumps(r.json(), indent=4, sort_keys=True))
