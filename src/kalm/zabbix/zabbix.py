@@ -48,6 +48,7 @@ def list_host_groups():
             ] 
             }
         },
+        "id": 1,
         "auth": AUTHTOKEN
     })
     pprint.pprint(r.content)
