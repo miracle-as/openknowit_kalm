@@ -42,6 +42,10 @@ def list_host_groups():
           "method": "hostgroup.get",     
           "params": {         
           "output": "extend"},
+                 "filter": {
+                 "name": [
+            ]
+            },
         "auth": AUTHTOKEN
     })
     pprint.pprint(r.content)
