@@ -16,8 +16,8 @@ AUTHTOKEN = os.environ.get('ZABBIX_TOKEN')
 #  --data '{"jsonrpc":"2.0","method":"item.create","params":{"name":"Free disk space on /home/joe/","key_":"vfs.fs.size[/home/joe/,free]","hostid":"10084","type":0,"value_type":3,"interfaceid":"1","delay":30},"id":3}'
 
 def list_host_group():
-    r = requests.post(ZABBIX_API_URL,
     HOSTGROUP= os.environ.get('ZABBIX_HOSTGROUP')
+    r = requests.post(ZABBIX_API_URL,
     json= {     
           "jsonrpc": "2.0",     
           "method": "hostgroup.get",     
