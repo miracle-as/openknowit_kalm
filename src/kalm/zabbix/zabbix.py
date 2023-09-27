@@ -100,6 +100,7 @@ def get_host_group_id(hostgroup):
     except:
         print("no hostgroup found")
         return None
+    
 def create_host(hostname , hostgroup_id, ipadress):    
     r = requests.post(ZABBIX_API_URL,
     json= {     
@@ -137,6 +138,14 @@ def create_host(hostname , hostgroup_id, ipadress):
         "id": 1,
         "auth": AUTHTOKEN
     })
+    try:
+        return r.json()['result']['hostids'][0]
+    except:
+        print(r.status_code)
+        print(r.content)
+        print("no host created")
+        return None
+    
 
 
 
