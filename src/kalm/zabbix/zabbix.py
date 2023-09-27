@@ -87,6 +87,11 @@ def create_host_group():
     })
     print(json.dumps(r.json(), indent=4, sort_keys=True))
     
+def status():
+    print("status")
+    return 0
+
+
 def register():
     print("register")
     hostgroup = os.environ.get('KALM_ZABBIX_HOSTGROUP')
