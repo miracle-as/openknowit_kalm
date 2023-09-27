@@ -23,13 +23,10 @@ def main():
         print("hostgroups")
         return zabbix.list_host_groups()
     
-    if args.action[0] == "add_device":
+    if args.action[0] == "register":
         print("register")
         return zabbix.register()    
 
-    if args.action[0] == "add_device":
-        print("register")
-        return zabbix.register()    
     return 0
 
     

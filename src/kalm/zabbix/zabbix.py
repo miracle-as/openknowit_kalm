@@ -69,6 +69,12 @@ def create_host_group():
 
 def create_host():
   print("\nCreate host")
+  hostname = os.environ.get('KALM_ZABBIX_HOSTNAME')
+  hostgroup = os.environ.get('KALM_ZABBIX_HOSTGROUP')
+  hostip = os.environ.get('KALM_ZABBIX_HOSTIP')   
+  grpid = get_host_group_id(hostgroup)
+  
+
   r = requests.post(ZABBIX_API_URL,
                   json={
     "jsonrpc": "2.0",
