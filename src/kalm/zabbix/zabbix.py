@@ -73,18 +73,24 @@ def get_host_group_id(hostgroup):
             "auth": AUTHTOKEN,
             "id": 1
         })
-    return r.json()['result'][0]['groupid']
+    try:
+        return r.json()['result'][0]['groupid']
+    except:
+        print("no hostgroup found")
+        return None
+    
 
-def create_host_group():
+def create_host_group(hostgroup = "Linux servers"):
     r = requests.post(ZABBIX_API_URL,
     json= {     
           "jsonrpc": "2.0",     
           "method": "hostgroup.create",     
           "params": {         
-          "name": "Linux servers"
+          "name": hostgroup
           },     
         "auth": AUTHTOKEN
     })
+    print(r.status_code)
     print(json.dumps(r.json(), indent=4, sort_keys=True))
     
 def status():
@@ -104,6 +110,9 @@ def register():
     
     print("hostgroup: " + hostgroup)
     hostgroup_id = get_host_group_id(hostgroup)
+    if hostgroup_id == None:
+        print("no hostgroup found")
+        create_host_group(hostgroup)
 
 #    create_host_group()
 #    create_host()
