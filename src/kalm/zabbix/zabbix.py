@@ -103,6 +103,7 @@ def register():
         return 1
     
     print("hostgroup: " + hostgroup)
+    hostgroup_id = get_host_group_id(hostgroup)
 
 #    create_host_group()
 #    create_host()
