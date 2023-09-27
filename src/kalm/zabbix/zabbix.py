@@ -97,8 +97,11 @@ def register():
     try:
         hostgroup = os.environ.get('KALM_ZABBIX_HOSTGROUP')
     except:
+        pass
+    if hostgroup == None:
         print("no hostgroup defined in env KALM_ZABBIX_HOSTGROUP")
         return 1
+    
     print("hostgroup: " + hostgroup)
 
 #    create_host_group()
