@@ -90,8 +90,6 @@ def create_host_group(hostgroup = "Linux servers"):
           },     
         "auth": AUTHTOKEN
     })
-    print(r.status_code)
-    print(json.dumps(r.json(), indent=4, sort_keys=True))
     try:
         return r.json()['result']['groupids'][0]
     except:
@@ -117,7 +115,16 @@ def register():
     hostgroup_id = get_host_group_id(hostgroup)
     if hostgroup_id == None:
         print("no hostgroup found")
-        create_host_group(hostgroup)
+        hostgroup_id = create_host_group(hostgroup)
+        if hostgroup_id == None:
+            print("no hostgroup created")
+            return 1
+        else:
+            print("hostgroup created")
+    else:
+        print("hostgroup found")
+
+    print("hostgroup_id: " + hostgroup_id)
 
 #    create_host_group()
 #    create_host()
