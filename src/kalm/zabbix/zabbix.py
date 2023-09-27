@@ -55,6 +55,26 @@ def list_host_groups():
     
     print(json.dumps(r.json(), indent=4, sort_keys=True))
 
+
+def get_host_group_id(hostgroup):
+    r = requests.post(ZABBIX_API_URL,
+    json= {
+
+            "jsonrpc": "2.0",
+            "method": "hostgroup.get",
+            "params": {
+                "output": "extend",
+                "filter": {
+                    "name": [
+                        hostgroup
+                    ]
+                }
+            },
+            "auth": AUTHTOKEN,
+            "id": 1
+        })
+    return r.json()['result'][0]['groupid']
+
 def create_host_group():
     r = requests.post(ZABBIX_API_URL,
     json= {     
@@ -66,6 +86,15 @@ def create_host_group():
         "auth": AUTHTOKEN
     })
     print(json.dumps(r.json(), indent=4, sort_keys=True))
+    
+def register():
+    print("register")
+    hostgroup = os.environ.get('KALM_ZABBIX_HOSTGROUP')
+    print("hostgroup: " + hostgroup)
+
+#    create_host_group()
+#    create_host()
+#    return 0
 
 def create_host():
   print("\nCreate host")

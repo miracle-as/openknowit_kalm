@@ -15,6 +15,11 @@ def main():
     parser.add_argument('action', metavar='<action>', type=str, nargs='+', help='setup jenkis')
     args = parser.parse_args()
     ready = False
+
+    if args.action[0] == "status":
+        print("status")
+        return zabbix.status()
+    
     if args.action[0] == "hostgroup":
         print("hostgroup")
         return zabbix.list_host_group()
