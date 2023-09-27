@@ -4,7 +4,7 @@ import argparse
 def main():
     parser = argparse.ArgumentParser(description="Keep kalm and automate zabbix", usage="kalm_zabbix <action> \n\n \
                \
-                version : 0.0.2 (netbox)\n\
+                version : 0.0.2 (zabbix)\n\
                 actions:\n\
                 register          register server on zabbix  \n\
                 hostgroup         list hostgroup data   for ZABBIX_HOSTGROUP  \n\
