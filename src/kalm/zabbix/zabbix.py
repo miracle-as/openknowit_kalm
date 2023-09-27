@@ -146,8 +146,50 @@ def create_host(hostname , hostgroup_id, ipadress):
         print("no host created")
         return None
     
-
-
+def  host_update(hostname, host_id, hostgroup_id, ipadress):
+    r = requests.post(ZABBIX_API_URL,
+    json= {     
+          "jsonrpc": "2.0",     
+          "method": "host.update",     
+          "params": {         
+          "hostid": host_id,
+          "interfaces": [
+            {
+                "type": 1,
+                "main": 1,
+                "useip": 1,
+                "ip": ipadress,
+                "dns": "",
+                "port": "10050"
+            }
+        ],
+        "groups": [
+            {
+                "groupid": hostgroup_id
+            }
+        ],
+        "tags": [
+            {
+                "tag": "Host name",
+                "value": hostname
+            }
+        ],
+        "inventory_mode": 0,
+        "inventory": {
+            "macaddress_a": "01234",
+            "macaddress_b": "56768"
+        }
+          },
+        "id": 1,
+        "auth": AUTHTOKEN
+    })
+    try:
+        return r.json()['result']['hostids'][0]
+    except:
+        print(r.status_code)
+        print(r.content)
+        print("host not updated")
+        return None
 
 def create_host_group(hostgroup = "Linux servers"):
     r = requests.post(ZABBIX_API_URL,
@@ -223,4 +265,12 @@ def register():
             print("host created")
     else:
         print("host found")
+        host_id = host_update(hostname, host_id, hostgroup_id, ipadress)
+        if host_id == None:
+            print("no host updated")
+            return 1
+        else:
+            print("host updated")
+    print("host_id: " + host_id)
+    
     return 0
