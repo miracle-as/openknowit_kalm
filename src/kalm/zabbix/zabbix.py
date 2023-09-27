@@ -94,7 +94,11 @@ def status():
 
 def register():
     print("register")
-    hostgroup = os.environ.get('KALM_ZABBIX_HOSTGROUP')
+    try:
+        hostgroup = os.environ.get('KALM_ZABBIX_HOSTGROUP')
+    except:
+        print("no hostgroup defined in env KALM_ZABBIX_HOSTGROUP")
+        return 1
     print("hostgroup: " + hostgroup)
 
 #    create_host_group()
