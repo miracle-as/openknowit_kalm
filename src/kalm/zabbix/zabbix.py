@@ -92,6 +92,11 @@ def create_host_group(hostgroup = "Linux servers"):
     })
     print(r.status_code)
     print(json.dumps(r.json(), indent=4, sort_keys=True))
+    try:
+        return r.json()['result']['groupids'][0]
+    except:
+        print("no hostgroup created")
+        return None
     
 def status():
     print("status")
