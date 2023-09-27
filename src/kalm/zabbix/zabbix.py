@@ -272,5 +272,30 @@ def register():
         else:
             print("host updated")
     print("host_id: " + host_id)
-    
+    hostdate = get_host_data(host_id)
+    open("hostdata.yaml", "w").write(yaml.dump(hostdate))
     return 0
+
+def get_host_data(host_id):
+    r = requests.post(ZABBIX_API_URL,
+    json= {
+
+            "jsonrpc": "2.0",
+            "method": "host.get",
+            "params": {
+                "output": "extend",
+                "filter": {
+                    "hostid": [
+                        host_id
+                    ]
+                }
+            },
+            "auth": AUTHTOKEN,
+            "id": 1
+        })
+    try:
+        return r.json()['result'][0]
+    except:
+        print("no host found")
+        return None
+    
