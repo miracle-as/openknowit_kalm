@@ -100,7 +100,7 @@ def get_host_group_id(hostgroup):
     except:
         print("no hostgroup found")
         return None
-def create_host(hostname, hostgroup_id):    
+def create_host(hostname , hostgroup_id, ipadress):    
     r = requests.post(ZABBIX_API_URL,
     json= {     
           "jsonrpc": "2.0",     
@@ -170,6 +170,16 @@ def register():
     if hostname == None:
         print("no hostname defined in env KALM_ZABBIX_HOSTNAME")
         return 1
+    print("hostname: " + hostname)
+    try:
+        ipadress = os.environ.get('KALM_ZABBIX_HOSTIP')
+    except:
+        pass
+    if ipadress == None:
+        print("no ipadress defined in env KALM_ZABBIX_HOSTIP")
+        return 1
+    print("ipadress: " + ipadress)
+
 
     try:
         hostgroup = os.environ.get('KALM_ZABBIX_HOSTGROUP')
@@ -196,7 +206,7 @@ def register():
     host_id = get_host_id(hostname)
     if host_id == None:
         print("no host found")
-        host_id = create_host(hostname, hostgroup_id)
+        host_id = create_host(hostname, hostgroup_id, ipadress)
         if host_id == None:
             print("no host created")
             return 1
@@ -205,54 +215,3 @@ def register():
     else:
         print("host found")
     return 0
-
-
-#    create_host_group()
-#    create_host()
-#    return 0
-
-def create_host():
-  print("\nCreate host")
-  hostname = os.environ.get('KALM_ZABBIX_HOSTNAME')
-  hostgroup = os.environ.get('KALM_ZABBIX_HOSTGROUP')
-  hostip = os.environ.get('KALM_ZABBIX_HOSTIP')   
-  grpid = get_host_group_id(hostgroup)
-  
-
-  r = requests.post(ZABBIX_API_URL,
-                  json={
-    "jsonrpc": "2.0",
-    "method": "host.create",
-    "params": {
-        "host": "Linux server",
-        "interfaces": [
-            {
-                "type": 1,
-                "main": 1,
-                "useip": 1,
-                "ip": "192.168.3.1",
-                "dns": "",
-                "port": "10050"
-            }
-        ],
-        "groups": [
-            {
-                "groupid": "4"
-            }
-        ],
-        "tags": [
-            {
-                "tag": "Host name",
-                "value": "Linux server"
-            }
-        ],
-        "inventory_mode": 0,
-        "inventory": {
-            "macaddress_a": "01234",
-            "macaddress_b": "56768"
-        }
-    },
-    "id": 2,
-    "auth": AUTHTOKEN
-  })
-  print(json.dumps(r.json(), indent=4, sort_keys=True))
