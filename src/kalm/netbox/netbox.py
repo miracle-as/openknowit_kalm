@@ -1493,8 +1493,11 @@ def ansible_inventory(args):
 
 
 def sshconfig(args):    
+    prettyllog("ssh_config", "update ssh config", "~/.ssh/conf.d/organisation", "organization", "000", "Starting ssh config update", "INFO")
     data = netboxdata(args)
+    prettyllog("ssh_config", "update ssh config", "~/.ssh/conf.d/organisation", "organization", "000", "Got netbox data", "INFO")
     virtual_machines = data["virtual_machines"]
+    prettyllog("ssh_config", "update ssh config", "~/.ssh/conf.d/organisation", "organization", "000", "Got virtual machines", "INFO")
     ssh_config_entries = [generate_ssh_config_entry(vm) for vm in virtual_machines]
     ssh_config_content = "\n".join(ssh_config_entries)
     MYHOME = os.getenv("HOME")
@@ -1517,7 +1520,7 @@ def sshconfig(args):
     MYHOME = os.getenv("HOME")
     configfile = os.path.expanduser(MYHOME + "/.ssh/conf.d/kalm.conf")
     os.touch(configfile)
-    
+
     os.chmod(configfilemaster, 0o0600)
     os.chmod(configfile, 0o0600)
     open(configfile, "w").write(ssh_config_content)
