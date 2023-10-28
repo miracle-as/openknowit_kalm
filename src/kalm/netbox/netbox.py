@@ -1516,6 +1516,8 @@ def sshconfig(args):
         open(configfilemaster, "w").write("Include ~/.ssh/conf.d/*\n")
     MYHOME = os.getenv("HOME")
     configfile = os.path.expanduser(MYHOME + "/.ssh/conf.d/kalm.conf")
+    os.touch(configfile)
+    
     os.chmod(configfilemaster, 0o0600)
     os.chmod(configfile, 0o0600)
     open(configfile, "w").write(ssh_config_content)
