@@ -1519,17 +1519,30 @@ def sshconfig(args):
         open(configfilemaster, "w").write("Include ~/.ssh/conf.d/*\n")
     MYHOME = os.getenv("HOME")
     configfile = os.path.expanduser(MYHOME + "/.ssh/conf.d/kalm.conf")
-    os.touch(configfile)
+    #create an empty file if its missing
+    touch(configfile)
+    touch(configfilemaster) 
+    
+
+
 
     os.chmod(configfilemaster, 0o0600)
     os.chmod(configfile, 0o0600)
+    # open config file and create it if its missing
     open(configfile, "w").write(ssh_config_content)
     prettyllog("ssh_config", "update ssh config", "~/.ssh/conf.d/organisation", "organization", "000", "new ssh config written", "INFO")
 
 
 
 
-
+def touch(file_path):
+    try:
+        # Open the file in append mode, which creates the file if it doesn't exist
+        with open(file_path, "a"):
+            os.utime(file_path, None)  # Update the file's access and modification timestamps
+        print(f"File '{file_path}' created or updated successfully.")
+    except Exception as e:
+        print(f"Error: {e}")
 
 
 def generate_ssh_config_entry(vm):
