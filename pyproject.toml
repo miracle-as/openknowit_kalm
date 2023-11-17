@@ -1,6 +1,6 @@
 [project]
 name = "kalm"
-version = "3.3.4"
+version = "3.3.5"
 description = "Knowit automation lifecycle management"
 readme = "README.md"
 requires-python = ">=3.7"
@@ -46,11 +46,9 @@ kalm_traefik = "kalm.traefik:main"
 kalm_dns = "kalm.dns:main"
 kalm_semaphore = "kalm.semaphore:main"
 
-
-
 [tool.poetry]
 name = "kalm"
-version = "3.3.4"
+version = "3.3.5"
 description = "Knowit Automation lifecycle management"
 authors = [ "Jakob Holst <jakob.holst@knowit.dk>",]
 license = "MIT"
