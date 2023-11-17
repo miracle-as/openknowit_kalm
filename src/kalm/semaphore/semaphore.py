@@ -22,3 +22,24 @@ def test():
 def version():
     print("0.0.2")
     return 0
+
+def audit():
+    print("audit")
+    return 0
+
+def init():
+    print("init")
+    return 0
+
+def start():
+    print("start")
+    return 0
+
+def stop():
+    print("stop")
+    return 0
+
+def restart():
+    print("restart")
+    return 0
+
