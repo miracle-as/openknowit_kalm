@@ -6,8 +6,6 @@ import time
 import json
 import requests
 
-from kalm.common import common
-from kalm.common import config
 
 def server():
     print("server")
