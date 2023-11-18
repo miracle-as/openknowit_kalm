@@ -6,6 +6,9 @@ import time
 import json
 import requests
 
+def serve():
+    print("serve")
+    return 0
 
 def server():
     print("server")

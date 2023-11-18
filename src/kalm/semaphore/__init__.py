@@ -25,7 +25,7 @@ audit      keep kalm and audit semaphore\n\
     ready = False
 
     if args.action[0] == "serve":
-        semaphore.server()
+        semaphore.serve()
         return 0
     if args.action[0] == "init":
         semaphore.init()
