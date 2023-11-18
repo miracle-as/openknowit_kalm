@@ -18,7 +18,7 @@ def check_env():
 def get_projects():
     print("get_projects")
     projects = requests.get(os.getenv('KALM_SEMAPHORE_URL') + "/api/v4/projects")
-    return 0
+    return projects.json()
 
 
 def main():
@@ -28,7 +28,7 @@ def main():
     projects = get_projects()
     print(projects)
 
-    
+
 
 
         
