@@ -5,10 +5,7 @@ import sys
 import time
 import json
 import requests
-
-def serve():
-    print("serve")
-    return 0
+from serve import serve
 
 def server():
     print("server")
