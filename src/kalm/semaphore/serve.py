@@ -12,7 +12,8 @@ def serve():
     print("serve")
     if not check_env():
         print("check_env failed")
-        exit
+        SystemExit(1)
+        
     print("check_env ok")
     print("KALM_SEMAPHORE_URL: " + os.getenv('KALM_SEMAPHORE_URL'))
 
@@ -23,7 +24,7 @@ def serve():
     print(r.headers)
     print(r.text)
     print(r.json)
-    
+
 
         
     return 0
