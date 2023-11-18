@@ -1,6 +1,6 @@
 # keep kalm and con5entrate on your semaphores
 
-from . import semaphore
+from . import serve
 import argparse
 
 def main():
@@ -25,35 +25,7 @@ audit      keep kalm and audit semaphore\n\
     ready = False
 
     if args.action[0] == "serve":
-        semaphore.serve()
+        serve.main()
         return 0
-    if args.action[0] == "init":
-        semaphore.init()
-        return 0
-    if args.action[0] == "start":
-        semaphore.start()
-        return 0
-    if args.action[0] == "stop":
-        semaphore.stop()
-        return 0
-    if args.action[0] == "restart":
-        semaphore.restart()
-        return 0
-    if args.action[0] == "audit":
-        semaphore.audit()
-        return 0
-        
-    if args.action[0] == "help":
-        print(parser.print_help())
-        return 0
-
-    if args.action[0] == "version":
-        print("0.0.2")
-        return 0
-    if args.action[0] == "test":
-        print("test")
-        return 0
-    if args.action[0] == "setup":
-        semaphore.setup()
-
+    
 

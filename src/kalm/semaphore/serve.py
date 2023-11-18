@@ -8,7 +8,7 @@ def check_env():
         return 1
 
 
-def serve():
+def main():
     print("serve")
     if check_env():
         print("check_env ok")
