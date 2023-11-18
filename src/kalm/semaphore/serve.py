@@ -7,6 +7,13 @@ def check_env():
     if (os.getenv('KALM_SEMAPHORE_URL') == None):
         print("KALM_SEMAPHORE_URL not set")
         return 1
+    else:
+        print("KALM_SEMAPHORE_URL set to " + os.getenv('KALM_SEMAPHORE_URL'))
+        return 0
+    
+    
+    
+
     
 def get_projects():
     print("get_projects")
