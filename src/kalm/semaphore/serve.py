@@ -11,7 +11,7 @@ def check_env():
         print("KALM_SEMAPHORE_URL set to " + os.getenv('KALM_SEMAPHORE_URL'))
         return 0
     
-    
+
     
 
     
@@ -25,6 +25,10 @@ def main():
     print("serve")
     if check_env():
         prettyllog("check_env", "KALM_SEMAPHORE_URL", "not set", "set KALM_SEMAPHORE_URL", "error", "error")
+    projects = get_projects()
+    print(projects)
+
+    
 
 
         
