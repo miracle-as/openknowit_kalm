@@ -52,6 +52,30 @@ def get_project(session):
         # Successful request
         projects = response.json()
         print("Projects:", projects)
+        # map prokects by name
+        projects_by_name = {}
+        for project in projects:
+            projects_by_name[project['name']] = project
+        print("Projects by name:", projects_by_name)
+        return projects_by_name
+
+    else:
+        # Failed request
+        print(f"Error: {response.status_code}")
+
+def get_project_by_name(session, project_name):
+    baseurl = os.getenv('KALM_SEMAPHORE_URL')
+    project_url = f"{baseurl}/api/projects"  # Adjust the URL as needed
+    headers = {
+        'accept': 'application/json',
+        'Content-Type': 'application/json'
+    }
+
+    # Use the session for the request
+    response = session.get(project_url, headers=headers)
+    if response.status_code == 200:
+        # Successful request
+        projects = response.json()
     else:
         # Failed request
         print(f"Error: {response.status_code}")
@@ -72,7 +96,8 @@ def check_env():
 def main():
     session = login()
     if session:
-        get_project(session)
+        projects = get_project(session)
+        print("Projects:", projects)
 
 
     return 0
