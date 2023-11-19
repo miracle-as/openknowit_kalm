@@ -73,6 +73,7 @@ def get_inventory(session, project_id):
 
     # Use the session for the request
     response = session.get(inventory_url, headers=headers)
+    print(response.status_code)
     if response.status_code == 200:
         # Successful request
         inventory = response.json()
