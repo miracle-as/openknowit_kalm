@@ -1,6 +1,8 @@
 import requests
 import os
 from ..common import prettyllog
+import pprint
+
 
 def login():
     baseurl = os.getenv('KALM_SEMAPHORE_URL')
@@ -17,8 +19,12 @@ def login():
     }
 
     response = requests.post(url, headers=headers, json=data)
+    pprint.pprint(response.json())
+    
 
-    # Check the response
+    # Check the response>
+
+
     if response.status_code == 200:
         # Successful request
         print("Login successful")
