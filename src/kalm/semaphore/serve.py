@@ -19,8 +19,8 @@ def login():
     }
 
     response = requests.post(url, headers=headers, json=data)
-    pprint.pprint(response.json())
-    
+    pprint.pprint(response)
+
 
     # Check the response>
 
