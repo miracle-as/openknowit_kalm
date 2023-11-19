@@ -65,6 +65,7 @@ def get_inventory(session, project_id):
     inventory_url = f"{baseurl}/api/projects/{project_id}/inventory?sort=name&order=asc' "  # Adjust the URL as needed
     print("---------------------")
     print(inventory_url)
+    print("https://semaphore.openknowit.com/api/project/1/inventory?sort=name&order=asc")
     print("---------------------")
     headers = {
         'accept': 'application/json',
