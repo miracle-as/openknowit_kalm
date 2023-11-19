@@ -63,6 +63,9 @@ def get_project(session):
 def get_inventory(session, project_id):
     baseurl = os.getenv('KALM_SEMAPHORE_URL')
     inventory_url = f"{baseurl}/api/projects/{project_id}/inventory"  # Adjust the URL as needed
+    print("---------------------")
+    print(inventory_url)
+    print("---------------------")
     headers = {
         'accept': 'application/json',
         'Content-Type': 'application/json'
