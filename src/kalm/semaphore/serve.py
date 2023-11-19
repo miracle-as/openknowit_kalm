@@ -63,10 +63,6 @@ def get_project(session):
 def get_inventory(session, project_id):
     baseurl = os.getenv('KALM_SEMAPHORE_URL')
     inventory_url = f"{baseurl}/api/project/{project_id}/inventory?sort=name&order=asc' "  # Adjust the URL as needed
-    print("---------------------")
-    print(inventory_url)
-    print("https://semaphore.openknowit.com/api/project/1/inventory?sort=name&order=asc")
-    print("---------------------")
     headers = {
         'accept': 'application/json',
         'Content-Type': 'application/json'
@@ -124,9 +120,12 @@ def main():
         projects = get_project(session)
         print("Projects:", projects)
         for project in projects:
+            print("-------------------")
             print(project)
+            print("-------------------")
             inventory = get_inventory(session, projects[project]['id'])
             print("Inventory:", inventory)
+            print("-------------------")
 
 
 
