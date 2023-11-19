@@ -27,21 +27,25 @@ def login():
         # Failed request
         print(f"Error: {response.status_code}")
         return False
-    
+def get_projects():
+    baseurl = os.getenv('KALM_SEMAPHORE_URL')
+    user = os.getenv('KALM_SEMAPHORE_USER')
+    password = os.getenv('KALM_SEMAPHORE_PASSWORD')
     url = f"{baseurl}/api/projects"
-    response = requests.get(url, headers=headers)
-    if response.status_code == 200:
-        # Successful request
-        print("get projects successful")
-        pprint.pprint(response.text)
-        return True
-    else:
-        # Failed request
-        print(f"Error: {response.status_code}")
-        return False
+    headers = {
+        'accept': 'application/json',
+        'Content-Type': 'application/json'
+    }
+    data = {
+        'auth': user,
+        'password': password
+    }
     
+    response = requests.get(url, headers=headers)
+    pprint.pprint(response.status_code)
 
-
+    
+    
 def check_env():
     print("check_env")
     if (os.getenv('KALM_SEMAPHORE_URL') == None):
@@ -56,4 +60,6 @@ def check_env():
 
 def main():
     login()
+    get_projects()
+    
     return 0
