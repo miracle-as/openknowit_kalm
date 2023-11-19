@@ -118,10 +118,11 @@ def main():
     if session:
         projects = get_project(session)
         print("Projects:", projects)
+        for project in projects:
+            print(project)
+            inventory = get_inventory(session, projects[project]['id'])
+            print("Inventory:", inventory)
 
-        inventory = get_inventory(session, projects['kalm']['id'])
-        print("Inventory:", inventory)
-        
 
 
     return 0
