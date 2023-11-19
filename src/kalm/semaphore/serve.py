@@ -62,7 +62,7 @@ def get_project(session):
 
 def get_inventory(session, project_id):
     baseurl = os.getenv('KALM_SEMAPHORE_URL')
-    inventory_url = f"{baseurl}/api/projects/{project_id}/inventory"  # Adjust the URL as needed
+    inventory_url = f"{baseurl}/api/projects/{project_id}/inventoryi?sort=name&order=asc' "  # Adjust the URL as needed
     print("---------------------")
     print(inventory_url)
     print("---------------------")
