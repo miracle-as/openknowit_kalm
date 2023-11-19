@@ -19,22 +19,27 @@ def login():
     }
 
     response = requests.post(url, headers=headers, json=data)
-    pprint.pprint(response)
-
-
-    # Check the response>
-
-
     if response.status_code == 204:
         # Successful request
         print("Login successful")
-        print("Response JSON:", response.json())
         return True
     else:
         # Failed request
         print(f"Error: {response.status_code}")
-        print("Response text:", response.text)
         return False
+    
+    url = f"{baseurl}/api/projects"
+    response = requests.get(url, headers=headers)
+    if response.status_code == 200:
+        # Successful request
+        print("get projects successful")
+        pprint.pprint(response.text)
+        return True
+    else:
+        # Failed request
+        print(f"Error: {response.status_code}")
+        return False
+    
 
 
 def check_env():
