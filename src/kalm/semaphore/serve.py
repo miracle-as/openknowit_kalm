@@ -25,7 +25,7 @@ def login():
     # Check the response>
 
 
-    if response.status_code == 200:
+    if response.status_code == 204:
         # Successful request
         print("Login successful")
         print("Response JSON:", response.json())
