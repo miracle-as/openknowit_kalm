@@ -115,17 +115,21 @@ def check_env():
  # Example: Get a list of your projects
 
 def main():
+    state = {}
     session = login()
     if session:
         projects = get_project(session)
         print("Projects:", projects)
         for project in projects:
-            print("-------------------")
-            print(project)
-            print("-------------------")
+            projectname = project['name']
+            state[projectname] = {}
+            state[projectname]['project'] = project
+            state[projectname]['inventory'] = {}
             inventory = get_inventory(session, projects[project]['id'])
-            print("Inventory:", inventory)
-            print("-------------------")
+            for item in inventory:
+                state[projectname]['inventory'][item] = get_inventory_item(session, projects[project]['id'], inventory[item]['id'])
+        pprint.pprint(state)
+        
 
 
 
