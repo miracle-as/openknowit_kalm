@@ -135,7 +135,7 @@ def main():
             state[projectname]['inventory'] = {}
             inventory = get_inventory(session, projects[project]['id'])
             for item in inventory:
-                prettyllog("semaphore", "main", item, "ok", 0 , "item", severity="INFO")½
+                prettyllog("semaphore", "main", item, "ok", 0 , "item", severity="INFO")
 
 
     pprint.pprint(state)
