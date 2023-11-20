@@ -7,8 +7,8 @@ import xml.etree.ElementTree as ET
 
 import base64
 
-username = os.getenv("KALM_GITEA_USERNAME")
-password = os.getenv("KALM_GITEA_PASSWORD")
+username = os.getenv("KALM_GIT_USERNAME")
+password = os.getenv("KALM_GIT_PASSWORD")
 credentials = f"{username}:{password}"
 base64_credentials = base64.b64encode(credentials.encode("utf-8")).decode("utf-8")
 
@@ -20,7 +20,7 @@ if VERIFY_SSL == "false" or VERIFY_SSL == "False" or VERIFY_SSL == "FALSE" or VE
 else:
   VERIFY_SSL = True
 
-def list_gitea():
+def list_git():
   print("list gitea")
   print(get_gitea_token())
   
@@ -28,7 +28,7 @@ def list_gitea():
 
 def get_gitea_token():
   print("get gitea token")
-  url = os.getenv("KALM_GITEA_URL") + "/api/v1/users/token"
+  url = os.getenv("KALM_GIT_URL") + "/api/v1/users/token"
   headers = {
     "Content-Type": "application/json",
     "Authorization": "Basic " + base64_credentials
