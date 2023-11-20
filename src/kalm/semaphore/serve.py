@@ -82,7 +82,7 @@ def get_inventory(session, project_id):
     else:
         # Failed request
         print(f"Error: {response.status_code}")
-        prettyllog("semaphore", "get_inventory", "inventory", "error", response.status_code , "loadning inventory")
+        prettyllog("semaphore", "get", "inventory", "error", response.status_code , "loadning inventory")
 
 
 def get_inventory_item(session, project_id, inventory_id):
@@ -102,6 +102,7 @@ def get_inventory_item(session, project_id, inventory_id):
     else:
         # Failed request
         print(f"Error: {response.status_code}")
+        prettyllog("semaphore", "get", "item", "error", response.status_code , "loadning inventory item")
 
     
 def check_env():
