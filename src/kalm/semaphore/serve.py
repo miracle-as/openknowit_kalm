@@ -34,11 +34,11 @@ def login():
     response = session.post(url, headers=headers, json=data)
     if response.status_code == 204:
         # Successful request
-        prettyllog("semaphore", "login", "ok", response.status_code , "login successful", severity="INFO")
+        prettyllog("semaphore", "Init", "login", "ok",  response.status_code , "login successful", severity="INFO")
         return session  # Return the session for subsequent requests
     else:
         # Failed request
-        prettyllog("semaphore", "login", "error", response.status_code , "login failed", severity="FAIL")
+        prettyllog("semaphore", "Init", "login", "error", response.status_code , "login failed", severity="FAIL")
         return None
 
 def get_project(session):
