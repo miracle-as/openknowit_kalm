@@ -3,38 +3,62 @@ import json
 import os
 import base64
 import xml.etree.ElementTree as ET
+import pprint
+from ..common import prettyllog
 
 
 import base64
 
-username = os.getenv("KALM_GIT_USERNAME")
-password = os.getenv("KALM_GIT_PASSWORD")
-credentials = f"{username}:{password}"
-base64_credentials = base64.b64encode(credentials.encode("utf-8")).decode("utf-8")
 
+def getenv():
+  myenv = {}
+  myenv["KALM_GIT_URL"] = os.getenv("KALM_GIT_URL")
+  myenv["KALM_GIT_USER"] = os.getenv("KALM_GIT_USER")
+  myenv["KALM_GIT_PASSWORD"] = os.getenv("KALM_GIT_PASSWORD")
+  myenv["KALM_GIT_TYPE"] = os.getenv("KALM_GIT_TYPE")
+  username = os.getenv("KALM_GIT_USER")
+  password = os.getenv("KALM_GIT_PASSWORD")
+  myenv["verifyssl"] = os.getenv("KALM_GIT_VERIFY_SSL", "False")
 
+  credentials = f"{username}:{password}"
+  base64_credentials = base64.b64encode(credentials.encode("utf-8")).decode("utf-8")
+  myenv["base64_credentials"] = base64_credentials
+  return myenv
 
-VERIFY_SSL = os.getenv("VERIFY_SSL", "false")
-if VERIFY_SSL == "false" or VERIFY_SSL == "False" or VERIFY_SSL == "FALSE" or VERIFY_SSL == "no" or VERIFY_SSL == "NO" or VERIFY_SSL == "No":
-  VERIFY_SSL = False
-else:
-  VERIFY_SSL = True
-
-def list_git():
-  print("list gitea")
-  print(get_gitea_token())
-  
-
-
-def get_gitea_token():
-  print("get gitea token")
-  url = os.getenv("KALM_GIT_URL") + "/api/v1/users/token"
+def init():
+  prettyllog("state", "Init", "git", "start", "000", "login initiated", severity="DEBUG")
+  myenv = getenv()
+  session = requests.Session()
+  url = os.getenv("KALM_GIT_URL") + "/api/v1/user"
   headers = {
     "Content-Type": "application/json",
-    "Authorization": "Basic " + base64_credentials
+    "Authorization": "Basic " + myenv['base64_credentials']
     }
-  data = '{"name":"kalm"}' 
-  resp = requests.put(url,headers=headers, json=data, verify=VERIFY_SSL)
-  print(resp.content)
-  print(resp.status_code)
+  resp = session.get(url,headers=headers)
+  if resp.status_code == 200:
+    prettyllog("state", "Init", "git", "ok", resp.status_code, "login successful", severity="INFO")
+    return session
+  else:
+    prettyllog("state", "Init", "git", "error", resp.status_code, "login failed", severity="ERROR")
+    return None
+
+
+
+
+def get_git_token():
+  session = init()
+  myenv = getenv()
+  url = myenv['KALM_GIT_URL'] + "/api/v1/users/" + myenv['KALM_GIT_USER'] + "/tokens"
+  headers = {
+    "Content-Type": "application/json"
+    }
+  data = {
+    "username": "knowit"
+    }
+  resp = session.get(url,headers=headers, json=data)
+  pprint.pprint(resp.status_code)
+  pprint.pprint(url)
+
+
+
  

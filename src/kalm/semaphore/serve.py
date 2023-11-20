@@ -158,9 +158,11 @@ def check_project(projectname, env):
     # if it exists we need to check if it exists in semaphore
     # if not we need to create it
     if env['KALM_GIT_TYPE'] == 'gitea':
-        from ..gitea.gitea import list_git
+        from ..gitea.gitea import get_git_token
+
     
-    list_git()
+    get_git_token()
+
 
     
 
