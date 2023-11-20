@@ -91,27 +91,6 @@ def get_inventory(session, project_id):
         # Failed request
         prettyllog("semaphore", "get", "inventory", "error", response.status_code , "loadning inventory", severity="FAIL")
 
-
-def get_inventory_item(session, project_id, inventory_id):
-    baseurl = os.getenv('KALM_SEMAPHORE_URL')
-    inventory_url = f"{baseurl}/api/projects/{project_id}/inventory/{inventory_id}"  # Adjust the URL as needed
-    headers = {
-        'accept': 'application/json',
-        'Content-Type': 'application/json'
-    }
-
-    # Use the session for the request
-    response = session.get(inventory_url, headers=headers)
-    if response.status_code == 200:
-        # Successful request
-        inventory = response.json()
-        prettyllog("semaphore", "get", "item", "ok", response.status_code , "loadning inventory item", severity="INFO")
-        return inventory
-    else:
-        # Failed request
-        prettyllog("semaphore", "get", "item", "error", response.status_code , "loadning inventory item", severity="FAIL")
-
-    
 def check_env():
     if (os.getenv('KALM_SEMAPHORE_URL') == None):
         prettyllog("semaphore", "Init", "env", "error", 1 , "KALM_SEMAPHORE_URL not set", severity="FAIL")
@@ -140,13 +119,11 @@ def main():
                 state[projectname]['inventory'][itemname]['item'] = inventory[item]
                 prettyllog("semaphore", "main", item, "ok", 0 , "item", severity="INFO")
 
-
     for state_project in state:
         for state_item in state[state_project]['inventory']:
-            inventory_item = get_inventory_item(session, state[state_project]['project']['id'], state[state_project]['inventory'][state_item]['item']['id'])
-            state[state_project]['inventory'][state_item]['item'] = inventory_item
+            pprint.pprint(state[state_project]['inventory'])
             prettyllog("semaphore", "main", state_item, "ok", 0 , "item", severity="INFO")
-            
+
 
         
 
