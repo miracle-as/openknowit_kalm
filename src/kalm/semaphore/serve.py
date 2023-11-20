@@ -141,8 +141,12 @@ def main():
                 prettyllog("semaphore", "main", item, "ok", 0 , "item", severity="INFO")
 
 
-    pprint.pprint(state)
-
+    for state_project in state:
+        for state_item in state[state_project]['inventory']:
+            inventory_item = get_inventory_item(session, state[state_project]['project']['id'], state[state_project]['inventory'][state_item]['item']['id'])
+            state[state_project]['inventory'][state_item]['item'] = inventory_item
+            prettyllog("semaphore", "main", state_item, "ok", 0 , "item", severity="INFO")
+            
 
         
 
