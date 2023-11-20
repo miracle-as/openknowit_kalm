@@ -2,6 +2,7 @@ import requests
 import os
 from ..common import prettyllog
 import pprint
+import json
 
 
 debug = True
@@ -98,11 +99,21 @@ def check_env():
     else:
         prettyllog("semaphore", "Init", "env", "ok", 0 , "KALM_SEMAPHORE_URL set", severity="INFO")
         return 0
-    
+
+def read_config():
+    f = open("etc/kalm/kalm.json", "r")
+    mainconf = json.load(f)
+    f.close()
+    for key in mainconf:
+        pprint.pprint(key)
+    pprint.pprint(mainconf)
+
+    return 0
 
  # Example: Get a list of your projects
 
 def main():
+    read_config()
     state = {}
     session = login()
     if session:
