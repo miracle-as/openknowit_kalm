@@ -34,11 +34,11 @@ def login():
     response = session.post(url, headers=headers, json=data)
     if response.status_code == 204:
         # Successful request
-        print("Login successful")
+        prettyllog("semaphore", "login", "ok", response.status_code , "login successful", severity="INFO")
         return session  # Return the session for subsequent requests
     else:
         # Failed request
-        print(f"Error: {response.status_code}")
+        prettyllog("semaphore", "login", "error", response.status_code , "login failed", severity="FAIL")
         return None
 
 def get_project(session):
@@ -58,10 +58,13 @@ def get_project(session):
         projects_by_name = {}
         for project in projects:
             projects_by_name[project['name']] = project
+            if debug:
+                prettyllog("semaphore", "get", project['name'], "ok", response.status_code , "loadning projects", severity="DEBUG")
+        prettyllog("semaphore", "get", "project", "ok", response.status_code , "loadning projects", severity="INFO")
         return projects_by_name
     else:
         # Failed request
-        print(f"Error: {response.status_code}")
+        prettyllog("semaphore", "get", "project", "error", response.status_code , "loadning projects", severity="FAIL")
 
 def get_inventory(session, project_id):
     baseurl = os.getenv('KALM_SEMAPHORE_URL')
@@ -127,7 +130,6 @@ def main():
     session = login()
     if session:
         projects = get_project(session)
-        print("Projects:", projects)
         for project in projects:
             projectname = projects[project]['name']
             state[projectname] = {}
@@ -137,7 +139,9 @@ def main():
             for item in inventory:
                 print(item)
 
-        pprint.pprint(state)
+    pprint.pprint(state)
+
+
         
 
 
