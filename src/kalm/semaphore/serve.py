@@ -121,7 +121,7 @@ def main():
         projects = get_project(session)
         print("Projects:", projects)
         for project in projects:
-            projectname = project['name']
+            projectname = projects[project]['name']
             state[projectname] = {}
             state[projectname]['project'] = project
             state[projectname]['inventory'] = {}
