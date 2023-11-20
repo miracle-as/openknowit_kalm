@@ -131,7 +131,7 @@ def main():
         for project in projects:
             projectname = projects[project]['name']
             state[projectname] = {}
-            state[projectname]['project'] = project½
+            state[projectname]['project'] = projects[project]
             state[projectname]['inventory'] = {}
             inventory = get_inventory(session, projects[project]['id'])
             for item in inventory:
