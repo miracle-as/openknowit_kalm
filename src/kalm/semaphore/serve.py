@@ -131,10 +131,13 @@ def main():
         for project in projects:
             projectname = projects[project]['name']
             state[projectname] = {}
-            state[projectname]['project'] = project
+            state[projectname]['project'] = project½
             state[projectname]['inventory'] = {}
             inventory = get_inventory(session, projects[project]['id'])
             for item in inventory:
+                itemname = inventory[item]['name']
+                state[projectname]['inventory'][itemname] = {}
+                state[projectname]['inventory'][itemname]['item'] = inventory[item]
                 prettyllog("semaphore", "main", item, "ok", 0 , "item", severity="INFO")
 
 
