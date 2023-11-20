@@ -82,6 +82,8 @@ def get_inventory(session, project_id):
     else:
         # Failed request
         print(f"Error: {response.status_code}")
+        prettyllog("semaphore", "get_inventory", "inventory", "error", response.status_code , "loadning inventory")
+
 
 def get_inventory_item(session, project_id, inventory_id):
     baseurl = os.getenv('KALM_SEMAPHORE_URL')
