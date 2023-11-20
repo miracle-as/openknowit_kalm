@@ -76,7 +76,6 @@ def get_inventory(session, project_id):
 
     # Use the session for the request
     response = session.get(inventory_url, headers=headers)
-    print(response.status_code)
     if response.status_code == 200:
         # Successful request
         inventory = response.json()
@@ -114,12 +113,11 @@ def get_inventory_item(session, project_id, inventory_id):
 
     
 def check_env():
-    print("check_env")
     if (os.getenv('KALM_SEMAPHORE_URL') == None):
-        print("KALM_SEMAPHORE_URL not set")
+        prettyllog("semaphore", "Init", "env", "error", 1 , "KALM_SEMAPHORE_URL not set", severity="FAIL")
         return 1
     else:
-        print("KALM_SEMAPHORE_URL set to " + os.getenv('KALM_SEMAPHORE_URL'))
+        prettyllog("semaphore", "Init", "env", "ok", 0 , "KALM_SEMAPHORE_URL set", severity="INFO")
         return 0
     
 
@@ -137,7 +135,8 @@ def main():
             state[projectname]['inventory'] = {}
             inventory = get_inventory(session, projects[project]['id'])
             for item in inventory:
-                print(item)
+                prettyllog("semaphore", "main", item['name'], "ok", 0 , "item", severity="INFO")
+
 
     pprint.pprint(state)
 
