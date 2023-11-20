@@ -4,6 +4,9 @@ from ..common import prettyllog
 import pprint
 
 
+debug = True
+
+
 
 
 
@@ -78,11 +81,13 @@ def get_inventory(session, project_id):
         inventory_by_name = {}
         for item in inventory:
             inventory_by_name[item['name']] = item
+            if debug:
+                prettyllog("semaphore", "get", item['name'], "ok", response.status_code , "loadning inventory", severity="DEBUG")
+        prettyllog("semaphore", "get", "inventory", "ok", response.status_code , "loadning inventory", severity="INFO")
         return inventory_by_name
     else:
         # Failed request
-        print(f"Error: {response.status_code}")
-        prettyllog("semaphore", "get", "inventory", "error", response.status_code , "loadning inventory")
+        prettyllog("semaphore", "get", "inventory", "error", response.status_code , "loadning inventory", severity="FAIL")
 
 
 def get_inventory_item(session, project_id, inventory_id):
@@ -98,11 +103,11 @@ def get_inventory_item(session, project_id, inventory_id):
     if response.status_code == 200:
         # Successful request
         inventory = response.json()
+        prettyllog("semaphore", "get", "item", "ok", response.status_code , "loadning inventory item", severity="INFO")
         return inventory
     else:
         # Failed request
-        print(f"Error: {response.status_code}")
-        prettyllog("semaphore", "get", "item", "error", response.status_code , "loadning inventory item")
+        prettyllog("semaphore", "get", "item", "error", response.status_code , "loadning inventory item", severity="FAIL")
 
     
 def check_env():
