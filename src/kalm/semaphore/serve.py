@@ -130,7 +130,8 @@ def main():
             state[projectname]['inventory'] = {}
             inventory = get_inventory(session, projects[project]['id'])
             for item in inventory:
-                state[projectname]['inventory'][item] = get_inventory_item(session, projects[project]['id'], inventory[item]['id'])
+                print(item)
+
         pprint.pprint(state)
         
 
