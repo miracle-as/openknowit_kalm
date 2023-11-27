@@ -1,0 +1,15 @@
+{
+	"organisation": {
+		"name": "kalm",
+		"description": "Miracle knowit"
+		},
+	"subprojects": [
+		{ "name": "bootstrap" , "engine": "semaphore" },
+		{ "name": "zabbix" , "engine": "semaphore" },
+		{ "name": "tsm" , "engine": "semaphore" },
+		{ "name": "netbox" , "engine": "semaphore" }
+		]
+}
+	
+	
+

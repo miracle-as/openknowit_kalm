@@ -1,4 +1,4 @@
-from . import gitea
+from . import git
 import argparse
 
 def main():
@@ -19,4 +19,4 @@ def main():
 
     if args.action[0] == "list":
         print("list gitea")
-        gitea.list_gitea()
+        git.list_gitea()

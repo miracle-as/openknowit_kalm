@@ -1,6 +1,7 @@
 import requests
 import os
 from ..common import prettyllog
+
 import pprint
 import json
 
@@ -35,12 +36,31 @@ def login():
     response = session.post(url, headers=headers, json=data)
     if response.status_code == 204:
         # Successful request
-        prettyllog("state", "Init", "login", "ok",  response.status_code , "login successful", severity="INFO")
+        prettyllog("semaphore", "Init", "login", "ok",  response.status_code , "login successful", severity="INFO")
         return session  # Return the session for subsequent requests
     else:
         # ERRORed request
-        prettyllog("state", "Init", "login", "error", response.status_code , "login failed", severity="ERROR")
+        prettyllog("semaphore", "Init", "login", "error", response.status_code , "login failed", severity="ERROR")
         return None
+    
+def create_project(session, project):
+    baseurl = os.getenv('KALM_SEMAPHORE_URL')
+    project_url = f"{baseurl}/api/projects"  # Adjust the URL as needed
+    headers = {
+        'accept': 'application/json',
+        'Content-Type': 'application/json'
+    }
+
+    # Use the session for the request
+    response = session.post(project_url, headers=headers, json=project)
+    if response.status_code == 201:
+        # Successful request
+        prettyllog("semaphore", "create", project['name'], "ok", response.status_code , "create project", severity="INFO")
+        return response.json()
+    else:
+        # Failed request
+        prettyllog("semaphore", "create", project['name'], "error", response.status_code , "create project", severity="ERROR")
+
 
 def get_project(session):
     baseurl = os.getenv('KALM_SEMAPHORE_URL')
@@ -60,12 +80,12 @@ def get_project(session):
         for project in projects:
             projects_by_name[project['name']] = project
             if debug:
-                prettyllog("state", "get", project['name'], "ok", response.status_code , "loadning projects", severity="DEBUG")
-        prettyllog("state", "get", "project", "ok", response.status_code , "loadning projects", severity="INFO")
+                prettyllog("semaphore", "get", project['name'], "ok", response.status_code , "loadning projects", severity="DEBUG")
+        prettyllog("semaphore", "get", "project", "ok", response.status_code , "loadning projects", severity="INFO")
         return projects_by_name
     else:
         # Failed request
-        prettyllog("state", "get", "project", "error", response.status_code , "loadning projects", severity="ERROR")
+        prettyllog("semaphore", "get", "project", "error", response.status_code , "loadning projects", severity="ERROR")
 
 def get_inventory(session, project_id):
     baseurl = os.getenv('KALM_SEMAPHORE_URL')
@@ -85,47 +105,47 @@ def get_inventory(session, project_id):
         for item in inventory:
             inventory_by_name[item['name']] = item
             if debug:
-                prettyllog("state", "get", item['name'], "ok", response.status_code , "loadning inventory", severity="DEBUG")
-        prettyllog("state", "get", "inventory", "ok", response.status_code , "loadning inventory", severity="INFO")
+                prettyllog("semaphore", "get", item['name'], "ok", response.status_code , "loadning inventory", severity="DEBUG")
+        prettyllog("semaphore", "get", "inventory", "ok", response.status_code , "loadning inventory", severity="INFO")
         return inventory_by_name
     else:
         # Failed request
-        prettyllog("state", "get", "inventory", "error", response.status_code , "loadning inventory", severity="ERROR")
+        prettyllog("semaphore", "get", "inventory", "error", response.status_code , "loadning inventory", severity="ERROR")
 
 def check_env():
     envok = True
     myenv = {}
     known_git_types = ['github', 'gitlab', 'bitbucket', 'gitea', 'gogs']
     if (os.getenv('KALM_SEMAPHORE_URL') == None):
-        prettyllog("check", "Init", "env", "error", 1 , "KALM_SEMAPHORE_URL not set", severity="ERROR")
+        prettyllog("semaphore", "Init", "env", "error", 1 , "KALM_SEMAPHORE_URL not set", severity="ERROR")
         envok = False
     else:
         myenv['KALM_SEMAPHORE_URL'] = os.getenv('KALM_SEMAPHORE_URL')
-        prettyllog("check", "Init", "env", "ok", 0 , "KALM_SEMAPHORE_URL set", severity="INFO")
+        prettyllog("semaphore", "Init", "env", "ok", 0 , "KALM_SEMAPHORE_URL set", severity="INFO")
 
     if (os.getenv('KALM_SEMAPHORE_USER') == None):
-        prettyllog("check", "Init", "env", "error", 1 , "KALM_SEMAPHORE_USER not set", severity="ERROR")
+        prettyllog("semaphore", "Init", "env", "error", 1 , "KALM_SEMAPHORE_USER not set", severity="ERROR")
         envok = False
     else:       
         myenv['KALM_SEMAPHORE_USER'] = os.getenv('KALM_SEMAPHORE_USER')
-        prettyllog("check", "Init", "env", "ok", 0 , "KALM_SEMAPHORE_USER set", severity="INFO")
+        prettyllog("semaphore", "Init", "env", "ok", 0 , "KALM_SEMAPHORE_USER set", severity="INFO")
 
     if (os.getenv('KALM_SEMAPHORE_PASSWORD') == None):
-        prettyllog("check", "Init", "env", "error", 1 , "KALM_SEMAPHORE_PASSWORD not set", severity="ERROR")
+        prettyllog("semaphore", "Init", "env", "error", 1 , "KALM_SEMAPHORE_PASSWORD not set", severity="ERROR")
         envok = False
     else:
         myenv['KALM_SEMAPHORE_PASSWORD'] = os.getenv('KALM_SEMAPHORE_PASSWORD')
-        prettyllog("check", "Init", "env", "ok", 0 , "KALM_SEMAPHORE_PASSWORD set", severity="INFO")
+        prettyllog("semaphore", "Init", "env", "ok", 0 , "KALM_SEMAPHORE_PASSWORD set", severity="INFO")
 
     if (os.getenv('KALM_GIT_TYPE') == None):
-        prettyllog("check", "Init", "env", "error", 1 , "KALM_GIT_TYPE not set", severity="ERROR")
+        prettyllog("semaphore", "Init", "env", "error", 1 , "KALM_GIT_TYPE not set", severity="ERROR")
         envok = False
     elif (os.getenv('KALM_GIT_TYPE') not in known_git_types):
-        prettyllog("check", "Init", "env", "error", 1 , "KALM_GIT_TYPE not set %s " % known_git_types, severity="ERROR")
+        prettyllog("semaphore", "Init", "env", "error", 1 , "KALM_GIT_TYPE not set %s " % known_git_types, severity="ERROR")
         envok = False
     else:
         myenv['KALM_GIT_TYPE'] = os.getenv('KALM_GIT_TYPE')
-        prettyllog("check", "Init", "env", "ok", 0 , "KALM_GIT_TYPE set", severity="INFO")
+        prettyllog("semaphore", "Init", "env", "ok", 0 , "KALM_GIT_TYPE set", severity="INFO")
     return envok, myenv
 
 
@@ -133,7 +153,7 @@ def check_env():
 def read_config():
     f = open("etc/kalm/kalm.json", "r")
     mainconf = json.load(f)
-    prettyllog("conf", "Init", "main","main configuration", 0 , "Getting main config", severity="INFO")
+    prettyllog("semaphore", "Init", "main","main configuration", 0 , "Getting main config", severity="INFO")
     f.close()
     subconf = {}
 
@@ -141,8 +161,10 @@ def read_config():
     for subproject in mainconf['subprojects']:
         if subproject['engine'] == 'semaphore':
             subconf[subproject['name']] = subproject
-            prettyllog("conf", "Init", "subpropject", subproject['name'] , "000", "Getting subproject config", severity="DEBUG")
+            prettyllog("semaphore", "Init", "subpropject", subproject['name'] , "000", "Getting subproject config", severity="DEBUG")
     return True, mainconf, subconf
+
+
 
     
 
@@ -158,10 +180,43 @@ def check_project(projectname, env):
     # if it exists we need to check if it exists in semaphore
     # if not we need to create it
     if env['KALM_GIT_TYPE'] == 'gitea':
-        from ..gitea.gitea import get_git_token
+        from ..gitea.git import get_git_projects
+        git_projects = get_git_projects()
+        git_project_names = []
+        for git_project in git_projects:
+            git_project_names.append(git_project['name'])
+        if projectname in git_project_names:
+            prettyllog("semaphore", "Check", projectname, "ok", 0 , "project exists in git", severity="INFO")
+            # check if project exists in semaphore
+            # if not create it
+            # if it exists check if it has the correct settings
+            # if not update it
+        else:
+            prettyllog("semaphore", "Create", projectname, "missing", 1 , "project missing in git", severity="WARNING")
+            from ..gitea.git import create_git_project 
+            project = {}
+            project['name'] = projectname
+            project['description'] = "kalm project"
+            project['private'] = True
+            project['auto_init'] = True
+
+            # create project in git
+            create_git_project(project)
+            # create project in semaphore
+
+            # create project in git
+            # create project in semaphore
+            # create project in awx
+            # create project in vault
+            # create project in dns
+    else:
+        prettyllog("project", "semaphore", projectname, "error", 1 , "git type not supported", severity="ERROR")
+        exit(1)
+
+
 
     
-    get_git_token()
+
 
 
     
@@ -180,6 +235,16 @@ def main():
 
     state = {}
     session = login()
+    # Check if the main project exists , it is the organization name
+    # if not create it
+    # if it exists check if it has the correct settings
+    # if not update it
+    prettyllog("semaphore", "main", "config", organization, 1 , "Check the main project", severity="INFO")
+    check_project(organization, env)
+
+
+
+
     if session:
         projects = get_project(session)
         for project in projects:
@@ -205,16 +270,45 @@ def main():
     orphans = {}    
     for state_project in state:
         if state_project in subprojects or state_project == organization:
-            prettyllog("semaphore", "main", state_project, "ok", 0 , "subproject", severity="INFO")
+            prettyllog("semaphore", "check project", state_project, "ok", 0 , "subproject", severity="INFO")
         else:
-            prettyllog("semaphore", "main", state_project, "orphan", 1 , "subproject", severity="WARNING")
+            prettyllog("semaphore", "check project", state_project, "orphan", 1 , "subproject", severity="WARNING")
             orphans[state_project] = state[state_project]
 
 
     for missing in missings:
-        prettyllog("project", "create", missing, "Preparing to create project", 000 , "subproject", severity="DEBUG")
+        prettyllog("semaphore", "createi project", missing, "Preparing to create project", 000 , "subproject", severity="DEBUG")
         # create project
         check_project(missing, env)
+        create_project(session, missings[missing])
+
+    for orphan in orphans:
+        prettyllog("semaphore", "delete proejct", orphan, "Preparing to delete project", 000 , "subproject", severity="DEBUG")
+        # delete project
+        # delete project in git
+        # delete project in semaphore
+        # delete project in awx
+        # delete project in vault
+        # delete project in dns
+
+    # prettyllog("semaphore", "main", "main", "ok", 0 , "subproject", severity="INFO")
+
+    projects = get_project(session)
+    for project in projects:
+        prettyllog("semaphore", "projects", project, "ok", 0 , "project", severity="INFO")
+        projectname = projects[project]['name']
+        state[projectname] = {}
+        state[projectname]['project'] = projects[project]
+        state[projectname]['inventory'] = {}
+        inventory = get_inventory(session, projects[project]['id'])
+        for item in inventory:
+            itemname = inventory[item]['name']
+            state[projectname]['inventory'][itemname] = {}
+            state[projectname]['inventory'][itemname]['item'] = inventory[item]
+            prettyllog("semaphore", "main", item, "ok", 0 , "item", severity="INFO")
+
+
+
         
 
 
