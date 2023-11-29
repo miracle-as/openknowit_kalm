@@ -87,6 +87,24 @@ def get_project(session):
         # Failed request
         prettyllog("semaphore", "get", "project", "error", response.status_code , "loadning projects", severity="ERROR")
 
+def create_inventory(session, project_id, inventory):
+    baseurl = os.getenv('KALM_SEMAPHORE_URL')
+    inventory_url = f"{baseurl}/api/project/{project_id}/inventory"  # Adjust the URL as needed
+    headers = {
+        'accept': 'application/json',
+        'Content-Type': 'application/json'
+    }
+
+    # Use the session for the request
+    response = session.post(inventory_url, headers=headers, json=inventory)
+    if response.status_code == 201:
+        # Successful request
+        prettyllog("semaphore", "create", inventory['name'], "ok", response.status_code , "create inventory", severity="INFO")
+        return response.json()
+    else:
+        # Failed request
+        prettyllog("semaphore", "create", inventory['name'], "error", response.status_code , "create inventory", severity="ERROR")
+
 def get_inventory(session, project_id):
     baseurl = os.getenv('KALM_SEMAPHORE_URL')
     inventory_url = f"{baseurl}/api/project/{project_id}/inventory?sort=name&order=asc' "  # Adjust the URL as needed
@@ -100,7 +118,7 @@ def get_inventory(session, project_id):
     if response.status_code == 200:
         # Successful request
         inventory = response.json()
-        # map prokects by name
+        # map projects by name
         inventory_by_name = {}
         for item in inventory:
             inventory_by_name[item['name']] = item
@@ -300,19 +318,14 @@ def main():
         state[projectname] = {}
         state[projectname]['project'] = projects[project]
         state[projectname]['inventory'] = {}
+        create_inventory(session, projects[project]['id'], {"name": projectname, "description": "kalm inventory"})
         inventory = get_inventory(session, projects[project]['id'])
         for item in inventory:
             itemname = inventory[item]['name']
             state[projectname]['inventory'][itemname] = {}
             state[projectname]['inventory'][itemname]['item'] = inventory[item]
             prettyllog("semaphore", "main", item, "ok", 0 , "item", severity="INFO")
-
-
-
-        
-
-
-
-
     return 0
+
+
 
