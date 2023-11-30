@@ -5,6 +5,13 @@ from ..common import prettyllog
 import pprint
 import json
 
+import pprint
+import json 
+import tempfile
+import git
+
+
+
 
 debug = True
 
@@ -42,6 +49,171 @@ def login():
         # ERRORed request
         prettyllog("semaphore", "Init", "login", "error", response.status_code , "login failed", severity="ERROR")
         return None
+    
+def crete_user(session, user):
+    baseurl = os.getenv('KALM_SEMAPHORE_URL')
+    user_url = f"{baseurl}/api/users"  # Adjust the URL as needed
+    headers = {
+        'accept': 'application/json',
+        'Content-Type': 'application/json'
+    }
+
+    # Use the session for the request
+    response = session.post(user_url, headers=headers, json=user)
+    if response.status_code == 201:
+        # Successful request
+        prettyllog("semaphore", "create", user['username'], "ok", response.status_code , "create user", severity="INFO")
+        return response.json()
+    else:
+        # Failed request
+        prettyllog("semaphore", "create", user['username'], "error", response.status_code , "create user", severity="ERROR")
+
+def get_user(session):
+    baseurl = os.getenv('KALM_SEMAPHORE_URL')
+    user_url = f"{baseurl}/api/users"  # Adjust the URL as needed
+    headers = {
+        'accept': 'application/json',
+        'Content-Type': 'application/json'
+    }
+
+    # Use the session for the request
+    response = session.get(user_url, headers=headers)
+    if response.status_code == 200:
+        # Successful request
+        users = response.json()
+        # map users by username
+        users_by_username = {}
+        for user in users:
+            users_by_username[user['username']] = user
+            if debug:
+                prettyllog("semaphore", "get", user['username'], "ok", response.status_code , "loadning users", severity="DEBUG")
+        prettyllog("semaphore", "get", "user", "ok", response.status_code , "loadning users", severity="INFO")
+        return users_by_username
+    else:
+        # Failed request
+        prettyllog("semaphore", "get", "user", "error", response.status_code , "loadning users", severity="ERROR")
+
+def create_team(session, team):
+    baseurl = os.getenv('KALM_SEMAPHORE_URL')
+    team_url = f"{baseurl}/api/teams"  # Adjust the URL as needed
+    headers = {
+        'accept': 'application/json',
+        'Content-Type': 'application/json'
+    }
+
+    # Use the session for the request
+    response = session.post(team_url, headers=headers, json=team)
+    if response.status_code == 201:
+        # Successful request
+        prettyllog("semaphore", "create", team['name'], "ok", response.status_code , "create team", severity="INFO")
+        return response.json()
+    else:
+        # Failed request
+        prettyllog("semaphore", "create", team['name'], "error", response.status_code , "create team", severity="ERROR")
+
+def get_team(session):
+    baseurl = os.getenv('KALM_SEMAPHORE_URL')
+    team_url = f"{baseurl}/api/teams"  # Adjust the URL as needed
+    headers = {
+        'accept': 'application/json',
+        'Content-Type': 'application/json'
+    }
+
+    # Use the session for the request
+    response = session.get(team_url, headers=headers)
+    if response.status_code == 200:
+        # Successful request
+        teams = response.json()
+        # map teams by name
+        teams_by_name = {}
+        for team in teams:
+            teams_by_name[team['name']] = team
+            if debug:
+                prettyllog("semaphore", "get", team['name'], "ok", response.status_code , "loadning teams", severity="DEBUG")
+        prettyllog("semaphore", "get", "team", "ok", response.status_code , "loadning teams", severity="INFO")
+        return teams_by_name
+    else:
+        # Failed request
+        prettyllog("semaphore", "get", "team", "error", response.status_code , "loadning teams", severity="ERROR")
+
+def create_team_member(session, team_id, team_member):
+    baseurl = os.getenv('KALM_SEMAPHORE_URL')
+    team_member_url = f"{baseurl}/api/team/{team_id}/members"  # Adjust the URL as needed
+    headers = {
+        'accept': 'application/json',
+        'Content-Type': 'application/json'
+    }
+
+    # Use the session for the request
+    response = session.post(team_member_url, headers=headers, json=team_member)
+    if response.status_code == 201:
+        # Successful request
+        prettyllog("semaphore", "create", team_member['username'], "ok", response.status_code , "create team member", severity="INFO")
+        return response.json()
+    else:
+        # Failed request
+        prettyllog("semaphore", "create", team_member['username'], "error", response.status_code , "create team member", severity="ERROR")
+
+def create_key(session, key):
+    baseurl = os.getenv('KALM_SEMAPHORE_URL')
+    key_url = f"{baseurl}/api/keys"  # Adjust the URL as needed
+    headers = {
+        'accept': 'application/json',
+        'Content-Type': 'application/json'
+    }
+
+    # Use the session for the request
+    response = session.post(key_url, headers=headers, json=key)
+    if response.status_code == 201:
+        # Successful request
+        prettyllog("semaphore", "create", key['name'], "ok", response.status_code , "create key", severity="INFO")
+        return response.json()
+    else:
+        # Failed request
+        prettyllog("semaphore", "create", key['name'], "error", response.status_code , "create key", severity="ERROR")
+
+def create_repository(session, repository):
+    baseurl = os.getenv('KALM_SEMAPHORE_URL')
+    repository_url = f"{baseurl}/api/repositories"  # Adjust the URL as needed
+    headers = {
+        'accept': 'application/json',
+        'Content-Type': 'application/json'
+    }
+    pprint.pprint(repository)
+    # Use the session for the request
+    response = session.post(repository_url, headers=headers, json=repository)
+    if response.status_code == 201:
+        # Successful request
+        prettyllog("semaphore", "create", repository['name'], "ok", response.status_code , "create repository", severity="INFO")
+        return response.json()
+    else:
+        # Failed request
+        prettyllog("semaphore", "create", repository['name'], "error", response.status_code , "create repository", severity="ERROR")
+
+def get_repository(session):
+    baseurl = os.getenv('KALM_SEMAPHORE_URL')
+    repository_url = f"{baseurl}/api/repositories"  # Adjust the URL as needed
+    headers = {
+        'accept': 'application/json',
+        'Content-Type': 'application/json'
+    }
+    # Use the session for the request
+    response = session.get(repository_url, headers=headers)
+    if response.status_code == 200:
+        # Successful request
+        repositories = response.json()
+        # map repositories by name
+        repositories_by_name = {}
+        for repository in repositories:
+            repositories_by_name[repository['name']] = repository
+            if debug:
+                prettyllog("semaphore", "get", repository['name'], "ok", response.status_code , "loadning repositories", severity="DEBUG")
+        prettyllog("semaphore", "get", "repository", "ok", response.status_code , "loadning repositories", severity="INFO")
+        return repositories_by_name
+    else:
+        # Failed request
+        prettyllog("semaphore", "get", "repository", "error", response.status_code , "loadning repositories", severity="ERROR")
+
     
 def create_project(session, project):
     baseurl = os.getenv('KALM_SEMAPHORE_URL')
@@ -97,6 +269,11 @@ def create_inventory(session, project_id, inventory):
 
     # Use the session for the request
     response = session.post(inventory_url, headers=headers, json=inventory)
+    pprint.pprint(response.json())
+    pprint.pprint(response.request.body)
+    pprint.pprint(response.request.headers)
+    pprint.pprint(response.request.url)
+
     if response.status_code == 201:
         # Successful request
         prettyllog("semaphore", "create", inventory['name'], "ok", response.status_code , "create inventory", severity="INFO")
@@ -187,7 +364,50 @@ def read_config():
     
 
 
-    
+def clone_git_project(projectname):
+    # create a temporary dir and clone the project
+    # return the config data
+    tempfiledir = tempfile.mkdtemp()
+    repo = git.Repo.clone_from(os.getenv('KALM_GIT_URL') + "/gitea/" + projectname + ".git", tempfiledir)
+    configdata = {}
+    configdata['url'] = os.getenv('KALM_GIT_URL') + "/" + projectname + ".git"
+    configdata['path'] = tempfiledir
+    configdata['repo'] = repo
+    # check if the project has a kalm.json file in etc/kalm
+    # if not create it
+    if os.path.isfile(tempfiledir + "/etc/kalm/kalm.json"):
+        prettyllog("semaphore", "Init", "clone", projectname , "000", "kalm.json exists", severity="DEBUG")
+        f = open(tempfiledir + "/etc/kalm/kalm.json", "r")
+        configdata['kalm'] = json.load(f)
+        f.close()
+    else:
+        prettyllog("semaphore", "Init", "clone", projectname , "000", "kalm.json missing", severity="DEBUG")
+        configdata['kalm'] = {}
+        configdata['kalm']['project'] = {}
+        configdata['kalm']['project']['name'] = projectname
+        configdata['kalm']['project']['description'] = "kalm project"
+        configdata['kalm']['project']['private'] = True
+        configdata['kalm']['project']['auto_init'] = True
+        configdata['kalm']['project']['inventory'] = {}
+        configdata['kalm']['project']['inventory']['name'] = "inventory"
+        configdata['kalm']['project']['inventory']['description'] = "kalm inventory"
+        configdata['kalm']['project']['inventory']['private'] = True
+        configdata['kalm']['project']['inventory']['auto_init'] = True
+        configdata['kalm']['project']['inventory']['type'] = "static"
+        configdata['kalm']['project']['inventory']['items'] = []
+        configdata['kalm']['project']['inventory']['items'].append("localhost")
+        #save the file
+        f = open(tempfiledir + "/etc/kalm/kalm.json", "w")
+        json.dump(configdata['kalm'], f)
+        f.close()
+        # add the file to git
+        repo.git.add(A=True)
+        repo.index.commit("kalm project created")
+        origin = repo.remote(name='origin')
+        origin.push()
+    return configdata
+
+        
 
 
  # Example: Get a list of your projects
@@ -220,6 +440,9 @@ def check_project(projectname, env):
 
             # create project in git
             create_git_project(project)
+            # create a temporary dir and clone the project
+        configdata = clone_git_project(projectname)
+        pprint.pprint(configdata)
             # create project in semaphore
 
             # create project in git
@@ -314,11 +537,23 @@ def main():
     projects = get_project(session)
     for project in projects:
         prettyllog("semaphore", "projects", project, "ok", 0 , "project", severity="INFO")
+        # We need to check if the project exists in git
+    
         projectname = projects[project]['name']
         state[projectname] = {}
         state[projectname]['project'] = projects[project]
         state[projectname]['inventory'] = {}
-        create_inventory(session, projects[project]['id'], {"name": projectname, "description": "kalm inventory"})
+        inventorydata = {
+                        "name": "Test",
+                        "project_id": projects[project]['id'],
+                        "inventory": "string",
+                        "ssh_key_id": 1,
+                        "become_key_id": 1,
+                        "type": "static"
+        }
+        pprint.pprint(inventorydata)
+
+        #create_inventory(session, projects[project]['id'], inventorydata)
         inventory = get_inventory(session, projects[project]['id'])
         for item in inventory:
             itemname = inventory[item]['name']
