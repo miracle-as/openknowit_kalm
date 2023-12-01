@@ -45,6 +45,7 @@ kalm_zabbix = "kalm.zabbix:main"
 kalm_traefik = "kalm.traefik:main"
 kalm_dns = "kalm.dns:main"
 kalm_semaphore = "kalm.semaphore:main"
+kalm_vmware = "kalm.vmware:main"
 
 [tool.poetry]
 name = "kalm"
@@ -69,6 +70,7 @@ kalm_traefik = "kalm.traefik:main"
 kalm_vault = "kalm.vault:main"
 kalm_dns = "kalm.dns:main"
 kalm_semaphore = "kalm.semaphore:main"
+kalm_vmware = "kalm.vmware:main"
 
 [tool.poetry.dependencies]
 python = "^3.8"

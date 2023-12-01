@@ -1,4 +1,6 @@
-from . import netbox
+from . import netbox 
+from . import serve
+
 import argparse
 
 def main():
@@ -39,7 +41,7 @@ def main():
 
     if args.action[0] == "serve":
         print("serve mode manintaon netbox data")
-        netbox.serve()
+        serve.main()
         return 0
 
     if args.action[0] == "inventory_upload":

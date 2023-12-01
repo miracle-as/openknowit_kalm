@@ -59,6 +59,8 @@ def prettyllog(function, action, item, organization, statuscode, text, severity=
     print(f"{bcolors.FAIL}%-20s: %-12s %20s %-50s %-20s %-4s %-50s " %( reg_format_date, function,action,item,organization,statuscode, text))
   elif severity == "DEBUG":
     print(f"{bcolors.OKCYAN}%-20s: %-12s %20s %-50s %-20s %-4s %-50s " %( reg_format_date, function,action,item,organization,statuscode, text))
+  elif severity == "CHANGE":
+    print(f"{bcolors.OKBLUE}%-20s: %-12s %20s %-50s %-20s %-4s %-50s " %( reg_format_date, function,action,item,organization,statuscode, text))
   else:
     print(f"{bcolors.INFO}%-20s: %-12s %20s %-50s %-20s %-4s %-50s " %( reg_format_date, function,action,item,organization,statuscode, text))
   print(f"{bcolors.ENDC}", end='')
