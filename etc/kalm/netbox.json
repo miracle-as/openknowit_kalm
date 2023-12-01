@@ -1,0 +1,17 @@
+{
+  "organization": "Region Midtjylland",
+  "name": "IT",
+  "sites": [
+  {
+    "name": "Aarhus Universitetshospital",
+    "slug": "auh",
+    "stastus": "Active",
+    "region": "Region Midtjylland",
+    "description": "Aarhus Universitetshospital",
+    "address": "Palle Juul-Jensens Boulevard 99, 8200 Aarhus N"
+  }
+  ],
+  "hypervisors"; [
+	"name": "
+}
+
