@@ -20,6 +20,7 @@ def connect(env):
         if env['KALM_VMWARE_SSL'] == "disable":
             prettyllog("vsphere", "init", "Connect to vcenter", "start", "000" , "Connecting without ssl verify", severity="INFO")
             myhost = env['KALM_VMWARE_URL'].replace("https://", "")
+            pprint.pprint(myhost)
             try:
                 service_instance = SmartConnect(host=myhost,
                                             user=env['KALM_VMWARE_USERNAME'],
