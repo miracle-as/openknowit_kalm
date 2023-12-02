@@ -25,7 +25,6 @@ def get_orgs(env):
 
 
 def create_tenant_group(tenant_group_name, env):
-    pprint.pprint(tenant_group_name)
     url = env['KALM_NETBOX_URL'] + "/api/tenancy/tenant-groups/"
     headers = {'Authorization': 'Token ' + env['KALM_NETBOX_TOKEN'],
                'Accept': 'application/json',
@@ -44,7 +43,6 @@ def create_tenant_group(tenant_group_name, env):
         return data['id']
     else:
         if r.status_code == 400:
-            pprint.pprint(r.content)
             prettyllog("netbox", "create", "tenant_group", tenant_group_name, r.status_code , "tenant_group already exists", severity="INFO")
             return True
         prettyllog("netbox", "create", "tenant_group", tenant_group_name, r.status_code , "unable to create tenant_group", severity="ERROR")
@@ -176,7 +174,6 @@ def create_site(site_name, region, sitegroup, tenant, env):
         "description": "Created by KALM"
     }
     r = requests.post(url, headers=headers, json=data, verify=env['KALM_NETBOX_SSL'])
-    pprint.pprint(r.content)
     if r.status_code == 201:
         data = r.json()
         return data['id']
@@ -221,7 +218,6 @@ def create_region(region_name, env):
         "description": "Created by KALM"
     }
     r = requests.post(url, headers=headers, json=data, verify=env['KALM_NETBOX_SSL'])
-    pprint.pprint(r.content)
     if r.status_code == 201:
         data = r.json()
         return data['id']
@@ -280,7 +276,6 @@ def refresh_netbox_orgs(env):
     create_tenant(netboxdata['name'], netboxdata['organization'], env)
     for site in netboxdata['sites']:
         create_region(site['region'], env)
-        pprint.pprint(get_regions(env))
         create_sitegroups("Kalm", env)
         create_site(site['name'], site['region'], "Kalm", netboxdata['name'], env)
 
