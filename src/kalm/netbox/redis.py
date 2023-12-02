@@ -1,4 +1,5 @@
 import redis
+from ..common import prettyllog
 
 def refresh_netbox_from_redis(myenv):
     r = redis.Redis(host='localhost', port=6379, db=0)
@@ -11,6 +12,7 @@ def refresh_netbox_from_redis(myenv):
         key = server.decode("utf-8")
         value = r.get(key)
         data[key] = value.decode("utf-8")
+        prettyllog("netbox", "get", "server", key, value.decode("utf-8") , "getting server", severity="INFO")
     for server in detailedservers:
         key = server.decode("utf-8")
         value = r.get(key)
