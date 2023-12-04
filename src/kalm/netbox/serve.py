@@ -23,18 +23,18 @@ def main():
     prettyllog("netbox", "init", "service", "kalm" "ok", "000" , "starting server", severity="INFO")
     myenv = get_env()
     while True:
-        refresh_netbox_orgs(myenv)
-        refresh_netbox_from_redis(myenv)
+        netboxdata =refresh_netbox_orgs(myenv)
+        refresh_netbox_from_redis(myenv, netboxdata)
 
 # Refresh netbox from redis
-        clusters=get_clusters(myenv)
-        for cluster in clusters:
-            cluster_id = get_cluster_id(cluster, myenv)
-            if cluster_id:
-                prettyllog("netbox", "get", "cluster", cluster, cluster_id , "getting cluster id", severity="INFO")
-            else:
-                prettyllog("netbox", "get", "cluster", cluster, "000" , "unable to get cluster", severity="ERROR")
-        break
+#       clusters=get_clusters(myenv)
+#       for cluster in clusters:
+#           cluster_id = get_cluster_id(cluster, myenv)
+#           if cluster_id:
+#               prettyllog("netbox", "get", "cluster", cluster, cluster_id , "getting cluster id", severity="INFO")
+#           else:
+#               prettyllog("netbox", "get", "cluster", cluster, "000" , "unable to get cluster", severity="ERROR")
+#       break
 
 
 

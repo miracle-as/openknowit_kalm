@@ -4,6 +4,7 @@ from pyVmomi import vim
 import atexit
 import json
 import pprint
+import pickle
 import redis
 import time
 from pyVim.connect import SmartConnect, Disconnect
@@ -17,7 +18,7 @@ data = {}
 
 def connect(env):
     try:
-        if env['KALM_VMWARE_SSL'] == "disable":
+        if env['KALM_VMWARE_SSL'] == "False":
             prettyllog("vsphere", "init", "Connect to vcenter", "start", "000" , "Connecting without ssl verify", severity="INFO")
             myhost = env['KALM_VMWARE_URL'].replace("https://", "")
             pprint.pprint(myhost)
@@ -230,15 +231,60 @@ while True:
         prettyllog("vsphere", "get", vm, "check", "000" , "loadning servers (totalservers: %s known: %s updated %s )" % (totalservers, knownservercount, detailedservercount), severity="INFO")
         detailkey = "kalm:vmware:" + vm + ":details"
         knownkey = "kalm:vmware:" + vm + ":known"
+        knownlinux = "kalm:vmware:" + vm + ":known:linux"
+        knownwindows = "kalm:vmware:" + vm + ":known:windows"
         timestamp = time.time()
         get = r.get(detailkey)
         if get is None:
             prettyllog("vsphere", "get", vm, "new", "000" , "loadning servers", severity="CHANGE")
             vm_details = get_vm_details(content, vm)
-            r.set(detailkey, str(vm_details), ex=36000)
+            memory = vm_details[vm]['config'].memorySizeMB
+            numCpu = vm_details[vm]['config'].numCpu
+            numEthernetCards = vm_details[vm]['config'].numEthernetCards
+            numVirtualDisks = vm_details[vm]['config'].numVirtualDisks
+            uuid = vm_details[vm]['config'].uuid
+            guestId = vm_details[vm]['config'].guestId
+            guestFullName = vm_details[vm]['config'].guestFullName
+            toolsStatus = vm_details[vm]['guest'].toolsStatus
+            toolsVersionStatus = vm_details[vm]['guest'].toolsVersionStatus
+            toolsVersionStatus2 = vm_details[vm]['guest'].toolsVersionStatus2
+            toolsRunningStatus = vm_details[vm]['guest'].toolsRunningStatus
+            hostName = vm_details[vm]['guest'].hostName
+            ipAddress = vm_details[vm]['guest'].ipAddress
+            hwVersion = vm_details[vm]['config'].hwVersion
+            vmPathName = vm_details[vm]['config'].vmPathName
+            overallStatus = vm_details[vm]['summary'].overallStatus
+            mydetails = {}
+            mydetails['memory'] = memory
+            mydetails['numCpu'] = numCpu
+            mydetails['numEthernetCards'] = numEthernetCards
+            mydetails['numVirtualDisks'] = numVirtualDisks
+            mydetails['uuid'] = uuid
+            mydetails['guestId'] = guestId
+            mydetails['guestFullName'] = guestFullName
+            mydetails['toolsStatus'] = toolsStatus
+            mydetails['toolsVersionStatus'] = toolsVersionStatus
+            mydetails['toolsVersionStatus2'] = toolsVersionStatus2
+            mydetails['toolsRunningStatus'] = toolsRunningStatus
+            mydetails['hostName'] = hostName
+            mydetails['ipAddress'] = ipAddress
+            mydetails['hwVersion'] = hwVersion
+            mydetails['vmPathName'] = vmPathName
+            mydetails['overallStatus'] = overallStatus
+            myjson = json.dumps(mydetails)
+            r.set(detailkey, myjson, ex=36000)
             r.set(knownkey, str(timestamp))
+            if "Linux" in guestFullName or "CentOS" in guestFullName or "Ubuntu" in guestFullName or "Debian" in guestFullName or "Red Hat" in guestFullName or "SUSE" in guestFullName or "Fedora" in guestFullName or "Oracle" in guestFullName or "CoreOS" in guestFullName or "Photon" in guestFullName or "VMware" in guestFullName or "FreeBSD" in guestFullName:
+                r.set(knownlinux, str(timestamp))
+                prettyllog("vsphere", "get", vm, guestFullName, "000" , "Linux detected", severity="CHANGE")
+
+            if "Windows" in guestFullName:
+                r.set(knownwindows, str(timestamp))
+                prettyllog("vsphere", "get", vm, guestFullName, "000" , "Windows detected", severity="CHANGE")
+
+            prettyllog("vsphere", "get", vm, guestFullName, "000" , "loadning servers", severity="CHANGE")
         else:
-            prettyllog("vsphere", "get", vm, "known", "000" , "loadning servers", severity="INFO")
+            prettyllog("vsphere", "get", vm, get, "000" , "loadning servers", severity="INFO")
             r.set(knownkey, str(timestamp))
 
 

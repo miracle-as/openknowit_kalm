@@ -52,16 +52,16 @@ def prettyllog(function, action, item, organization, statuscode, text, severity=
   d_date = datetime.datetime.now()
   reg_format_date = d_date.strftime("%Y-%m-%d %I:%M:%S %p")
   if severity == "INFO":
-    print(f"{bcolors.INFO}%-20s: %-12s %20s %-50s %-20s %-4s %-50s " %( reg_format_date, function,action,item,organization,statuscode, text))
+    print(f"{bcolors.INFO}%-20s: %-12s %20s %-30s %-50s %-4s %-50s " %( reg_format_date, function,action,item,organization,statuscode, text))
   elif severity == "WARNING":
-    print(f"{bcolors.WARNING}%-20s: %-12s %20s %-50s %-20s %-4s %-50s " %( reg_format_date, function,action,item,organization,statuscode, text))
+    print(f"{bcolors.WARNING}%-20s: %-12s %20s %-30s %-50s %-4s %-50s " %( reg_format_date, function,action,item,organization,statuscode, text))
   elif severity == "ERROR":
-    print(f"{bcolors.FAIL}%-20s: %-12s %20s %-50s %-20s %-4s %-50s " %( reg_format_date, function,action,item,organization,statuscode, text))
+    print(f"{bcolors.FAIL}%-20s: %-12s %20s %-30s %-50s %-4s %-50s " %( reg_format_date, function,action,item,organization,statuscode, text))
   elif severity == "DEBUG":
-    print(f"{bcolors.OKCYAN}%-20s: %-12s %20s %-50s %-20s %-4s %-50s " %( reg_format_date, function,action,item,organization,statuscode, text))
+    print(f"{bcolors.OKCYAN}%-20s: %-12s %20s %-30s %-50s %-4s %-50s " %( reg_format_date, function,action,item,organization,statuscode, text))
   elif severity == "CHANGE":
-    print(f"{bcolors.OKBLUE}%-20s: %-12s %20s %-50s %-20s %-4s %-50s " %( reg_format_date, function,action,item,organization,statuscode, text))
+    print(f"{bcolors.OKBLUE}%-20s: %-12s %20s %-30s %-50s %-4s %-50s " %( reg_format_date, function,action,item,organization,statuscode, text))
   else:
-    print(f"{bcolors.INFO}%-20s: %-12s %20s %-50s %-20s %-4s %-50s " %( reg_format_date, function,action,item,organization,statuscode, text))
+    print(f"{bcolors.INFO}%-20s: %-12s %20s %-30s %-50s %-4s %-50s " %( reg_format_date, function,action,item,organization,statuscode, text))
   print(f"{bcolors.ENDC}", end='')
   return True

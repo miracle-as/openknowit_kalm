@@ -3,13 +3,20 @@ import json
 import pprint   
 import time
 from ..common import prettyllog
+from .netbox_server import create_virtual_server
+from .common import get_env
 
-def refresh_netbox_from_redis(myenv):
+
+
+def refresh_netbox_from_redis(myenv, netboxdata):
     r = redis.Redis(host='localhost', port=6379, db=0)
     knownservers = {}
+    knownlinuxservers = {}
     orphanservers = []
     knownserverkeys = r.keys("kalm:vmware:*:known")
-    for key in knownserverkeys:
+    print(len(knownserverkeys))
+    knownlinuxserverkeys = r.keys("kalm:vmware:*:known:linux")
+    for key in knownlinuxserverkeys:
         key = key.decode("utf-8")
         server = key.split(":")[2]
         value = r.get(key)
@@ -30,18 +37,12 @@ def refresh_netbox_from_redis(myenv):
             detailkey = "kalm:vmware:" + server + ":details"
             if r.exists(detailkey):
               detailvalue = r.get(detailkey)
-              decodeddetailvalue = detailvalue.decode("utf-8")
-              knownservers[server] = detailvalue.decode("utf-8")
-              # print values as json
-              for line in decodeddetailvalue.splitlines():
-                  print("--------------------------")
-                  print(line)
-                  if "guestFullName" in line:
-                      print("--------------------------")
-                      print(line)
-                      print("--------------------------")
-                  print("--------------------------")
+              decodeddetailvalue = detailvalue.decode("utf-8").replace("'", '"')
+              knownlinuxservers[server] = detailvalue.decode("utf-8")
+              detailjson = json.loads(decodeddetailvalue)   
+              create_virtual_server(detailjson, myenv, netboxdata)
             else:
+                prettyllog("netbox", "get", "server", key, "000" , "No details found", severity="ERROR")
                 orphanservers.append(server)
     print("orphanservers: %s" % len(orphanservers))
     print("knownservers:  %s" % len(knownservers))

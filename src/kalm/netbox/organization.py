@@ -278,6 +278,8 @@ def refresh_netbox_orgs(env):
         create_region(site['region'], env)
         create_sitegroups("Kalm", env)
         create_site(site['name'], site['region'], "Kalm", netboxdata['name'], env)
+    return netboxdata
+
 
     # create tenant groups
     # we need a group for the organisation
