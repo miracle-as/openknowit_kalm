@@ -25,7 +25,7 @@ def get_all_tags(env):
     
 def get_virtual_server_tags(serverid, env):
     prettyllog("netbox", "get", "virtual server tags", serverid, "000" , "getting virtual server tags", severity="INFO")
-    url = env['KALM_NETBOX_URL'] + "/api/virtualization/virtual-machines/" + str(serverid) + "/tags/"
+    url = env['KALM_NETBOX_URL'] + "/api/virtualization/virtual-machines/" + str(serverid)
     headers = {'Authorization': 'Token ' + env['KALM_NETBOX_TOKEN'],
                'Accept': 'application/json',
                'Content-Type': 'application/json'
@@ -34,7 +34,7 @@ def get_virtual_server_tags(serverid, env):
     r = requests.get(url, headers=headers, verify=env['KALM_NETBOX_SSL'])
     if r.status_code == 200:
         data = r.json()
-        for tag in data['results']:
+        for tag in data['tags']:
             mytags.append(tag['name'])
         prettyllog("netbox", "get", "virtual server tags", serverid, r.status_code , "virtual server tags found", severity="INFO")
         return mytags
@@ -62,6 +62,9 @@ def get_virtual_server_id(servername, env):
                 prettyllog("netbox", "get", "virtual server id", servername, r.status_code , "unable to get virtual server id", severity="ERROR")
                 return False
         
+def setrandomcolor():
+        ###############################
+        return "00ff00"
 
 
 def update_subprojects(myenv):
@@ -71,40 +74,60 @@ def update_subprojects(myenv):
                 for myhost in myenv['subproject'][subproject]['hosts']:
                         myserverid = get_virtual_server_id(myhost, myenv)
                         if myserverid:
-                                mytags = get_virtual_server_tags(myserverid, myenv)
                                 alltags = get_all_tags(myenv)
-                                for tag in mytags:
-                                        if tag in alltags:
-                                                print("tag %s already exists" % tag)
+                                try:
+                                        mysubprojecttagid = alltags[subproject]
+                                except:
+                                        mysubprojecttagid = False
+                                if not mysubprojecttagid:
+                                        print("adding tag %s to netbox" % subproject)
+                                        url = myenv['KALM_NETBOX_URL'] + "/api/extras/tags/"
+                                        headers = {'Authorization': 'Token ' + myenv['KALM_NETBOX_TOKEN'],
+                                                   'Accept': 'application/json',
+                                                   'Content-Type': 'application/json'
+                                                }
+                                        data = {
+                                                "name": subproject,
+                                                "slug": subproject.lower(),
+                                                "color": setrandomcolor()
+                                                }
+                                        r = requests.post(url, headers=headers, data=json.dumps(data), verify=myenv['KALM_NETBOX_SSL'])
+                                        if r.status_code == 201:
+                                                print("tag %s added to netbox" % subproject)
                                         else:
-                                                print("tag %s does not exists" % tag)
-                                                # create tag
-                                                url = myenv['KALM_NETBOX_URL'] + "/api/extras/tags/"
-                                                headers = {'Authorization': 'Token ' + myenv['KALM_NETBOX_TOKEN'],
-                                                           'Accept': 'application/json',
-                                                           'Content-Type': 'application/json'
-                                                        }
-                                                data = {'name': tag}
-                                                r = requests.post(url, headers=headers, data=json.dumps(data), verify=myenv['KALM_NETBOX_SSL'])
-                                                if r.status_code == 201:
-                                                        print("tag %s created" % tag)
-                                                else:
-                                                        print("tag %s not created" % tag)
-                                # add tags to server
-
-                                url = myenv['KALM_NETBOX_URL'] + "/api/virtualization/virtual-machines/" + str(myserverid)
-                                headers = {'Authorization': 'Token ' + myenv['KALM_NETBOX_TOKEN'],
-                                           'Accept': 'application/json',
-                                           'Content-Type': 'application/json'
-                                        }
-                                data = []
-                                for tag in mytags:
-                                        data.append(alltags[tag])
-                                r = requests.post(url, headers=headers, data=json.dumps(data), verify=myenv['KALM_NETBOX_SSL'])
-                                if r.status_code == 201:
-                                        print("tags added to server")
+                                                print("unable to add tag %s to netbox" % subproject)
                                 else:
-                                        print("tags not added to server")
+                                        print("tag %s already exists in netbox" % subproject)
+                                foundmysubprojecttag = False
+
+                                mytags = get_virtual_server_tags(myserverid, myenv)
+                                for tag in mytags:
+                                        if tag == subproject:
+                                                foundmysubprojecttag = True
+                                if foundmysubprojecttag:
+                                        print("server %s already has tag %s" % (myhost, subproject))
+                                else:
+                                        mytagids = []
+                                        for tag in mytags:
+                                                mytagids.append(alltags[tag])
+                                        mytagids.append(mysubprojecttagid)
+                                        print("server %s does not have tag %s" % (myhost, subproject))
+                                        url = myenv['KALM_NETBOX_URL'] + "/api/virtualization/virtual-machines/" + str(myserverid) + "/"
+                                        headers = {'Authorization': 'Token ' + myenv['KALM_NETBOX_TOKEN'],
+                                                   'Accept': 'application/json',
+                                                   'Content-Type': 'application/json'
+                                                }
+                                        data = {
+                                                "tags": mytagids
+                                                }
+                                        r = requests.patch(url, headers=headers, data=json.dumps(data), verify=myenv['KALM_NETBOX_SSL'])
+                                        if r.status_code == 200:
+                                                print("tag %s added to server %s" % (subproject, myhost))
+                                        else:
+                                                print(r.content)
+                                                print("unable to add tag %s to server %s" % (subproject, myhost))
+
+
                         else:
                                 print("server %s not found" % myhost)
         return True

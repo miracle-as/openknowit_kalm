@@ -5,5 +5,7 @@
   "inventory": {
     "globalvars": {}
   },
-  "hosts": []
+  "hosts": [
+    "rmvmwc0001.it.rm.dk"
+  ]
 }
