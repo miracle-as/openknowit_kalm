@@ -9,9 +9,21 @@ import redis
 import time
 from pyVim.connect import SmartConnect, Disconnect
 from ..common import prettyllog
+redishost=os.getenv("KALM_REDIS_HOST")
+if redishost is None:
+    redishost="localhost"
+
+    
+redisport=os.getenv("KALM_REDIS_PORT")
+if redisport is None:
+    redisport="6379"
+
+redisdb=os.getenv("KALM_REDIS_DB")
+if redisdb is None:
+    redisdb="0"
 
 
-r = redis.Redis(host='localhost', port=6379, db=0)
+r = redis.Redis(host=redishost, port=redisport, db=redisdb)
 
 data = {}
 
