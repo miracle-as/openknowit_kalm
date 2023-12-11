@@ -1,0 +1,9 @@
+{
+  "subproject": {
+    "description": "The netbox project"
+  },
+  "inventory": {
+    "globalvars": {}
+  },
+  "hosts": []
+}

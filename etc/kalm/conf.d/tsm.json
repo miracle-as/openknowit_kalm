@@ -1,0 +1,9 @@
+{
+  "subproject": {
+    "description": "The tsm project"
+  },
+  "inventory": {
+    "globalvars": {}
+  },
+  "hosts": []
+}

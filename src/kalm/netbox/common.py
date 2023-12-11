@@ -1,4 +1,7 @@
 import os
+import json
+
+
 def usage():
   # export the environment variables
   print("export KALM_NETBOX_URL=\"\"")
@@ -8,6 +11,7 @@ def usage():
 
 def  get_env():
   myenv = {}
+  myenv['subproject'] = {}
   try:
     myenv['KALM_NETBOX_URL'] = os.getenv("KALM_NETBOX_URL")
     myenv['KALM_NETBOX_TOKEN'] = os.getenv("KALM_NETBOX_TOKEN")
@@ -29,5 +33,63 @@ def  get_env():
     myenv['KALM_NETBOX_SSL'] = True
   if myenv['KALM_NETBOX_URL'][-1] == "/":
     myenv['KALM_NETBOX_URL'] = myenv['KALM_NETBOX_URL'][:-1]
+
+  f = open("etc/kalm/kalm.json", "r")
+  kalmconfig = json.loads(f.read())
+  f.close()
+  for key in kalmconfig:
+    myenv[key] = kalmconfig[key]
+
+  mysubprojects = []
+  for subproject in myenv['subprojects']:
+    filename = "etc/kalm/conf.d/" + subproject['name'] + ".json"
+    print(filename)
+    try: 
+      ff =  open(filename, "r")
+      ff.close()
+    except:
+      errorstring = "unable to open " + filename
+      print(errorstring)
+# create file
+#{
+#  "subproject": {
+#    "description": "The zabbix agent installation and configuration"
+#  },
+#  "inventory": {
+#    "globalvars": {
+#      "zabbix_server": "zabbix.it.rm.dk"
+#    }
+#  },
+#  "hosts": [
+#    "exrhel001.it.rm.dk",
+#    "exrhel002.it.rm.dk"
+#  ]
+#}
+      description = "The %s project" % subproject['name']
+      data = {
+    "subproject": {
+        "description": description
+    },
+    "inventory": {
+        "globalvars": {
+        }
+    },
+    "hosts": [
+    ]
+}
+      with open(filename, "w") as file:
+        json.dump(data, file, indent=2)
+
+    ff =  open(filename, "r")
+    subprojectconfig = json.loads(ff.read())
+    print(subprojectconfig)
+    myenv['subproject'][subproject['name']] = subprojectconfig
+    ff.close()
+
+
+
+
+
+
 
   return myenv

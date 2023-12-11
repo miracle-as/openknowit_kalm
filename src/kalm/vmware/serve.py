@@ -272,7 +272,7 @@ while True:
             mydetails['vmPathName'] = vmPathName
             mydetails['overallStatus'] = overallStatus
             myjson = json.dumps(mydetails)
-            r.set(detailkey, myjson, ex=36000)
+            r.set(detailkey, myjson, ex=3600000)
             r.set(knownkey, str(timestamp))
             if "Linux" in guestFullName or "CentOS" in guestFullName or "Ubuntu" in guestFullName or "Debian" in guestFullName or "Red Hat" in guestFullName or "SUSE" in guestFullName or "Fedora" in guestFullName or "Oracle" in guestFullName or "CoreOS" in guestFullName or "Photon" in guestFullName or "VMware" in guestFullName or "FreeBSD" in guestFullName:
                 r.set(knownlinux, str(timestamp))

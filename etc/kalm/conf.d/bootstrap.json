@@ -1,0 +1,9 @@
+{
+  "subproject": {
+    "description": "The bootstrap project"
+  },
+  "inventory": {
+    "globalvars": {}
+  },
+  "hosts": []
+}

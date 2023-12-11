@@ -12,6 +12,8 @@ from .common import get_env
 from .organization import refresh_netbox_orgs
 from .clusters import get_cluster_id, get_clusters
 from .redis import refresh_netbox_from_redis
+from .subprojects import update_subprojects
+
 
 
 r = redis.Redis(host='localhost', port=6379, db=0)
@@ -23,8 +25,10 @@ def main():
     prettyllog("netbox", "init", "service", "kalm" "ok", "000" , "starting server", severity="INFO")
     myenv = get_env()
     while True:
-        netboxdata =refresh_netbox_orgs(myenv)
-        refresh_netbox_from_redis(myenv, netboxdata)
+        netboxdata = refresh_netbox_orgs(myenv)
+        #refresh_netbox_from_redis(myenv, netboxdata)
+        update_subprojects(myenv)
+        time.sleep(60)
 
 # Refresh netbox from redis
 #       clusters=get_clusters(myenv)

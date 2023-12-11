@@ -5,6 +5,7 @@ import time
 from ..common import prettyllog
 from .netbox_server import create_virtual_server
 from .common import get_env
+import os
 
 
 
@@ -14,7 +15,6 @@ def refresh_netbox_from_redis(myenv, netboxdata):
     knownlinuxservers = {}
     orphanservers = []
     knownserverkeys = r.keys("kalm:vmware:*:known")
-    print(len(knownserverkeys))
     knownlinuxserverkeys = r.keys("kalm:vmware:*:known:linux")
     for key in knownlinuxserverkeys:
         key = key.decode("utf-8")
@@ -40,6 +40,7 @@ def refresh_netbox_from_redis(myenv, netboxdata):
               decodeddetailvalue = detailvalue.decode("utf-8").replace("'", '"')
               knownlinuxservers[server] = detailvalue.decode("utf-8")
               detailjson = json.loads(decodeddetailvalue)   
+              pprint.pprint(detailjson)
               create_virtual_server(detailjson, myenv, netboxdata)
             else:
                 prettyllog("netbox", "get", "server", key, "000" , "No details found", severity="ERROR")
