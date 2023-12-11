@@ -216,6 +216,9 @@ def parse_service_instance(si):
 # MAIN
 # We are serving vspere and we need an infinite loop
 prettyllog("vsphere", "init", "service", "ok", "000" , "starting server", severity="INFO")
+checkenv = get_env()
+pprint.pprint(checkenv)
+
 
 orphans = []
 while True:
