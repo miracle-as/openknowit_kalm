@@ -216,8 +216,15 @@ def parse_service_instance(si):
 # MAIN
 # We are serving vspere and we need an infinite loop
 prettyllog("vsphere", "init", "service", "ok", "000" , "starting server", severity="INFO")
-checkenv = get_env()
-pprint.pprint(checkenv)
+myenv = get_env()
+for key, value in myenv.items():
+    if value is None:
+        prettyllog("vsphere", "init", "service", "error", "000" , "environment variable %s not set" % key, severity="ERROR")
+        raise SystemExit("Unable to get environment variables.")
+    else:
+        prettyllog("vsphere", "init", "service", "ok", "000" , "environment variable %s = %s" % (key, value), severity="INFO")
+        
+
 
 
 orphans = []
