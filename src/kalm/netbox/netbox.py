@@ -1416,7 +1416,7 @@ def get_virtual_machines():
     for vm in vms["results"]:
         try:
             if returnvms[vm["name"]]:
-                print("Duplicate vm name")
+                dupvm=True
         except:
            returnvms[vm["name"]] = vm["id"]
     return returnvms
