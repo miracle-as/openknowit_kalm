@@ -2,6 +2,7 @@ import requests
 import os
 from ..common import prettyllog
 from ..gitea.git import clone_git_project
+from ..netbox.netbox import get_netbox_inventory_from_tag
 
 
 import pprint
@@ -269,6 +270,9 @@ def create_inventory(session, project_id, inventory):
         'Content-Type': 'application/json'
     }
 
+    pprint.pprint(inventory)
+    print("--------------------------------------------------   ")
+
     # Use the session for the request
     response = session.post(inventory_url, headers=headers, json=inventory)
     pprint.pprint(response.json())
@@ -284,15 +288,77 @@ def create_inventory(session, project_id, inventory):
         # Failed request
         prettyllog("semaphore", "create", inventory['name'], "error", response.status_code , "create inventory", severity="ERROR")
 
-def get_inventory(session, project_id):
+def create_credemtial(session, project_id, credential):
+    prettyllog("semaphore", "create", credential['name'], "ok", 0 , "create credential", severity="INFO")
+
+
+    baseurl = os.getenv('KALM_SEMAPHORE_URL')
+    credential_url = f"{baseurl}/api/project/{project_id}/keys"  # Adjust the URL as needed
+    
+    pprint.pprint(credential_url)
+
+    headers = {
+        'accept': 'application/json',
+        'Content-Type': 'application/json'
+    }
+    # Use the session for the request
+    response = session.get(credential_url, headers=headers)
+    if response.status_code == 200:
+        known_keys = response.json()
+        for key in known_keys:
+            if key['name'] == credential['name']:
+                prettyllog("semaphore", "create", credential['name'], "ok", response.status_code , "create credential", severity="INFO")
+                return True
+    else:
+        # Failed request
+        prettyllog("semaphore", "create", credential['name'], "error", response.status_code , "create credential", severity="DEBUG")
+
+    response = session.post(credential_url, headers=headers, json=credential)
+    pprint.pprint(response.content)
+    if response.status_code == 204:
+        # Successful request
+        prettyllog("semaphore", "create", credential['name'], "ok", response.status_code , "create credential", severity="INFO")
+        return True
+    else:
+        if response.status_code == 404:
+            # Failed request
+            prettyllog("semaphore", "create", credential['name'], "error", response.status_code , "create credential", severity="ERROR")
+            pprint.pprint(response.content)
+            return False
+
+        # Failed request
+        prettyllog("semaphore", "create", credential['name'], "error", response.status_code , "create credential", severity="ERROR")
+
+def popoulate_inventory(session, project_id, inventory_id, inventory):
+    baseurl = os.getenv('KALM_SEMAPHORE_URL')
+    inventory_url = f"{baseurl}/api/project/{project_id}/inventory/{inventory_id}"  # Adjust the URL as needed
+    headers = {
+        'accept': 'application/json',
+        'Content-Type': 'application/json'
+    }
+    
+    response = session.get(inventory_url, headers=headers)
+
+    if response.status_code == 201:
+        # Successful request
+        prettyllog("semaphore", "create", inventory['name'], "ok", response.status_code , "create inventory", severity="INFO")
+    else:
+        # Failed request
+        prettyllog("semaphore", "create", inventory['name'], "error", response.status_code , "create inventory", severity="ERROR")
+        return False
+    
+    inventorydata = response.json()
+    inventorydata[''] = inventory
+
+
+def get_inventory(session, project_id, projectname):
+    prettyllog("semaphore", "get", "inventory", "ok", 0 , "loadning inventory %s" % projectname, severity="INFO")
     baseurl = os.getenv('KALM_SEMAPHORE_URL')
     inventory_url = f"{baseurl}/api/project/{project_id}/inventory?sort=name&order=asc' "  # Adjust the URL as needed
     headers = {
         'accept': 'application/json',
         'Content-Type': 'application/json'
     }
-
-    # Use the session for the request
     response = session.get(inventory_url, headers=headers)
     if response.status_code == 200:
         # Successful request
@@ -300,6 +366,7 @@ def get_inventory(session, project_id):
         # map projects by name
         inventory_by_name = {}
         for item in inventory:
+            prettyllog("semaphore", "get", item['name'], "ok", response.status_code , "loadning inventory", severity="INFO")
             inventory_by_name[item['name']] = item
             if debug:
                 prettyllog("semaphore", "get", item['name'], "ok", response.status_code , "loadning inventory", severity="DEBUG")
@@ -454,7 +521,7 @@ def main():
             state[projectname] = {}
             state[projectname]['project'] = projects[project]
             state[projectname]['inventory'] = {}
-            inventory = get_inventory(session, projects[project]['id'])
+            inventory = get_inventory(session, projects[project]['id'], projectname)
             for item in inventory:
                 itemname = inventory[item]['name']
                 state[projectname]['inventory'][itemname] = {}
@@ -504,6 +571,12 @@ def main():
         state[projectname] = {}
         state[projectname]['project'] = projects[project]
         state[projectname]['inventory'] = {}
+        sshkey  = {
+            "name": "dummy",
+            "type": "none",
+            "project_id": projects[project]['id']
+        }
+        create_credemtial(session, projects[project]['id'] , sshkey)
         inventorydata = {
                         "name": "Test",
                         "project_id": projects[project]['id'],
@@ -512,15 +585,7 @@ def main():
                         "become_key_id": 1,
                         "type": "static"
         }
-        pprint.pprint(inventorydata)
-
-        #create_inventory(session, projects[project]['id'], inventorydata)
-        inventory = get_inventory(session, projects[project]['id'])
-        for item in inventory:
-            itemname = inventory[item]['name']
-            state[projectname]['inventory'][itemname] = {}
-            state[projectname]['inventory'][itemname]['item'] = inventory[item]
-            prettyllog("semaphore", "main", item, "ok", 0 , "item", severity="INFO")
+        create_inventory(session, projects[project]['id'], inventorydata)
     return 0
 
 

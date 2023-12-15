@@ -1,5 +1,6 @@
 import requests
 import json
+import pprint
 import os
 import base64
 import xml.etree.ElementTree as ET
@@ -11,8 +12,8 @@ from ..common import prettyllog
 netbox_url = os.environ.get('NETBOX_URL')
 netbox_token = os.environ.get('NETBOX_TOKEN')
 
-NETBOX_URL = os.getenv("NETBOX_API_URL")
-NETBOX_TOKEN = os.getenv("NETBOX_API_TOKEN")
+NETBOX_URL = os.getenv("KALM_NETBOX_API_URL")
+NETBOX_TOKEN = os.getenv("KALM_NETBOX_TOKEN")
 
 ssh_config_template = """
 Host {hostname}
@@ -23,6 +24,43 @@ Host {hostname}
     Port 22
     {proxy_jump}
 """
+
+
+def get_netbox_inventory_from_tag(tag):
+    prettyllog("manage", "netbox", "inventory", "new", "000", "Getting inventory from tag %s" % tag)
+
+    servers = []
+    url = fix_url("/virtualization/virtual-machines/?tag=%s" % tag)
+    headers = {
+        "Authorization": f"Token {NETBOX_TOKEN}",
+        "Accept": "application/json"
+    }
+    response = requests.get(url, headers=headers)
+    if response.status_code == 200:
+        data = response.json()
+        for server in data['results']:
+            prettyllog("manage", "netbox", "inventory", "new", "000", "Found server %s" % server['name'], severity="DEBUG")
+            servers.append(server['name'])
+        while data['next'] != None:
+            response = requests.get(data['next'], headers=headers)
+            if response.status_code == 200:
+                data = response.json()
+                for server in data['results']:
+                    servers.append(server['name'])
+            else:
+                return None
+        return servers
+    else:
+        return None
+    
+
+
+
+
+
+
+
+
 def vizulize(args):
     cluseters = get_clusters()
     vms = get_virtual_machines()
@@ -1122,9 +1160,9 @@ def add_vm():
 
 
 def fix_url(apiurl):
-    nburl=os.environ.get('NETBOX_API_URL')
+    nburl=os.environ.get('KALM_NETBOX_URL')
     if nburl == None:
-        print("No NETBOX_API_URL provided")
+        print("No KALM_NETBOX_URL provided")
         return False
 
     if nburl.endswith("/"):

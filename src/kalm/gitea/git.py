@@ -44,18 +44,42 @@ def init():
   else:
     prettyllog("state", "Init", "git", "error", resp.status_code, "login failed", severity="ERROR")
     return None
-  
+
 def clone_git_project(projectname):
+    prettyllog("semaphore", "Init", "clone", projectname , "000", "clone project initiated", severity="DEBUG")
     # create a temporary dir and clone the project
     # return the config data
     tempfiledir = tempfile.mkdtemp()
-    repo = git.Repo.clone_from(os.getenv('KALM_GIT_URL') + "/gitea/" + projectname + ".git", tempfiledir)
+    prettyllog("semaphore", "Init", "clone", projectname , "000", "cloning", severity="DEBUG")
+    username = os.getenv("KALM_GIT_USER")
+    password = os.getenv("KALM_GIT_PASSWORD")
+    #split http(s):// from the url
+    protocol = os.getenv("KALM_GIT_URL").split("://")[0]
+    endpoint = os.getenv("KALM_GIT_URL").split("://")[1]
+    remote = f"{protocol}://{username}:{password}@{endpoint}/gitea/{projectname}.git"
+    remoteanonym = f"{protocol}://{endpoint}/gitea/{projectname}.git"
+    pprint.pprint(remote)
+    
+
+    repo = git.Repo.clone_from(remote, tempfiledir)
     configdata = {}
-    configdata['url'] = os.getenv('KALM_GIT_URL') + "/" + projectname + ".git"
+    configdata['url'] = remoteanonym
     configdata['path'] = tempfiledir
     configdata['repo'] = repo
+
+    prettyllog("semaphore", "Init", "clone", projectname , "000", "cloning done", severity="DEBUG")
+
     # check if the project has a kalm.json file in etc/kalm
     # if not create it
+    prettyllog("semaphore", "Init", "clone", projectname , "000", "checking for kalm dir in repo", severity="DEBUG")
+    if os.path.isdir(tempfiledir + "/etc/kalm"):
+        prettyllog("semaphore", "Init", "clone", projectname , "000", "etc/kalm exists", severity="DEBUG")
+    else:
+        prettyllog("semaphore", "Init", "clone", projectname , "000", "etc/kalm missing", severity="DEBUG")
+        os.mkdir(tempfiledir + "/etc")
+        os.mkdir(tempfiledir + "/etc/kalm")
+        prettyllog("semaphore", "Init", "clone", projectname , "000", "etc/kalm created", severity="DEBUG")
+
     if os.path.isfile(tempfiledir + "/etc/kalm/kalm.json"):
         prettyllog("semaphore", "Init", "clone", projectname , "000", "kalm.json exists", severity="DEBUG")
         f = open(tempfiledir + "/etc/kalm/kalm.json", "r")
@@ -78,6 +102,7 @@ def clone_git_project(projectname):
         configdata['kalm']['project']['inventory']['items'] = []
         configdata['kalm']['project']['inventory']['items'].append("localhost")
         #save the file
+
         f = open(tempfiledir + "/etc/kalm/kalm.json", "w")
         json.dump(configdata['kalm'], f)
         f.close()
