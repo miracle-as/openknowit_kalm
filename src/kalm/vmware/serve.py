@@ -70,7 +70,7 @@ def  get_env():
 
   myenv = {}
   try:
-    myenv['KALM_VMWARE_URL'] = os.getenv("KALM_VMWARE_URL")
+    myenv['KALM_VMWARE_HOST'] = os.getenv("KALM_VMWARE_HOST")
     myenv['KALM_VMWARE_USERNAME'] = os.getenv("KALM_VMWARE_USERNAME")
     myenv['KALM_VMWARE_PASSWORD'] = os.getenv("KALM_VMWARE_PASSWORD")
     myenv['KALM_VMWARE_SSL'] = os.getenv("KALM_VMWARE_SSL")
