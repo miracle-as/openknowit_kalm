@@ -16,6 +16,7 @@ def  get_env():
     myenv['KALM_NETBOX_URL'] = os.getenv("KALM_NETBOX_URL")
     myenv['KALM_NETBOX_TOKEN'] = os.getenv("KALM_NETBOX_TOKEN")
     myenv['KALM_NETBOX_SSL'] = os.getenv("KALM_NETBOX_SSL", "false")
+    myenv['KALM_NETBOX_WORKDIR'] = os.getenv("KALM_WORKDIR", "/tmp/kalm")
   except KeyError as key_error:
     print(key_error)
     usage()
@@ -34,15 +35,19 @@ def  get_env():
   if myenv['KALM_NETBOX_URL'][-1] == "/":
     myenv['KALM_NETBOX_URL'] = myenv['KALM_NETBOX_URL'][:-1]
 
-  # list all files in /etc 
-  files = os.listdir("/etc/kalm")
-  print(files)
-
-  if os.path.exists("/etc/kalm/kalm.json") == False:
-    raise SystemExit("Unable to find /etc/kalm/kalm.json")
   
 
-  f = open("/etc/kalm/kalm.json", "r")
+  # list all files in /etc 
+  if os.path.exists(myenv['KALM_WORKDIR']) == False:
+    os.mkdir(myenv['KALM_WORKDIR'])
+  files = os.listdir(myenv['KALM_WORKDIR'] + "/etc/kalm")
+  print(files)
+
+  if os.path.exists(myenv['KALM_WORKDIR'] + "/etc/kalm/kalm.json") == False:
+    raise SystemExit("Unable to find " + myenv['KALM_WORKDIR'] +"/etc/kalm/kalm.json")
+  
+
+  f = open(myenv['KALM_WORKDIR'] + "/etc/kalm/kalm.json", "r")
   kalmconfig = json.loads(f.read())
   f.close()
   for key in kalmconfig:
@@ -50,8 +55,7 @@ def  get_env():
 
   mysubprojects = []
   for subproject in myenv['subprojects']:
-    filename = "/etc/kalm/conf.d/" + subproject['name'] + ".json"
-    print(filename)
+    filename = myenv['KALM_WORKDIR'] + "/etc/kalm/conf.d/" + subproject['name'] + ".json"
     try: 
       ff =  open(filename, "r")
       ff.close()
