@@ -34,7 +34,7 @@ def  get_env():
   if myenv['KALM_NETBOX_URL'][-1] == "/":
     myenv['KALM_NETBOX_URL'] = myenv['KALM_NETBOX_URL'][:-1]
 
-  f = open("etc/kalm/kalm.json", "r")
+  f = open("/etc/kalm/kalm.json", "r")
   kalmconfig = json.loads(f.read())
   f.close()
   for key in kalmconfig:
@@ -42,7 +42,7 @@ def  get_env():
 
   mysubprojects = []
   for subproject in myenv['subprojects']:
-    filename = "etc/kalm/conf.d/" + subproject['name'] + ".json"
+    filename = "/etc/kalm/conf.d/" + subproject['name'] + ".json"
     print(filename)
     try: 
       ff =  open(filename, "r")
