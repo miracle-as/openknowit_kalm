@@ -272,6 +272,8 @@ def refresh_netbox_orgs(env):
             'stastus': 'Active'}]}
 
     """
+    pprint.pprint(netboxdata)
+    
     create_tenant_group(netboxdata['organization'], env)
     create_tenant(netboxdata['name'], netboxdata['organization'], env)
     for site in netboxdata['sites']:
