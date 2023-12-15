@@ -5,6 +5,9 @@ import base64
 import xml.etree.ElementTree as ET
 import pprint
 from ..common import prettyllog
+import tempfile
+import git
+import os
 
 
 import base64
@@ -41,6 +44,51 @@ def init():
   else:
     prettyllog("state", "Init", "git", "error", resp.status_code, "login failed", severity="ERROR")
     return None
+  
+def clone_git_project(projectname):
+    # create a temporary dir and clone the project
+    # return the config data
+    tempfiledir = tempfile.mkdtemp()
+    repo = git.Repo.clone_from(os.getenv('KALM_GIT_URL') + "/gitea/" + projectname + ".git", tempfiledir)
+    configdata = {}
+    configdata['url'] = os.getenv('KALM_GIT_URL') + "/" + projectname + ".git"
+    configdata['path'] = tempfiledir
+    configdata['repo'] = repo
+    # check if the project has a kalm.json file in etc/kalm
+    # if not create it
+    if os.path.isfile(tempfiledir + "/etc/kalm/kalm.json"):
+        prettyllog("semaphore", "Init", "clone", projectname , "000", "kalm.json exists", severity="DEBUG")
+        f = open(tempfiledir + "/etc/kalm/kalm.json", "r")
+        configdata['kalm'] = json.load(f)
+        f.close()
+    else:
+        prettyllog("semaphore", "Init", "clone", projectname , "000", "kalm.json missing", severity="DEBUG")
+        configdata['kalm'] = {}
+        configdata['kalm']['project'] = {}
+        configdata['kalm']['project']['name'] = projectname
+        configdata['kalm']['project']['description'] = "kalm project"
+        configdata['kalm']['project']['private'] = True
+        configdata['kalm']['project']['auto_init'] = True
+        configdata['kalm']['project']['inventory'] = {}
+        configdata['kalm']['project']['inventory']['name'] = "inventory"
+        configdata['kalm']['project']['inventory']['description'] = "kalm inventory"
+        configdata['kalm']['project']['inventory']['private'] = True
+        configdata['kalm']['project']['inventory']['auto_init'] = True
+        configdata['kalm']['project']['inventory']['type'] = "static"
+        configdata['kalm']['project']['inventory']['items'] = []
+        configdata['kalm']['project']['inventory']['items'].append("localhost")
+        #save the file
+        f = open(tempfiledir + "/etc/kalm/kalm.json", "w")
+        json.dump(configdata['kalm'], f)
+        f.close()
+        # add the file to git
+        repo.git.add(A=True)
+        repo.index.commit("kalm project created")
+        origin = repo.remote(name='origin')
+        origin.push()
+    return configdata
+
+  
 def create_git_project(project):
   prettyllog("state", "Init", "git", "start", "000", "create project initiated", severity="DEBUG")
   myenv = getenv()
