@@ -34,6 +34,14 @@ def  get_env():
   if myenv['KALM_NETBOX_URL'][-1] == "/":
     myenv['KALM_NETBOX_URL'] = myenv['KALM_NETBOX_URL'][:-1]
 
+  # list all files in /etc 
+  files = os.listdir("/etc/kalm")
+  print(files)
+
+  if os.path.exists("/etc/kalm/kalm.json") == False:
+    raise SystemExit("Unable to find /etc/kalm/kalm.json")
+  
+
   f = open("/etc/kalm/kalm.json", "r")
   kalmconfig = json.loads(f.read())
   f.close()
