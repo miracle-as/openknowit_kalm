@@ -5,5 +5,5 @@
   "inventory": {
     "globalvars": {}
   },
-  "hosts": []
+  "hosts": ["ALL"]
 }

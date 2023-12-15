@@ -41,6 +41,7 @@ def connect(env):
             prettyllog("vsphere", "init", "Connect to vcenter", "start", "000" , "Connecting without ssl verify", severity="INFO")
             myhost = env['KALM_VMWARE_URL'].replace("https://", "")
             pprint.pprint(myhost)
+            pprint(env)
             try:
                 service_instance = SmartConnect(host=myhost,
                                             user=env['KALM_VMWARE_USERNAME'],
@@ -51,9 +52,15 @@ def connect(env):
                 raise SystemExit("Unable to connect to host with supplied credentials.")
         else:
             prettyllog("vsphere", "init", "Connect to vcenter", "start", "000" , "Connecting with ssl verify", severity="INFO")
-            service_instance = SmartConnect(host=myhost,
+            try:
+                service_instance = SmartConnect(host=myhost,
                                             user=env['KALM_VMWARE_USERNAME'],
                                             pwd=env['KALM_VMWARE_PASSWORD'])
+            except: 
+                # this is fatal
+                print("fatal")
+
+                
         #atexit.register(Disconnect, service_instance)
     except IOError as io_error:
         print(io_error)
@@ -242,7 +249,7 @@ for key, value in myenv.items():
         raise SystemExit("Unable to get environment variables.")
     else:
         prettyllog("vsphere", "init", "service", "ok", "000" , "environment variable %s = %s" % (key, value), severity="INFO")
-        
+
 
 
 

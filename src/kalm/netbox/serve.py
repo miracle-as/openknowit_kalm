@@ -26,7 +26,7 @@ def main():
     myenv = get_env()
     while True:
         netboxdata = refresh_netbox_orgs(myenv)
-        #refresh_netbox_from_redis(myenv, netboxdata)
+        refresh_netbox_from_redis(myenv, netboxdata)
         update_subprojects(myenv)
         time.sleep(60)
 
