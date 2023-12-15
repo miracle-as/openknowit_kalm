@@ -1,0 +1,94 @@
+[project]
+name = "kalm"
+version = "3.10.3"
+description = "Knowit automation lifecycle management"
+readme = "README.md"
+requires-python = ">=3.7"
+keywords = [ "kalm", "awx", "ansible", "automation",]
+classifiers = [ "Development Status :: 3 - Alpha", "Intended Audience :: Developers", "Topic :: Software Development :: Libraries :: Python Modules", "License :: OSI Approved :: MIT License", "Programming Language :: Python :: 3",]
+dependencies = [ "redis", "flask", "pynetbox", "wheel", "hvac", "xmltodict", "netbox", "urllib3", "cryptography", "PyYAML", "toml",]
+[[project.authors]]
+name = "Jakob Holst"
+email = "jho@miracle.dk"
+
+[[project.maintainers]]
+name = "Jakob Holst"
+email = "jho@miracle.dk"
+
+[build-system]
+requires = [ "setuptools>=43.0.0", "wheel",]
+build-backend = "setuptools.build_meta"
+
+[project.license]
+file = "LICENSE.txt"
+
+[project.optional-dependencies]
+dev = [ "check-manifest",]
+test = [ "coverage",]
+
+[project.urls]
+Homepage = "https://github.com/JakobHolstDK/kalm"
+"Bug Reports" = "https://github.com/JakobHolstDK/kalm/issues"
+Source = "https://github.com/JakobHolstDK/kalm"
+
+[project.scripts]
+kalm = "kalm:main"
+kalm_bump = "kalm.bump:main"
+kalm_jenkins = "kalm.jenkins:main"
+kalm_pitv = "kalm.pitv:main"
+kalm_vault = "kalm.vault:main"
+kalm_airflow = "kalm.airflow:main"
+kalm_gitea = "kalm.gitea:main"
+kalm_inabox = "kalm.inabox:main"
+kalm_netbox = "kalm.netbox:main"
+kalm_zabbix = "kalm.zabbix:main"
+kalm_traefik = "kalm.traefik:main"
+kalm_dns = "kalm.dns:main"
+kalm_semaphore = "kalm.semaphore:main"
+kalm_vmware = "kalm.vmware:main"
+
+[tool.poetry]
+name = "kalm"
+version = "3.10.3"
+description = "Knowit Automation lifecycle management"
+authors = [ "Jakob Holst <jakob.holst@knowit.dk>",]
+license = "MIT"
+homepage = "https://kalm.openknowit.com"
+repository = "https://github.com/miracle-as/openknowit_kalm.git"
+
+[tool.poetry.scripts]
+kalm = "kalm:main"
+kalm_airflow = "kalm.airflow:main"
+kalm_bump = "kalm.bump:main"
+kalm_pitv = "kalm.pitv:main"
+kalm_jenkins = "kalm.jenkins:main"
+kalm_gitea = "kalm.gitea:main"
+kalm_inabox = "kalm.inabox:main"
+kalm_netbox = "kalm.netbox:main"
+kalm_zabbix = "kalm.zabbix:main"
+kalm_traefik = "kalm.traefik:main"
+kalm_vault = "kalm.vault:main"
+kalm_dns = "kalm.dns:main"
+kalm_semaphore = "kalm.semaphore:main"
+kalm_vmware = "kalm.vmware:main"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+requests = "^2.25"
+pytest = "^6.2"
+mypy = "^0.910"
+redis = "^4.5.3"
+pynetbox = "^6.6.2"
+hvac = "^1.1.0"
+netbox = "^0.0.2"
+python-jenkins = "^1.7.0"
+xmltodict = "^0.13.0"
+netifaces = "^0.11.0"
+PyYAML = "^6.0.1"
+cryptography = "^41.0.2"
+paramiko = "^3.3.1"
+toml = "^0.10.2"
+pyvmomi = "^8.0.2.0.1"
+
+[tool.setuptools.package-data]
+kalm = [ "*.dat",]
