@@ -98,7 +98,7 @@ def create_tag(tagname, env):
     
 def get_virtual_server_tags(serverid, env):
     prettyllog("netbox", "get", "virtual server tags", serverid, "000" , "getting virtual server tags", severity="INFO")
-    url = env['KALM_NETBOX_URL'] + "/api/virtualization/virtual-machines/" + str(serverid) + "/tags/"
+    url = env['KALM_NETBOX_URL'] + "/api/virtualization/virtual-machines/" + str(serverid)
     headers = {'Authorization': 'Token ' + env['KALM_NETBOX_TOKEN'],
                'Accept': 'application/json',
                'Content-Type': 'application/json'
@@ -107,12 +107,15 @@ def get_virtual_server_tags(serverid, env):
     r = requests.get(url, headers=headers, verify=env['KALM_NETBOX_SSL'])
     if r.status_code == 200:
         data = r.json()
-        for tag in data['results']:
+        pprint.pprint(data)
+
+        for tag in data['tags']:
             mytags.append(tag['name'])
         prettyllog("netbox", "get", "virtual server tags", serverid, r.status_code , "virtual server tags found", severity="INFO")
         return mytags
     else:
         prettyllog("netbox", "get", "virtual server tags", serverid, r.status_code , "unable to get virtual server tags", severity="ERROR")
+        pprint.pprint(r.content)
         return mytags
     
 def get_all_tags(env):
