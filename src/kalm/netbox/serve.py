@@ -26,7 +26,7 @@ def main():
     myenv = get_env()
     while True:
         netboxdata = refresh_netbox_orgs(myenv)
-        prettyllog("netbox", "get", "orgs", "kalm", "ok", "000" , "Refresh cached servers", severity="INFO")
+        prettyllog("netbox", "init", "service", "redis" "ok", "000" , "updating cached servers", severity="INFO")
         refresh_netbox_from_redis(myenv, netboxdata)
         update_subprojects(myenv)
         time.sleep(60)
