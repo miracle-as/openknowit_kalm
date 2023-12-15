@@ -204,7 +204,8 @@ def update_virtual_server(serverdetails, env , netboxdata):
         if r.status_code == 400:
             prettyllog("netbox", "update", "virtual server", serverdetails['hostName'], r.status_code , "virtual server exists", severity="INFO")
             return True
-        prettyllog("netbox", "update", "virtual server", serverdetails['hostName'], r.status_code , "unable to create tenant_group", severity="ERROR")
+        prettyllog("netbox", "update", "virtual server", serverdetails['hostName'], r.status_code , "unable to create virtual server", severity="ERROR")
+        pprint.pprint(r.content)
         return False
     
 def create_interface(serverdetails, env, netboxdata):
