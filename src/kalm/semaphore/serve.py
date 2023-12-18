@@ -262,31 +262,53 @@ def get_project(session):
         # Failed request
         prettyllog("semaphore", "get", "project", "error", response.status_code , "loadning projects", severity="ERROR")
 
-def create_inventory(session, project_id, inventory):
+def update_inventory(session, project_id, inventory_id, inventory):
+    prettyllog("semaphore", "update", inventory['name'], "ok", 0 , "update inventory", severity="INFO")
+    # check if inventory exists
     baseurl = os.getenv('KALM_SEMAPHORE_URL')
-    inventory_url = f"{baseurl}/api/project/{project_id}/inventory"  # Adjust the URL as needed
+    inventory_url = f"{baseurl}/api/project/{project_id}/inventory/{inventory_id}"  # Adjust the URL as needed
     headers = {
         'accept': 'application/json',
         'Content-Type': 'application/json'
     }
-
-    pprint.pprint(inventory)
-    print("--------------------------------------------------   ")
-
-    # Use the session for the request
-    response = session.post(inventory_url, headers=headers, json=inventory)
-    pprint.pprint(response.json())
-    pprint.pprint(response.request.body)
-    pprint.pprint(response.request.headers)
-    pprint.pprint(response.request.url)
-
-    if response.status_code == 201:
+    inventory['id'] = inventory_id
+    response = session.put(inventory_url, headers=headers, json=inventory)
+    if response.status_code == 204:
         # Successful request
-        prettyllog("semaphore", "create", inventory['name'], "ok", response.status_code , "create inventory", severity="INFO")
+        prettyllog("semaphore", "update", inventory['name'], "ok", response.status_code , "update inventory", severity="INFO")
         return response.json()
     else:
         # Failed request
-        prettyllog("semaphore", "create", inventory['name'], "error", response.status_code , "create inventory", severity="ERROR")
+        prettyllog("semaphore", "update", inventory['name'], "error", response.status_code , "update inventory", severity="ERROR")
+
+def create_inventory(session, project_id, inventory):
+    prettyllog("semaphore", "create", inventory['name'], "ok", 0 , "create inventory", severity="INFO")
+    # check if inventory exists
+
+    myinv =  get_inventory(session, project_id, inventory['name'])
+    try:
+        if myinv[inventory['name']]:
+            prettyllog("semaphore", "update", inventory['name'], "ok", 0 , "update inventory", severity="INFO")
+            myinvid = myinv[inventory['name']]['id']
+            update_inventory(session, project_id, myinvid, inventory)
+            return True
+    except:
+        baseurl = os.getenv('KALM_SEMAPHORE_URL')
+        inventory_url = f"{baseurl}/api/project/{project_id}/inventory"  # Adjust the URL as needed
+        headers = {
+            'accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    # Use the session for the request
+        response = session.post(inventory_url, headers=headers, json=inventory)
+    
+        if response.status_code == 201:
+        # Successful request
+            prettyllog("semaphore", "create", inventory['name'], "ok", response.status_code , "create inventory", severity="INFO")
+            return response.json()
+        else:
+            # Failed request
+            prettyllog("semaphore", "create", inventory['name'], "error", response.status_code , "create inventory", severity="ERROR")
 
 def create_credemtial(session, project_id, credential):
     prettyllog("semaphore", "create", credential['name'], "ok", 0 , "create credential", severity="INFO")
@@ -491,9 +513,29 @@ def check_project(projectname, env):
     
 
 
-
+def get_sshkey_id(session, project_id, sshkeyname):
+    baseurl = os.getenv('KALM_SEMAPHORE_URL')
+    sshkey_url = f"{baseurl}/api/project/{project_id}/keys?name=%s" % sshkeyname  # Adjust the URL as needed
+    headers = {
+        'accept': 'application/json',
+        'Content-Type': 'application/json'
+    }
+    response = session.get(sshkey_url, headers=headers)
+    if response.status_code == 200:
+        # Successful request
+        sshkey = response.json()
+        # map keys by name
+        try:
+            sshkeyid = sshkey[0]['id']
+        except:
+            sshkeyid = None
+        return sshkeyid
+    else:
+        # Failed request
+        prettyllog("semaphore", "get", "sshkey", "error", response.status_code , "loadning sshkeys", severity="ERROR")
 
 def main():
+
     semaphore, mainconf, subprojects = read_config()
     organization = mainconf['organisation']['name']
     mysubprojects = mainconf['subprojects']
@@ -577,16 +619,39 @@ def main():
             "project_id": projects[project]['id']
         }
         create_credemtial(session, projects[project]['id'] , sshkey)
-        inventorydata = {
-                        "name": "Test",
-                        "project_id": projects[project]['id'],
-                        "inventory": "string",
-                        "ssh_key_id": 1,
-                        "become_key_id": 1,
-                        "type": "static"
+
+        becomekey  = {
+            "name": "dummyroot",
+            "type": "none",
+            "project_id": projects[project]['id']
         }
-        create_inventory(session, projects[project]['id'], inventorydata)
+        create_credemtial(session, projects[project]['id'] , becomekey)
+
+        ssh_key_id = get_sshkey_id(session, projects[project]['id'], sshkey['name'])
+        become_key_id = get_sshkey_id(session, projects[project]['id'], becomekey['name'])
+
+        myinventory = get_netbox_inventory_from_tag(projectname)
+        myinvdata = get_inventory(session, projects[project]['id'], projectname)
+        invexists = False
+        try:
+            if myinvdata[projectname]:
+               invexists = True 
+        except:
+            invexists = False
+        pprint.pprint(invexists)
+        if not invexists:
+            invetoryname = "%s-%s" % (projectname, "netbox")
+            inventorydata = {
+                        "name": invetoryname,
+                        "project_id": projects[project]['id'],
+                        "inventory": myinventory,
+                        "ssh_key_id": ssh_key_id,
+                        "become_key_id": become_key_id,
+                        "type": "static"
+            }
+            create_inventory(session, projects[project]['id'], inventorydata)
     return 0
+
 
 
 

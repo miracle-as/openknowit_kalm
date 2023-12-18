@@ -28,8 +28,12 @@ Host {hostname}
 
 def get_netbox_inventory_from_tag(tag):
     prettyllog("manage", "netbox", "inventory", "new", "000", "Getting inventory from tag %s" % tag)
+    # This is the format of the inventory string :           'inventory': '[website]\n172.18.8.40\n172.18.8.41',
 
-    servers = []
+    invstring = ""
+
+    invstring = '[%s]\n' % tag
+
     url = fix_url("/virtualization/virtual-machines/?tag=%s" % tag)
     headers = {
         "Authorization": f"Token {NETBOX_TOKEN}",
@@ -40,16 +44,17 @@ def get_netbox_inventory_from_tag(tag):
         data = response.json()
         for server in data['results']:
             prettyllog("manage", "netbox", "inventory", "new", "000", "Found server %s" % server['name'], severity="DEBUG")
-            servers.append(server['name'])
+            invstring += "%s\n" % server['name']
         while data['next'] != None:
             response = requests.get(data['next'], headers=headers)
             if response.status_code == 200:
                 data = response.json()
                 for server in data['results']:
-                    servers.append(server['name'])
+                    prettyllog("manage", "netbox", "inventory", "new", "000", "Found server %s" % server['name'], severity="DEBUG")
+                    invstring += "%s\n" % server['name']
             else:
                 return None
-        return servers
+        return str(invstring)
     else:
         return None
     

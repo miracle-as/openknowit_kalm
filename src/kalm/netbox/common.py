@@ -16,7 +16,7 @@ def  get_env():
     myenv['KALM_NETBOX_URL'] = os.getenv("KALM_NETBOX_URL")
     myenv['KALM_NETBOX_TOKEN'] = os.getenv("KALM_NETBOX_TOKEN")
     myenv['KALM_NETBOX_SSL'] = os.getenv("KALM_NETBOX_SSL", "false")
-    myenv['KALM_NETBOX_WORKDIR'] = os.getenv("KALM_WORKDIR", "/tmp/kalm")
+    myenv['KALM_WORKDIR'] = os.getenv("KALM_WORKDIR", "/tmp/kalm")
   except KeyError as key_error:
     print(key_error)
     usage()
