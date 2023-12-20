@@ -16,12 +16,11 @@ def checkenv():
     try:
         r = requests.get(myenv['VAULT_ADDR'], headers={"X-Vault-Token": myenv['VAULT_TOKEN']})
         if r.status_code != 200:
+            print(r.status_code)
+            print(r.content)
             print("Could not connect to vault, status code: " + str(r.status_code))
             exit(1)
     except:
-        print(r.status_code)
-        print(r.content)
-        
         print("Could not connect to vault")
         exit(1)
     #check if we have a .ssh folder
