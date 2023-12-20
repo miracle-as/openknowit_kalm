@@ -1,24 +1,20 @@
 import requests
 import os   
+import pprint
 
 def checkenv():
-    VAULT_ADDR = os.environ.get('KALM_VAULT_ADDR')   
-    VAULT_TOKEN = os.environ.get('KALM_VAULT_TOKEN')
-    VAULT_NAMESPACE = os.environ.get('KALM_VAULT_NAMESPACE')
+    myenv = {}
+    myenv['VAULT_ADDR'] = os.environ.get('KALM_VAULT_ADDR')   
+    myenv['VAULT_TOKEN'] = os.environ.get('KALM_VAULT_TOKEN')
+    myenv['VAULT_NAMESPACE'] = os.environ.get('KALM_VAULT_NAMESPACE')
+    myenv['VAULT_FORMAT'] = os.environ.get('KALM_VAULT_FORMAT')
 
-    if VAULT_ADDR == None:
-        print("Please set VAULT_ADDR environment variable")
-        exit(1)
-    if VAULT_TOKEN == None:
-        print("Please set VAULT_TOKEN environment variable")
-        exit(1)
-    if VAULT_NAMESPACE == None:
-        print("Please set VAULT_NAMESPACE environment variable")
-        exit(1)
+    if myenv['VAULT_FORMAT'] == None:
+        myenv['VAULT_FORMAT'] = "json"
 
     #Check if we can connect to vault
     try:
-        r = requests.get(VAULT_ADDR, headers={"X-Vault-Token": VAULT_TOKEN})
+        r = requests.get(myenv['VAULT_ADDR'], headers={"X-Vault-Token": myenv['VAULT_TOKEN']})
         if r.status_code != 200:
             print("Could not connect to vault, status code: " + str(r.status_code))
             exit(1)
@@ -39,11 +35,13 @@ def checkenv():
         os.system("touch ~/.ssh/known_hosts")
         #se access rights
         os.chmod(os.path.expanduser("~/.ssh/known_hosts"), 0o600)
-    return True
+    myenv['SSH_KNOWN_HOSTS'] = os.path.expanduser("~/.ssh/known_hosts")
+    return myenv
 
 
 
 
 
 def signssh():
-    checkenv()
+    myenv = checkenv()
+    pprint.pprint(myenv)
