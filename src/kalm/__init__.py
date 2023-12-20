@@ -199,6 +199,8 @@ def main():
                stopservice    disable and cleanup kalm systemd service \n  \
                startservice   setup and enable kalm systemd service \n  \
                deploy         deploy an ansible tower, awx, awxrpm \n  \
+               version        show the installed version\n  \
+               upgrade        upgrade kalm to the latest version\n  \
                \
                2023 Knowit Miracle\
                ")
@@ -234,6 +236,22 @@ def main():
         except:
             force = False
         setupkalm(force)
+
+    if args.action[0] == "version":
+       os.system("pip show kalm |grep Version")
+
+    if args.action[0] == "upgrade":
+        os.system("pip show kalm |grep Version >/tmp/kalm.version")
+        os.system("pip install --upgrade kalm >/dev/null 2>&1")
+        os.system("pip install --upgrade kalm >/dev/null 2>&1")
+        os.system("pip show kalm |grep Version  >/tmp/kalm.version.new")
+        os.system("diff /tmp/kalm.version /tmp/kalm.version.new > /tmp/kalm.version.diff")
+        os.system("cat /tmp/kalm.version.diff")
+        os.system("rm /tmp/kalm.version.diff")
+        os.system("rm /tmp/kalm.version")
+        os.system("rm /tmp/kalm.version.new")
+        
+
 
     if args.action[0] == "service":
         redis_host = os.getenv("REDIS_HOST", "localhost")
