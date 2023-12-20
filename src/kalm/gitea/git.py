@@ -146,7 +146,7 @@ def get_git_projects():
     "Content-Type": "application/json",
     "Authorization": "Basic " + myenv['base64_credentials']
     }
-  resp = session.get(url,headers=headers)
+  resp = session.get(url,headers=headers, verify=False)
   if resp.status_code == 200:
     prettyllog("state", "Init", "git", "ok", resp.status_code, "get projects successful", severity="INFO")
     return resp.json()
