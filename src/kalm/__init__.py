@@ -243,8 +243,8 @@ def main():
     if args.action[0] == "upgrade":
         os.system("which pip")
         os.system("pip show kalm |grep Version | tee /tmp/kalm.version")
-        os.system("pip install --upgrade kalm")
-        os.system("pip install --upgrade kalm")
+        os.system("pip install --upgrade kalm > /dev/null 2>&1")
+        os.system("pip install --upgrade kalm > /dev/null 2>&1")
         os.system("pip show kalm |grep Version | tee /tmp/kalm.version.new")
         os.system("diff /tmp/kalm.version /tmp/kalm.version.new > /tmp/kalm.version.diff")
         os.system("cat /tmp/kalm.version.diff")
