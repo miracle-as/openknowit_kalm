@@ -242,16 +242,17 @@ def main():
 
     if args.action[0] == "upgrade":
       os.system("pip show kalm |grep Version")
-      os.system("pip install --upgrade pip > /dev/null 2>&1")
-      os.system("pip show kalm |grep Version | tee /tmp/kalm.version > /dev/null 2>&1")
-      os.system("pip install --upgrade kalm > /dev/null 2>&1")
-      os.system("pip install --upgrade kalm > /dev/null 2>&1")
-      os.system("pip show kalm |grep Version | tee /tmp/kalm.version.new > /dev/null 2>&1")
-      os.system("diff /tmp/kalm.version /tmp/kalm.version.new |tee  /tmp/kalm.version.diff > /dev/null 2>&1 ")
-      os.system("cat /tmp/kalm.version.diff > /dev/null 2>&1" )
-      os.system("rm /tmp/kalm.version.difF >  /dev/null 2>&1")
-      os.system("rm /tmp/kalm.version > /dev/null 2>&1")
-      os.system("rm /tmp/kalm.version.new > /dev/null 2>&1")
+      os.system("pip install --upgrade pip >/tmp/deleteme 2>&1")
+      os.system("pip show kalm |grep Version | tee /tmp/kalm.version > /tmp/deleteme 2>&1")
+      os.system("pip install --upgrade kalm > /tmp/deleteme 2>&1")
+      os.system("pip install --upgrade kalm > /tmp/deleteme 2>&1")
+      os.system("pip show kalm |grep Version | tee /tmp/kalm.version.new > /tmp/deleteme 2>&1")
+      os.system("diff /tmp/kalm.version /tmp/kalm.version.new |tee  /tmp/kalm.version.diff > /tmp/deleteme 2>&1 ")
+      os.system("cat /tmp/kalm.version.diff " )
+      os.system("rm /tmp/kalm.version.difF >  /tmp/deleteme 2>&1")
+      os.system("rm /tmp/kalm.version > /tmp/deleteme 2>&1")
+      os.system("rm /tmp/kalm.version.new > /tmp/deleteme 2>&1")
+      os.system("rm /tmp/deleteme")
       os.system("pip show kalm |grep Version")
 
 
