@@ -13,16 +13,13 @@ def checkenv():
         myenv['VAULT_FORMAT'] = "json"
 
     #Check if we can connect to vault
-    try:
-        r = requests.get(myenv['VAULT_ADDR'], headers={"X-Vault-Token": myenv['VAULT_TOKEN']})
-        if r.status_code != 200:
+    
+    r = requests.get(myenv['VAULT_ADDR'], headers={"X-Vault-Token": myenv['VAULT_TOKEN']})
+    if r.status_code != 200:
             print(r.status_code)
             print(r.content)
             print("Could not connect to vault, status code: " + str(r.status_code))
             exit(1)
-    except:
-        print("Could not connect to vault")
-        exit(1)
     #check if we have a .ssh folder
     if not os.path.exists(os.path.expanduser("~/.ssh")):
         print("Could not find ~/.ssh folder")
