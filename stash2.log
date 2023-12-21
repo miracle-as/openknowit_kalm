@@ -1,0 +1,71 @@
+diff --git a/src/kalm/pitv/pitv.py b/src/kalm/pitv/pitv.py
+index 0b747a6..8eccb24 100644
+--- a/src/kalm/pitv/pitv.py
++++ b/src/kalm/pitv/pitv.py
+@@ -30,7 +30,6 @@ def service():
+   print("service")
+ 
+ def check_if_file_is_picture(file):
+-  print("check if file is a picture")
+   if file.endswith(".jpg") or file.endswith(".jpeg") or file.endswith(".png"):
+     return True
+   else:
+@@ -79,21 +78,44 @@ def evacuate():
+   count = 0
+   for file in files:
+     count = count + 1
+-    if redis.exists(file):
+-      status = redis.get(file).decode("utf-8")
+-      print(status)
+-      if status == "0":
+-        print("file " + str(count) + " of " + str(total) ) #no newline
+-        if check_if_file_is_picture(file):
+-          print(file)
+-          redis.set(file, "1")
+-        else:
+-          redis.set(file, "999")
+-      if status == "1":
+-        metadata = get_image_metadata(file)
+-        print(metadata)
++    status = redis.get(file)
++    if status is None:
++       redis.set(file, 0)
++       status = 0
++    if type(status) is bytes:
++      status = status.decode("utf-8")
++      status = int(status)
++
++    #print status withouth newline append trailing spaces to overwrite previous line  
++    # get the tty width
++    columns, rows = os.get_terminal_size(0)
++    text="[" + str(count) + "/" + str(total) + "] " + file + " " + str(status)
++    print(text.ljust(columns), end="\r")
++
++    if status == 0:
++      if check_if_file_is_picture(file):
++        redis.set(file, 1)
++        status = 1
++        text="[" + str(count) + "/" + str(total) + "] " + file + " " + str(status)
++        print(text.ljust(columns) + "Picture", end="\r")
++      else:
++        redis.set(file, 999)
++    if status == 1:
++      metadata = get_image_metadata(file)
++
++      if len(metadata) == 0:
++        redis.set(file, 999)
+       else:
+-        redis.set(file, "0")
++        redis.set(file, 2)
++    if status == 2:
++       print(metadata)
++       print("uploading: " + file)
++
++
++       
++      
++    else:
++      redis.set(file, 0)
+   print("evacuate")
+   #get all files on the system
+ 

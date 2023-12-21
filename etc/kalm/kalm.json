@@ -1,7 +1,7 @@
 {
   "organisation": {
     "name": "kalm",
-    "description": "Miracle knowit"
+    "description": "Miracle knowit all"
   },
   "subprojects": [
     { "name": "bootstrap", "engine": "semaphore" }

@@ -1,0 +1,39 @@
+diff --git a/src/kalm/dns/__init__.py b/src/kalm/dns/__init__.py
+index 9b818cf..006dfc3 100644
+--- a/src/kalm/dns/__init__.py
++++ b/src/kalm/dns/__init__.py
+@@ -68,6 +68,10 @@ def main():
+         print("set env")
+         dns.set_env()
+     
++    if args.action[0] == "virtlightning":
++        print("set env")
++        dns.virtlightning()
++
+     if args.action[0] == "libvirt":
+         print("set env")
+         dns.libvirt(args)
+diff --git a/src/kalm/dns/dns.py b/src/kalm/dns/dns.py
+index 32f9657..756a0fd 100644
+--- a/src/kalm/dns/dns.py
++++ b/src/kalm/dns/dns.py
+@@ -402,6 +402,19 @@ def delete_dns_record(hostname):
+     print("You need to setup KALM_DNS_TOKEN")  
+ 
+ 
++
++ # run command vl status on the file 
++  command = ["cd" , vldir , "&&" "vl", "status" ] 
++  # run in directory
++  process = subprocess.Popen(command, stdout=subprocess.PIPE)
++  output, _ = process.communicate()
++  print(output.decode("utf-8"))
++
++   
++
++
++   
++
+ def libvirt(args):
+   prettyllog("manage", "dns", "libvirt", "new", "000", "libvirt")
+   #open a file for writing in /tmp
