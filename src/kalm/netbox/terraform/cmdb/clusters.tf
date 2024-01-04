@@ -6,7 +6,7 @@ variable "openstackcluster_names" {
 
 resource "netbox_cluster" "openstack" {
   count = 3
-  cluster_type_id  = netbox_cluster_type.kvm.id
+  cluster_type_id  = netbox_cluster_type.openstack.id
   name             = var.openstackcluster_names[count.index]
   cluster_group_id = netbox_cluster_group.openstackclusters.id
 }

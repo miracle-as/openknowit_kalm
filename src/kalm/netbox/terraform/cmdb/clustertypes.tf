@@ -5,3 +5,7 @@ resource "netbox_cluster_type" "kvm" {
 resource "netbox_cluster_type" "vmware" {
   name = "Native vmware"
 }
+resource "netbox_cluster_type" "openstack" {
+  name = "Native openstack"
+}
+

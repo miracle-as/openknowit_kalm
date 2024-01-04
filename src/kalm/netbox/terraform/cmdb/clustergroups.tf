@@ -7,3 +7,8 @@ resource "netbox_cluster_group" "vmwareclusters" {
   description = "Servers  running on vmware"
   name        = "vmwareclusters"
 }
+
+resource "netbox_cluster_group" "openstackclusters" {
+  description = "Servers  running on openstack"
+  name        = "openstackclusters"
+}
