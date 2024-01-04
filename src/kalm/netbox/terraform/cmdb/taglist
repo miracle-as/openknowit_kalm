@@ -1,0 +1,22 @@
+#roles
+role_backup                             Cyan
+role_kalm                               Cyan
+role_zabbix                             Cyan 
+#services
+service_nfsserver                       Blue
+service_openshiftmaster                 Blue     
+service_openshiftworker                 Blue
+service_openstackundercloud             Blue
+service_openstackovercloud              Blue
+service_satellite                       Blue
+#SLA
+sla_test                                Purple
+sla_prerproduction                      Yellow
+sla_production                          Red
+sla_qa                                  Blue
+# OS
+os_ubuntu                               Orange        
+os_redhat                               OrangeRed 
+os_debian                               PowderBlue
+os_linux                                LightSkyBlue
+os_windows                              LightGreen

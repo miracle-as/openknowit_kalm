@@ -1,0 +1,5 @@
+cluster_template.tempuresource "netbox_cluster" "NAME" {
+  cluster_type_id  = netbox_cluster_type.CLUSTERTYPE.id
+  name             = "NAME"
+  cluster_group_id = netbox_cluster_group.CLUSTERGROUP.id
+}

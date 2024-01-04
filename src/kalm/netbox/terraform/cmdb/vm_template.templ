@@ -1,0 +1,17 @@
+resource "netbox_virtual_machine" "SERVERNAME" {
+  count = 1
+  cluster_id   = netbox_cluster.openstack[2].id
+  name         = "SERVERNAME${format("%02d", count.index + 1)}"
+  tags         = [ "RedHat", "undercloud", "Backup" ]
+  disk_size_gb = 40
+  memory_mb    = 8192
+  vcpus        = "2"
+  role_id      = netbox_device_role.server.id
+  tenant_id    = netbox_tenant.knowit.id
+  local_context_data = jsonencode({
+    "operating_system" = "RELEASE"
+    "rhel_org" = 6207854
+    "activation_key" = "Faceted-Oil-Scion6"
+  })
+}
+

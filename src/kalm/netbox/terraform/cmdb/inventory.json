@@ -1,0 +1,40 @@
+{
+  "all": {
+    "hosts": {
+      "overcloud01.openknowit.com": null,
+      "overcloud02.openknowit.com": null,
+      "overcloud03.openknowit.com": null,
+      "undercloud01.openknowit.com": null,
+      "undercloud02.openknowit.com": null,
+      "undercloud03.openknowit.com": null
+    }
+  },
+  "_meta": {
+    "hostvars": {
+      "overcloud01.openknowit.com": {
+        "ip_address": "",
+        "guest_os": ""
+      },
+      "overcloud02.openknowit.com": {
+        "ip_address": "",
+        "guest_os": ""
+      },
+      "overcloud03.openknowit.com": {
+        "ip_address": "",
+        "guest_os": ""
+      },
+      "undercloud01.openknowit.com": {
+        "ip_address": "",
+        "guest_os": ""
+      },
+      "undercloud02.openknowit.com": {
+        "ip_address": "",
+        "guest_os": ""
+      },
+      "undercloud03.openknowit.com": {
+        "ip_address": "",
+        "guest_os": ""
+      }
+    }
+  }
+}
