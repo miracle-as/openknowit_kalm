@@ -155,7 +155,7 @@ def addtagtovm(vmname, tag, env):
                 
 def addvmwaretags(servername, details, env):
     prettyllog("manage", "netbox", "tag", "new", "000", "Adding tags to vm %s" % servername)
-    currenttags = get_virtual_server_tags(servername, env)
+    currenttags = get_virtual_server_tags(servername)
     #remove all tags starting with vmware_
     alltags = get_all_tags(env)
 
@@ -169,7 +169,7 @@ def addvmwaretags(servername, details, env):
     currenttags.append(alltags[toolStatus])
     prettyllog("manage", "netbox", "tag", "new", "000", "Adding tag %s to vm %s" % (toolStatus, servername))
     addtagtovm(servername, toolStatus, env)
-    
+
     print("--------------------------------------------")
 
 
