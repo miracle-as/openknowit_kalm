@@ -34,6 +34,7 @@ def get_virtual_server_id(servername, env):
                    'Content-Type': 'application/json'
                 }
         r = requests.get(url, headers=headers, verify=env['KALM_NETBOX_SSL'])
+        pprint.pprint(r.content)
         if r.status_code == 200:
                 data = r.json()
                 if data['count'] == 1:
