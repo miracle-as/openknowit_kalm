@@ -14,9 +14,26 @@ from .clusters import get_cluster_id, get_clusters
 from .redis import refresh_netbox_from_redis
 from .subprojects import update_subprojects
 
+print("Starting netbox")    
+print("-------------------------------------------------------")
+redishost=os.getenv("KALM_REDIS_HOST")
+if redishost is None:
+    redishost="localhost"
 
+    
+redisport=os.getenv("KALM_REDIS_PORT")
+if redisport is None:
+    redisport="6379"
 
-r = redis.Redis(host='localhost', port=6379, db=0)
+redisdb=os.getenv("KALM_REDIS_DB")
+if redisdb is None:
+    redisdb="0"
+print("Using redis host: %s" % redishost)
+print("Using redis port: %s" % redisport)
+print("Using redis db: %s" % redisdb)
+
+print("-------------------------------------------------------")
+r = redis.Redis(host=redishost, port=redisport, db=redisdb)
 data = {}
 
 # MAIN

@@ -50,7 +50,7 @@ def connect(env):
         else:
             prettyllog("vsphere", "init", "Connect to vcenter", "start", "000" , "Connecting with ssl verify", severity="INFO")
             try:
-                service_instance = SmartConnect(host=myhost,
+                service_instance = SmartConnect(host=env['KALM_VMWARE_HOST'],
                                             user=env['KALM_VMWARE_USERNAME'],
                                             pwd=env['KALM_VMWARE_PASSWORD'])
             except: 
