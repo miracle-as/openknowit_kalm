@@ -4,7 +4,7 @@ resource "netbox_site" "demosites" {
   facility  = "Data center"
   latitude  = "50.4779"   # Latitude of Falkenstein, Germany
   longitude = "12.3714"   # Longitude of Falkenstein, Germany
-  status    = "Active"
+  status    = "active"
   timezone  = "Europe/Berlin"  # Timezone for Falkenstein, Germany
 }
 
