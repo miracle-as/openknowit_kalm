@@ -7,7 +7,7 @@ resource "netbox_cluster" "openstack" {
 resource "netbox_cluster" "vmwareclusters" {
   cluster_type_id  = netbox_cluster_type.vmware.id
   name             = "vmwarecluster01"
-  cluster_group_id = netbox_cluster_group.vmwarelusters.id
+  cluster_group_id = netbox_cluster_group.vmwareclusters.id
 }
 
 resource "netbox_cluster" "linuxclusters" {
