@@ -272,8 +272,17 @@ def refresh_netbox_orgs(env):
             'stastus': 'Active'}]}
 
     """
+    pprint.pprint(netboxdata)
+    try: 
+        myorg = netboxdata['organization']
+    except:
+        prettyllog("netbox", "get", "organization", "error", "000" , "unable to get organization", severity="ERROR")
+        return False
+   
+
     
-    create_tenant_group(netboxdata['organization'], env)
+    create_tenant_group(myorg , env)
+
     create_tenant(netboxdata['name'], netboxdata['organization'], env)
     for site in netboxdata['sites']:
         create_region(site['region'], env)
