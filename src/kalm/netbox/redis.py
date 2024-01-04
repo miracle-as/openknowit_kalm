@@ -4,6 +4,7 @@ import pprint
 import time
 from ..common import prettyllog
 from .netbox_server import create_virtual_server
+from .netbox import create_tag
 from .common import get_env
 import os
 
@@ -40,6 +41,17 @@ def refresh_netbox_from_redis(myenv, netboxdata):
               decodeddetailvalue = detailvalue.decode("utf-8").replace("'", '"')
               knownlinuxservers[server] = detailvalue.decode("utf-8")
               detailjson = json.loads(decodeddetailvalue)   
+              toolstatus = detailjson['toolstatus']
+              try: 
+                create_tag(toolstatus, myenv, netboxdata)
+              except:
+                pass
+              
+              if toolstatus == "toolsOk":
+                prettyllog("netbox", "get", "server", key, "000" , "Server is OK", severity="INFO")
+              else:
+                prettyllog("netbox", "get", "server", key, "000" , "Server is not OK %s " % toolstatus, severity="ERROR")
+
               print("-------------------------------------------------------")
               pprint.pprint(detailjson)
               print("-------------------------------------------------------")
@@ -50,6 +62,6 @@ def refresh_netbox_from_redis(myenv, netboxdata):
                 orphanservers.append(server)
     print("orphanservers: %s" % len(orphanservers))
     print("knownservers:  %s" % len(knownservers))
-    return True
+    return True     
 
 
