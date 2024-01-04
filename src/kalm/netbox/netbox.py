@@ -96,6 +96,7 @@ def addtagtovm(vmname, tag):
         "Accept": "application/json"
     }
     response = requests.get(url, headers=headers, verify=False)
+    pprint.pprint(url)
     pprint.pprint(response.content)
     if response.status_code == 200:
         data = response.json()
