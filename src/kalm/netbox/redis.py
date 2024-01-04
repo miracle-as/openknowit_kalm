@@ -41,7 +41,11 @@ def refresh_netbox_from_redis(myenv, netboxdata):
               decodeddetailvalue = detailvalue.decode("utf-8").replace("'", '"')
               knownlinuxservers[server] = detailvalue.decode("utf-8")
               detailjson = json.loads(decodeddetailvalue)   
-              toolstatus = detailjson['toolstatus']
+              try:
+                toolstatus = detailjson['toolstatus']
+              except:
+                toolstatus = "unknown"
+                
               try: 
                 create_tag(toolstatus, myenv, netboxdata)
               except:
