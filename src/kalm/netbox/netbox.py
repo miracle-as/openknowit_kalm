@@ -129,7 +129,7 @@ def removetagsfromvm(vmname, prefix, env):
             response = requests.post(url, headers=headers,  verify=False)
     
 def addtagtovm(vmname, tagids, env):
-    prettyllog("manage", "netbox", "tag", "new", "000", "Adding tag %s to vm %s" % (tag, vmname))
+    prettyllog("manage", "netbox", "tag", "new", "000", "Adding tags to vm %s" % (vmname))
 
     url = fix_url("/virtualization/virtual-machines/?name=%s" % vmname )
     headers = {
