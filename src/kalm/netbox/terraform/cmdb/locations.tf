@@ -1,7 +1,6 @@
-resource "netbox_location" "falkenstein" {
-  count = 6
-  name        = "falkenstein"
-  description = "my description"
-  site_id     = netbox_site.fsn1[count.index].id
+resource "netbox_location" "demolocation" {
+  name        = "demolocation"
+  description = "my demolocation"
+  site_id     = netbox_site.demosite.id
   tenant_id   = netbox_tenant.knowit.id
 }
