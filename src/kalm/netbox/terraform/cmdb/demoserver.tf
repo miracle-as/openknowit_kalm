@@ -1,6 +1,6 @@
 resource "netbox_virtual_machine" "demoserver" {
   count = 3
-  cluster_id   = netbox_cluster.democlustertype.id
+  cluster_id   = netbox_cluster.democluster.id
   name         = "democluster${format("%02d", count.index + 1)}"
   tags         = [ "os_redhat",  "role_backup" , "role_awx", "role_zabbix"]
   disk_size_gb = 100
