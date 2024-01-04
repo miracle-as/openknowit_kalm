@@ -177,9 +177,21 @@ def addvmwaretags(servername, details, env):
     for tag in currenttags:
         if alltags[tag].startswith("vmware_"):
             currenttags.remove(tag)
-    pprint.pprint(currenttags)
     prefix = "wmware_"
     toolStatus ="%s%s" % (prefix, details['toolsStatus'])
+    create_tag(toolStatus)
+    alltags = get_all_tags(env)
+    currenttags.append(alltags[toolStatus])
+    pprint.pprint(currenttags)
+    print("--------------------------------------------")
+
+
+    
+
+
+
+
+
 
     
 
