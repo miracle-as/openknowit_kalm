@@ -110,7 +110,10 @@ def addtagtovm(vmname, tag):
                 "name": tag
             }
             response = requests.post(url, headers=headers, json=data, verify=False)
-            pprint.pprint(response.content)
+            try:
+                pprint.pprint(response.json())
+            except:
+                pass
 
             if response.status_code == 201:
                 return True
