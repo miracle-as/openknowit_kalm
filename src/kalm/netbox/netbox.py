@@ -33,7 +33,7 @@ def create_random_color():
 
 def create_tag(tag_name):
     prettyllog("manage", "netbox", "tag", "new", "000", "Creating tag")
-    url = fix_url("/extras/tags" )
+    url = fix_url("/extras/tags/" )
     headers = {
         "Authorization": f"Token {NETBOX_TOKEN}",
         "Accept": "application/json"
@@ -43,7 +43,7 @@ def create_tag(tag_name):
         "slug": tag_name.lower(),
         "color": create_random_color()
     }
-    response = requests.post(url, json=data, headers=headers, verify=False)
+    response = requests.post(url, headers=headers, json=data, verify=False)
     print(response.content)
     if response.status_code == 201:
         return True
