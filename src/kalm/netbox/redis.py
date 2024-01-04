@@ -4,7 +4,8 @@ import pprint
 import time
 from ..common import prettyllog
 from .netbox_server import create_virtual_server
-from .netbox import create_tag
+from .netbox import create_tag, addtagtovm, removetagsfromvm
+
 from .common import get_env
 import os
 
@@ -42,14 +43,18 @@ def refresh_netbox_from_redis(myenv, netboxdata):
               knownlinuxservers[server] = detailvalue.decode("utf-8")
               detailjson = json.loads(decodeddetailvalue)   
               try:
-                toolstatus = detailjson['toolsStatus']
+                toolstatus = "vmwaretoolsstatus_%s " % detailjson['toolsStatus']
               except:
-                toolstatus = "unknown"
+                toolstatus = "vmwaretoolsstatus_unknown"
               prettyllog("netbox", "get", "server", key, "000" , "toolstatus is %s "  % toolstatus, severity="INFO")
               create_tag(toolstatus)
               
               if toolstatus == "toolsOk":
                 prettyllog("netbox", "get", "server", key, "000" , "Server is OK", severity="INFO")
+                prefix = "vmwaretoolsstatus_"
+                removetagsfromvm(server, prefix)
+                addtagtovm(server, toolstatus)
+
               else:
                 prettyllog("netbox", "get", "server", key, "000" , "Server is not OK %s " % toolstatus, severity="ERROR")
 

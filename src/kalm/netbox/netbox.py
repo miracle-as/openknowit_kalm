@@ -44,9 +44,77 @@ def create_tag(tag_name):
         "color": create_random_color()
     }
     response = requests.post(url, headers=headers, json=data, verify=False)
-    print(response.content)
     if response.status_code == 201:
         return True
+    else:
+        return False
+def removetagsfromvm(vmname, prefix):
+    prettyllog("manage", "netbox", "tag", "new", "000", "Removing tags from vm %s" % vmname)
+    url = fix_url("/virtualization/virtual-machines/?name=%s" % vmname )
+    headers = {
+        "Authorization": f"Token {NETBOX_TOKEN}",
+        "Accept": "application/json"
+    }
+    response = requests.get(url, headers=headers, verify=False)
+    if response.status_code == 200:
+        data = response.json()
+        if len(data['results']) == 1:
+            vmid = data['results'][0]['id']
+            url = fix_url("/virtualization/virtual-machines/%s/tags/" % vmid )
+            headers = {
+                "Authorization": f"Token {NETBOX_TOKEN}",
+                "Accept": "application/json"
+            }
+            response = requests.get(url, headers=headers, verify=False)
+            if response.status_code == 200:
+                data = response.json()
+                for tag in data['results']:
+                    if tag['name'].startswith(prefix):
+                        url = fix_url("/extras/tags/%s" % tag['id'])
+                        headers = {
+                            "Authorization": f"Token {NETBOX_TOKEN}",
+                            "Accept": "application/json"
+                        }
+                        response = requests.delete(url, headers=headers, verify=False)
+                        if response.status_code == 204:
+                            return True
+                        else:
+                            return False
+                return True
+            else:
+                return False
+        else:
+            return False
+    else:
+        return False
+    
+def addtagtovm(vmname, tag):
+    prettyllog("manage", "netbox", "tag", "new", "000", "Adding tag %s to vm %s" % (tag, vmname))
+    url = fix_url("/virtualization/virtual-machines/?name=%s" % vmname )
+    headers = {
+        "Authorization": f"Token {NETBOX_TOKEN}",
+        "Accept": "application/json"
+    }
+    response = requests.get(url, headers=headers, verify=False)
+    if response.status_code == 200:
+        data = response.json()
+        if len(data['results']) == 1:
+            vmid = data['results'][0]['id']
+            url = fix_url("/virtualization/virtual-machines/%s/tags/" % vmid )
+            headers = {
+                "Authorization": f"Token {NETBOX_TOKEN}",
+                "Accept": "application/json"
+            }
+            data = {
+                "name": tag
+            }
+            response = requests.post(url, headers=headers, json=data, verify=False)
+            if response.status_code == 201:
+                return True
+            else:
+                return False
+        else:
+            return False
     else:
         return False
 
