@@ -34,8 +34,8 @@ def get_virtual_server_id(servername, env):
                    'Content-Type': 'application/json'
                 }
         r = requests.get(url, headers=headers, verify=env['KALM_NETBOX_SSL'])
-        pprint.pprint(r.status_code)
         if r.status_code == 200:
+                pprint.pprint(r.json())
                 data = r.json()
                 if data['count'] == 1:
                         prettyllog("netbox", "get", "virtual server id", servername, r.status_code , "virtual server id found", severity="INFO")
