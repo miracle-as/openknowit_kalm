@@ -96,11 +96,10 @@ def addtagtovm(vmname, tag):
         "Accept": "application/json"
     }
     response = requests.get(url, headers=headers, verify=False)
-    pprint.pprint(url)
-    pprint.pprint(response.content)
     if response.status_code == 200:
         data = response.json()
         if len(data['results']) == 1:
+            prettyllog("manage", "netbox", "tag", "new", "000", "Found vm %s" % vmname)
             vmid = data['results'][0]['id']
             url = fix_url("/virtualization/virtual-machines/%s/tags/" % vmid )
             headers = {
@@ -111,6 +110,8 @@ def addtagtovm(vmname, tag):
                 "name": tag
             }
             response = requests.post(url, headers=headers, json=data, verify=False)
+            pprint.pprint(response.content)
+
             if response.status_code == 201:
                 return True
             else:
