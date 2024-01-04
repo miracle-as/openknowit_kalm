@@ -1,4 +1,4 @@
-resource "netbox_site" "demosite" {
+resource "netbox_site" "demosites" {
   count = 6
   name      = "demosite${format("%01d", count.index + 1)}"
   facility  = "Data center"
