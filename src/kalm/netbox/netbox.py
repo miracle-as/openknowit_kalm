@@ -100,6 +100,7 @@ def create_tag(tag_name):
         "color": create_random_color()
     }
     response = requests.post(url, headers=headers, json=data, verify=False)
+    pprint.pprint(response.content)
     if response.status_code == 201:
         return True
     else:
