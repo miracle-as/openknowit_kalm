@@ -99,9 +99,7 @@ def create_tag(tag_name):
         "slug": tag_name.lower(),
         "color": "896818"
     }
-    pprint.pprint(data)
     response = requests.post(url, headers=headers, json=data, verify=False)
-    pprint.pprint(response.content)
     if response.status_code == 201:
         return True
     else:
@@ -184,7 +182,8 @@ def addvmwaretags(servername, details, env):
     print(create_tag(toolStatus))
     alltags = get_all_tags(env)
     currenttags.append(alltags[toolStatus])
-    pprint.pprint(currenttags)
+    prettyllog("manage", "netbox", "tag", "new", "000", "Adding tag %s to vm %s" % (toolStatus, servername))
+
     print("--------------------------------------------")
 
 
