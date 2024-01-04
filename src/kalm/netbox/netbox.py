@@ -39,6 +39,7 @@ def get_virtual_server_id(servername, env):
                 data = r.json()
                 if data['count'] == 1:
                         prettyllog("netbox", "get", "virtual server id", servername, r.status_code , "virtual server id found", severity="INFO")
+                        pprint.pprint(data['results'])
                         return data['results'][0]['id']
                 else:
                         prettyllog("netbox", "get", "virtual server id", servername, r.status_code , "unable to get virtual server id", severity="ERROR")
