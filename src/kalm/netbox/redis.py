@@ -42,7 +42,7 @@ def refresh_netbox_from_redis(myenv, netboxdata):
               knownlinuxservers[server] = detailvalue.decode("utf-8")
               detailjson = json.loads(decodeddetailvalue)   
               try:
-                toolstatus = detailjson['toolstatus']
+                toolstatus = detailjson['toolsStatus']
               except:
                 toolstatus = "unknown"
               prettyllog("netbox", "get", "server", key, "000" , "toolstatus is %s "  % toolstatus, severity="INFO")
