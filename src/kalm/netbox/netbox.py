@@ -29,13 +29,12 @@ Host {hostname}
 def get_virtual_server_id(servername, env):
         prettyllog("netbox", "get", "virtual server id", servername, "000" , "getting virtual server id", severity="INFO")
         url = env['KALM_NETBOX_URL'] + "/api/virtualization/virtual-machines/?name=" + servername
-        pprint.pprint(url)
         headers = {'Authorization': 'Token ' + env['KALM_NETBOX_TOKEN'],
                    'Accept': 'application/json',
                    'Content-Type': 'application/json'
                 }
         r = requests.get(url, headers=headers, verify=env['KALM_NETBOX_SSL'])
-        pprint.pprint(r.content)
+        pprint.pprint(r.status_code)
         if r.status_code == 200:
                 data = r.json()
                 if data['count'] == 1:
