@@ -25,6 +25,24 @@ Host {hostname}
     {proxy_jump}
 """
 
+def getvmid(vmname, env):
+    prettyllog("netbox", "get", "virtual server id", vmname, "000" , "getting virtual server id", severity="INFO")
+    url = env['KALM_NETBOX_URL'] + "/api/virtualization/virtual-machines/?name=" + vmname
+    headers = {'Authorization': 'Token ' + env['KALM_NETBOX_TOKEN'],
+               'Accept': 'application/json',
+               'Content-Type': 'application/json'
+            }
+    r = requests.get(url, headers=headers, verify=env['KALM_NETBOX_SSL'])
+    if r.status_code == 200:
+        data = r.json()
+        if data['count'] == 1:
+            prettyllog("netbox", "get", "virtual server id", vmname, r.status_code , "virtual server id found", severity="INFO")
+            return data['results'][0]['id']
+        else:
+            prettyllog("netbox", "get", "virtual server id", vmname, r.status_code , "unable to get virtual server id", severity="ERROR")
+        return False
+    
+
 
 def add_tag_to_vm(vm_name, tag_name, env ):
     alltags = get_all_tags(env)
