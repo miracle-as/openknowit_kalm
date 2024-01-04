@@ -24,6 +24,16 @@ Host {hostname}
     Port 22
     {proxy_jump}
 """
+
+
+def add_tag_to_vm(vm_name, tag_name, env ):
+    alltags = get_all_tags(env)
+    pprint.pprint(alltags)
+
+
+
+
+
 def get_virtual_server_tags(serverid, env):
     prettyllog("netbox", "get", "virtual server tags", serverid, "000" , "getting virtual server tags", severity="INFO")
     url = env['KALM_NETBOX_URL'] + "/api/virtualization/virtual-machines/" + str(serverid)
@@ -128,37 +138,16 @@ def removetagsfromvm(vmname, prefix, env):
                 }
             response = requests.post(url, headers=headers,  verify=False)
     
-def addtagtovm(vmname, tagids, env):
+def addtagtovm(vmname, tag, env):
     prettyllog("manage", "netbox", "tag", "new", "000", "Adding tags to vm %s" % (vmname))
+    myserverid = get_virtual_machine_id(vmname, env)
+    if myserverid == None:
+        prettyllog("manage", "netbox", "tag", "new", "000", "Unable to find server %s" % (vmname))
+        return False
+    mytags = get_virtual_server_tags(myserverid, env)
+    prettyllog("manage", "netbox", "tag", "new", "000", "Current tags %s" % (mytags))
+    
 
-    url = fix_url("/virtualization/virtual-machines/?name=%s" % vmname )
-    headers = {
-        "Authorization": f"Token {NETBOX_TOKEN}",
-        "Accept": "application/json"
-    }
-    response = requests.get(url, headers=headers, verify=False)
-    alltags = get_all_tags(env)
-    if response.status_code == 200:
-        data = response.json()
-        if len(data['results']) == 1:
-            prettyllog("manage", "netbox", "tag", "new", "000", "Found vm %s" % vmname)
-            vmid = data['results'][0]['id']
-            url = fix_url("/virtualization/virtual-machines/%s/tags/" % vmid )
-            data = {
-                "tags":  tagids
-            }
-            headers = {
-                "Authorization": f"Token {NETBOX_TOKEN}",
-                "Accept": "application/json"
-                 }
-            response = requests.post(url, headers=headers, json=data, verify=False)
-            pprint.pprint(response.content)
-            if response.status_code == 200:
-                prettyllog("manage", "netbox", "tag", "new", "000", "add Tag to vm %s" % (vmname))
-                return True
-            else:
-                prettyllog("manage", "netbox", "tag", "new", "000", "Unable to add tag to vm %s" % ( vmname))
-                return False
             
 
 
@@ -179,7 +168,7 @@ def addvmwaretags(servername, details, env):
     alltags = get_all_tags(env)
     currenttags.append(alltags[toolStatus])
     prettyllog("manage", "netbox", "tag", "new", "000", "Adding tag %s to vm %s" % (toolStatus, servername))
-    addtagtovm(servername, currenttags, env)
+    addtagtovm(servername, tag, env)
 
 
     print("--------------------------------------------")
