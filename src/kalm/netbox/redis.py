@@ -48,15 +48,9 @@ def refresh_netbox_from_redis(myenv, netboxdata):
                 toolstatus = "vmwaretoolsstatus_unknown"
               prettyllog("netbox", "get", "server", key, "000" , "toolstatus is %s "  % toolstatus, severity="INFO")
               create_tag(toolstatus)
-              
-              if toolstatus == "toolsOk":
-                prettyllog("netbox", "get", "server", key, "000" , "Server is OK", severity="INFO")
-                prefix = "vmwaretoolsstatus_"
-                removetagsfromvm(server, prefix)
-                addtagtovm(server, toolstatus)
-
-              else:
-                prettyllog("netbox", "get", "server", key, "000" , "Server is not OK %s " % toolstatus, severity="ERROR")
+              prefix = "vmwaretoolsstatus_"
+              removetagsfromvm(server, prefix)
+              addtagtovm(server, toolstatus)
 
               print("-------------------------------------------------------")
               pprint.pprint(detailjson)
