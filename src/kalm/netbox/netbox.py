@@ -97,7 +97,7 @@ def create_tag(tag_name):
     data = {
         "name": tag_name,
         "slug": tag_name.lower(),
-        "color": create_random_color()
+        "color": "896818"
     }
     pprint.pprint(data)
     response = requests.post(url, headers=headers, json=data, verify=False)
