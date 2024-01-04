@@ -140,12 +140,13 @@ def removetagsfromvm(vmname, prefix, env):
     
 def addtagtovm(vmname, tag, env):
     prettyllog("manage", "netbox", "tag", "new", "000", "Adding tags to vm %s" % (vmname))
-    myserverid = get_virtual_machine_id(vmname)
+    myserverid = get_virtual_machine_id(vmname, env)
     if myserverid == None:
         prettyllog("manage", "netbox", "tag", "new", "000", "Unable to find server %s" % (vmname))
         return False
     mytags = get_virtual_server_tags(myserverid, env)
     prettyllog("manage", "netbox", "tag", "new", "000", "Current tags %s" % (mytags))
+
 
 
             
@@ -305,8 +306,8 @@ def get_manufacturer_id(manufacturer_name):
     except:
         return None
         
-def get_virtual_machine_id(vm_name):
-    vms = get_virtual_machines()
+def get_virtual_machine_id(vm_name, env):
+    vms = get_virtual_machines(env)
     try:
         return vms[vm_name]
     except:
@@ -1599,14 +1600,11 @@ def get_virtual_machine(id):
     vm = response.json()
     return vm
 
-def get_virtual_machines():
+def get_virtual_machines(env):
     returnvms = {}
-    headers = {
-        "Authorization": f"Token {NETBOX_TOKEN}",
-        "Accept": "application/json"
-    }
+    headers = {'Authorization': 'Token ' + env['KALM_NETBOX_TOKEN']}
     url = fix_url("/virtualization/virtual-machines/")
-    response = requests.get(url, headers=headers)
+    response = requests.get(url, headers=headers, verify=env['KALM_NETBOX_SSL'])
     vms = response.json()
     for vm in vms["results"]:
         try:
