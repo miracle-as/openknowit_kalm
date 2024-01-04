@@ -24,6 +24,62 @@ Host {hostname}
     Port 22
     {proxy_jump}
 """
+def get_virtual_server_tags(serverid, env):
+    prettyllog("netbox", "get", "virtual server tags", serverid, "000" , "getting virtual server tags", severity="INFO")
+    url = env['KALM_NETBOX_URL'] + "/api/virtualization/virtual-machines/" + str(serverid)
+    headers = {'Authorization': 'Token ' + env['KALM_NETBOX_TOKEN'],
+               'Accept': 'application/json',
+               'Content-Type': 'application/json'
+            }
+    mytags = []
+    r = requests.get(url, headers=headers, verify=env['KALM_NETBOX_SSL'])
+    if r.status_code == 200:
+        data = r.json()
+        for tag in data['tags']:
+            mytags.append(tag['name'])
+        prettyllog("netbox", "get", "virtual server tags", serverid, r.status_code , "virtual server tags found", severity="INFO")
+        return mytags
+    else:
+        prettyllog("netbox", "get", "virtual server tags", serverid, r.status_code , "unable to get virtual server tags", severity="ERROR")
+        return mytags   
+
+
+def get_all_tags(env):
+    prettyllog("netbox", "get", "all tags", "000", "000" , "getting all tags", severity="INFO")
+    url = env['KALM_NETBOX_URL'] + "/api/extras/tags/"
+    headers = {'Authorization': 'Token ' + env['KALM_NETBOX_TOKEN'],
+               'Accept': 'application/json',
+               'Content-Type': 'application/json'
+            }
+    r = requests.get(url, headers=headers, verify=env['KALM_NETBOX_SSL'])
+    if r.status_code == 200:
+        data = r.json()
+        alltags = {}
+        for tag in data['results']:
+            alltags[tag['name']] = tag['id']
+        prettyllog("netbox", "get", "all tags", "000", r.status_code , "all tags found", severity="INFO")
+        return alltags
+    else:
+        prettyllog("netbox", "get", "all tags", "000", r.status_code , "unable to get all tags", severity="ERROR")
+        return False
+    
+def get_prefixed_tags(serverid, prefix , env):
+    servertags = get_virtual_server_tags(serverid, env)
+    prefixedtags = []
+    for tag in servertags:
+        if tag.startswith(prefix):
+            prefixedtags.append(tag)
+    return prefixedtags
+
+def get_notprefixed_tags(serverid, prefix , env):
+    servertags = get_virtual_server_tags(serverid, env)
+    prefixedtags = []
+    for tag in servertags:
+        if not tag.startswith(prefix):
+            prefixedtags.append(tag)
+    return prefixedtags
+
+
 
 
 def create_random_color():
@@ -48,7 +104,8 @@ def create_tag(tag_name):
         return True
     else:
         return False
-def removetagsfromvm(vmname, prefix):
+    
+def removetagsfromvm(vmname, prefix, env):
     prettyllog("manage", "netbox", "tag", "new", "000", "Removing tags from vm %s" % vmname)
     url = fix_url("/virtualization/virtual-machines/?name=%s" % vmname )
     headers = {
@@ -60,69 +117,75 @@ def removetagsfromvm(vmname, prefix):
         data = response.json()
         if len(data['results']) == 1:
             vmid = data['results'][0]['id']
+            keeptags = get_notprefixed_tags(vmid, prefix, env)
             url = fix_url("/virtualization/virtual-machines/%s/tags/" % vmid )
+            data = {
+                "tags":  keeptags
+            }
             headers = {
                 "Authorization": f"Token {NETBOX_TOKEN}",
-                "Accept": "application/json"
-            }
-            response = requests.get(url, headers=headers, verify=False)
-            if response.status_code == 200:
-                data = response.json()
-                for tag in data['results']:
-                    if tag['name'].startswith(prefix):
-                        url = fix_url("/extras/tags/%s" % tag['id'])
-                        headers = {
-                            "Authorization": f"Token {NETBOX_TOKEN}",
-                            "Accept": "application/json"
-                        }
-                        response = requests.delete(url, headers=headers, verify=False)
-                        if response.status_code == 204:
-                            return True
-                        else:
-                            return False
-                return True
-            else:
-                return False
-        else:
-            return False
-    else:
-        return False
+                 "Accept": "application/json"
+                }
+            response = requests.post(url, headers=headers,  verify=False)
     
-def addtagtovm(vmname, tag):
+def addtagtovm(vmname, tag, env):
     prettyllog("manage", "netbox", "tag", "new", "000", "Adding tag %s to vm %s" % (tag, vmname))
+
     url = fix_url("/virtualization/virtual-machines/?name=%s" % vmname )
     headers = {
         "Authorization": f"Token {NETBOX_TOKEN}",
         "Accept": "application/json"
     }
     response = requests.get(url, headers=headers, verify=False)
+    alltags = get_all_tags(env)
     if response.status_code == 200:
         data = response.json()
         if len(data['results']) == 1:
             prettyllog("manage", "netbox", "tag", "new", "000", "Found vm %s" % vmname)
             vmid = data['results'][0]['id']
-            url = fix_url("/virtualization/virtual-machines/%s/tags/" % vmid )
-            headers = {
-                "Authorization": f"Token {NETBOX_TOKEN}",
-                "Accept": "application/json"
-            }
-            data = {
-                "name": tag
-            }
-            response = requests.post(url, headers=headers, json=data, verify=False)
-            try:
-                pprint.pprint(response.json())
-            except:
-                pass
+            mytags = get_virtual_server_tags(vmid, env)
+            tagid = alltags[tag]
+            if tagid == None:
+                prettyllog("manage", "netbox", "tag", "new", "000", "Tag %s does not exist" % tag)
+                create_tag(tag)
+                alltags = get_all_tags(env)
+                tagid = alltags[tag]
+            if tagid != None:
+                mytags.append(tagid)
+                url = fix_url("/virtualization/virtual-machines/%s/tags/" % vmid )
+                data = {
+                    "tags":  mytags
+                }
+                headers = {
+                    "Authorization": f"Token {NETBOX_TOKEN}",
+                    "Accept": "application/json"
+                }
+                response = requests.post(url, headers=headers, json=data, verify=False)
+                if response.status_code == 200:
+                    prettyllog("manage", "netbox", "tag", "new", "000", "Tag %s added to vm %s" % (tag, vmname))
+                    return True
+                else:
+                    prettyllog("manage", "netbox", "tag", "new", "000", "Unable to add tag %s to vm %s" % (tag, vmname))
+                    return False
+                
+def addvmwaretags(servername, details, env):
+    prettyllog("manage", "netbox", "tag", "new", "000", "Adding tags to vm %s" % servername)
+    currenttags = get_virtual_server_tags(servername, env)
+    #remove all tags starting with vmware_
+    alltags = get_all_tags(env)
 
-            if response.status_code == 201:
-                return True
-            else:
-                return False
-        else:
-            return False
-    else:
-        return False
+    for tag in currenttags:
+        if alltags[tag].startswith("vmware_"):
+            currenttags.remove(tag)
+    pprint.pprint(currenttags)
+    prefix = "wmware_"
+    toolStatus ="%s%s" % (prefix, details['toolsStatus'])
+
+    
+
+
+
+           
 
 
 def get_netbox_inventory_from_tag(tag):
