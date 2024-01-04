@@ -152,6 +152,7 @@ def addtagtovm(vmname, tagids, env):
                 "Accept": "application/json"
                  }
             response = requests.post(url, headers=headers, json=data, verify=False)
+            pprint.pprint(response.content)
             if response.status_code == 200:
                 prettyllog("manage", "netbox", "tag", "new", "000", "add Tag to vm %s" % (vmname))
                 return True
