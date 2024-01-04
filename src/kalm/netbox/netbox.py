@@ -99,6 +99,7 @@ def create_tag(tag_name):
         "slug": tag_name.lower(),
         "color": create_random_color()
     }
+    pprint.pprint(data)
     response = requests.post(url, headers=headers, json=data, verify=False)
     pprint.pprint(response.content)
     if response.status_code == 201:
