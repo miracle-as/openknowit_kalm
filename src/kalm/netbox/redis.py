@@ -42,22 +42,6 @@ def refresh_netbox_from_redis(myenv, netboxdata):
               decodeddetailvalue = detailvalue.decode("utf-8").replace("'", '"')
               knownlinuxservers[server] = detailvalue.decode("utf-8")
               detailjson = json.loads(decodeddetailvalue)   
-              try:
-                toolstatus = "vmwaretoolsstatus_%s " % detailjson['toolsStatus']
-              except:
-                toolstatus = "vmwaretoolsstatus_unknown"
-              prettyllog("netbox", "get", "server", key, "000" , "toolstatus is %s "  % toolstatus, severity="INFO")
-              create_tag(toolstatus)
-              prefix = "vmwaretoolsstatus_"
-              prettyllog("netbox", "get", "server", key, "000" , "removing toolstatus tags", severity="INFO")
-              removetagsfromvm(server, prefix)
-              prettyllog("netbox", "get", "server", key, "000" , "adding toolstatus tags", severity="INFO")
-              addtagtovm(server, toolstatus)
-
-              print("-------------------------------------------------------")
-              pprint.pprint(detailjson)
-              print("-------------------------------------------------------")
-
               create_virtual_server(detailjson, myenv, netboxdata)
             else:
                 prettyllog("netbox", "get", "server", key, "000" , "No details found", severity="ERROR")

@@ -319,6 +319,76 @@ def assign_ip_address(ipaddress, serverdetails, env, netboxdata):
             return True
         prettyllog("netbox", "assign", "ip address", ipaddress, r.status_code , "unable to assign ip address", severity="ERROR")
         return False
+    
+def set_vmware_tags(serverdetails, env):
+    prettyllog("netbox", "set", "vmware tag", serverdetails['hostName'], "000" , "setting vmware tag", severity="INFO")
+    server_id = get_virtual_server_id(serverdetails['hostName'], env)
+    if not server_id:
+        prettyllog("netbox", "set", "vmware tag", serverdetails['hostName'], "000" , "server not found", severity="ERROR")
+        return False
+    url = env['KALM_NETBOX_URL'] + "/api/virtualization/virtual-machines/" + str(server_id) + "/"
+    headers = {'Authorization': 'Token ' + env['KALM_NETBOX_TOKEN'],
+               'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+    mytags = []
+    prefix = "vmware-toolstatus-"
+    try:
+        toolStatus = "%s%s" % (prefix, serverdetails['toolsStatus'])
+    except:
+        toolStatus = "%s%s" % (prefix, "unknown")
+
+    try:
+        toolsRunningStatus = "%s%s" % (prefix, serverdetails['toolsRunningStatus'])
+    except:
+        toolsRunningStatus = "%s%s" % (prefix, "unknown")
+
+    try:
+        hwVersion  = "%s%s" % (prefix, serverdetails['hwVersion'])
+    except:
+        hwVersion = "%s%s" % (prefix, "unknown")
+    
+    try:
+        guestId = "%s%s" % (prefix, serverdetails['guestId'])
+    except:
+        guestId = "%s%s" % (prefix, "unknown")
+
+    try:
+        overallStatus = "%s%s" % (prefix, serverdetails['overallStatus'])
+    except:
+        overallStatus = "%s%s" % (prefix, "unknown")
+    
+    try:
+        toolsVersionStatus = "%s%s" % (prefix, serverdetails['toolsVersionStatus'])
+    except:
+        toolsVersionStatus = "%s%s" % (prefix, "unknown")
+
+    mytags.append(toolStatus)
+    mytags.append(toolsRunningStatus)
+    mytags.append(hwVersion)
+    mytags.append(guestId)
+    mytags.append(overallStatus)
+    mytags.append(toolsVersionStatus)
+    
+    
+
+
+    data = {
+        "tags": mytags
+        }
+    r = requests.patch(url, headers=headers, json=data, verify=env['KALM_NETBOX_SSL'])
+    if r.status_code == 201:
+        data = r.json()
+        prettyllog("netbox", "set", "vmware tag", serverdetails['hostName'], r.status_code , "vmware tag set", severity="CHANGE")
+        return data['id']
+    else:
+        if r.status_code == 400:
+            prettyllog("netbox", "set", "vmware tag", serverdetails['hostName'], r.status_code , "vmware tag exists", severity="INFO")
+            return True
+        prettyllog("netbox", "set", "vmware tag", serverdetails['hostName'], r.status_code , "unable to set vmware tag", severity="ERROR")
+        return False
+    
+
 
 def create_virtual_server(serverdetails, env, netboxdata):
     if not serverdetails['hostName']:
@@ -363,7 +433,6 @@ def create_virtual_server(serverdetails, env, netboxdata):
 
 
 
-    pprint.pprint(serverdetails)
     guestFullName = serverdetails['guestFullName']
     guestId = serverdetails['guestId']
     hostName = serverdetails['hostName']
@@ -399,9 +468,6 @@ def create_virtual_server(serverdetails, env, netboxdata):
         "description": "Created by KALM",
         'memory': memory,
         'vcpus': numCpu,
-
-
-
         "site":  get_site_id("Aarhus Universitetshospital", env),
         "cluster": clusterid
     }
@@ -413,6 +479,7 @@ def create_virtual_server(serverdetails, env, netboxdata):
         create_interface(serverdetails, env, netboxdata)
         prettyllog("netbox", "create", "virtual server", serverdetails['hostName'], "000" , "assigning ip address", severity="INFO")
         assign_ip_address(serverdetails['ipAddress'], serverdetails, env, netboxdata)
+        set_vmware_tags(serverdetails, env)
         return data['id']
     else:
         if r.status_code == 400:
