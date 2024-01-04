@@ -40,7 +40,10 @@ def refresh_netbox_from_redis(myenv, netboxdata):
               decodeddetailvalue = detailvalue.decode("utf-8").replace("'", '"')
               knownlinuxservers[server] = detailvalue.decode("utf-8")
               detailjson = json.loads(decodeddetailvalue)   
+              print("-------------------------------------------------------")
               pprint.pprint(detailjson)
+              print("-------------------------------------------------------")
+
               create_virtual_server(detailjson, myenv, netboxdata)
             else:
                 prettyllog("netbox", "get", "server", key, "000" , "No details found", severity="ERROR")
