@@ -140,7 +140,7 @@ def removetagsfromvm(vmname, prefix, env):
     
 def addtagtovm(vmname, tag, env):
     prettyllog("manage", "netbox", "tag", "new", "000", "Adding tags to vm %s" % (vmname))
-    myserverid = get_virtual_machine_id(vmname, env)
+    myserverid = get_virtual_machine_id(vmname)
     if myserverid == None:
         prettyllog("manage", "netbox", "tag", "new", "000", "Unable to find server %s" % (vmname))
         return False
@@ -155,21 +155,12 @@ def addtagtovm(vmname, tag, env):
                 
 def addvmwaretags(servername, details, env):
     prettyllog("manage", "netbox", "tag", "new", "000", "Adding tags to vm %s" % servername)
-    currenttags = get_virtual_server_tags(servername)
-    #remove all tags starting with vmware_
-    alltags = get_all_tags(env)
-
-    for tag in currenttags:
-        if alltags[tag].startswith("vmware_"):
-            currenttags.remove(tag)
     prefix = "wmware_"
     toolStatus ="%s%s" % (prefix, details['toolsStatus'])
     print(create_tag(toolStatus))
     alltags = get_all_tags(env)
-    currenttags.append(alltags[toolStatus])
     prettyllog("manage", "netbox", "tag", "new", "000", "Adding tag %s to vm %s" % (toolStatus, servername))
     addtagtovm(servername, toolStatus, env)
-
     print("--------------------------------------------")
 
 
