@@ -4,7 +4,7 @@ import pprint
 import time
 from ..common import prettyllog
 from .netbox_server import create_virtual_server
-from .netbox import create_tag, addtagtovm, removetagsfromvm, addvmwaretags, getvmid
+from .netbox import create_tag, addtagtovm, removetagsfromvm, addvmwaretags,  get_virtual_server_id
 
 from .common import get_env
 import os
@@ -44,8 +44,12 @@ def refresh_netbox_from_redis(myenv, netboxdata):
               detailjson = json.loads(decodeddetailvalue)   
               create_virtual_server(detailjson, myenv, netboxdata)
               prettyllog("netbox", "get", "server", key, "000" , "add vmware tags", severity="INFO")
-              vmid = getvmid(server, myenv)
+              vmid = get_virtual_server_id(server, myenv)
               prettyllog("netbox", "get", "server", key, "000" , "vmid: %s" % vmid, severity="INFO")
+              print("-----------------------------------------------------------")
+              print("-----------------------------------------------------------")
+              print("-----------------------------------------------------------")
+              print("-----------------------------------------------------------")
               addvmwaretags(server, detailjson, myenv)
             else:
                 prettyllog("netbox", "get", "server", key, "000" , "No details found", severity="ERROR")
