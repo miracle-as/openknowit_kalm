@@ -35,11 +35,9 @@ def get_virtual_server_id(servername, env):
                 }
         r = requests.get(url, headers=headers, verify=env['KALM_NETBOX_SSL'])
         if r.status_code == 200:
-                pprint.pprint(r.json())
                 data = r.json()
                 if data['count'] == 1:
                         prettyllog("netbox", "get", "virtual server id", servername, r.status_code , "virtual server id found", severity="INFO")
-                        pprint.pprint(data['results'])
                         return data['results'][0]['id']
                 else:
                         prettyllog("netbox", "get", "virtual server id", servername, r.status_code , "unable to get virtual server id", severity="ERROR")
@@ -173,11 +171,9 @@ def addvmwaretags(servername, details, env):
     prettyllog("manage", "netbox", "tag", "new", "000", "Adding tags to vm %s" % servername)
     prefix = "wmware_"
     toolStatus ="%s%s" % (prefix, details['toolsStatus'])
-    print(create_tag(toolStatus))
     alltags = get_all_tags(env)
     prettyllog("manage", "netbox", "tag", "new", "000", "Adding tag %s to vm %s" % (toolStatus, servername))
     addtagtovm(servername, toolStatus, env)
-    print("--------------------------------------------")
 
 
     
@@ -372,10 +368,6 @@ def create_manufacturer(manufacturer_name):
 
     url = fix_url("/dcim/manufacturers/")
     response = requests.post(url, headers=headers, json=data)
-    print(response)
-    print(response.json())
-    print(response.status_code)
-    print(response.content)
     if response.status_code == 200:
         return True
     else:
@@ -468,10 +460,6 @@ def create_device_type(device_type_name):
         return True
     url = fix_url("/dcim/device-types/")
     response = requests.post(url, headers=headers, json=data)
-    print(response)
-    print(response.json())
-    print(response.status_code)
-    print(response.content)
     if response.status_code == 200:
         return True
     else:
@@ -567,10 +555,6 @@ def create_role():
         return True
     url = fix_url("/dcim/device-roles/")
     response = requests.post(url, headers=headers, json=data)
-    print(response)
-    print(response.json())
-    print(response.status_code)
-    print(response.content)
     if response.status_code == 200:
         return True
     else:
@@ -631,10 +615,6 @@ def create_site(site_name):
         return True
     url = fix_url("/dcim/sites/")
     response = requests.post(url, headers=headers, json=data)
-    print(response)
-    print(response.json())
-    print(response.status_code)
-    print(response.content)
     if response.status_code == 200:
         return True
     else:
@@ -678,10 +658,6 @@ def create_manufacturer(manufacturer_name):
     
     url = fix_url("/dcim/manufacturers/")
     response = requests.post(url, headers=headers, json=data)
-    print(response)
-    print(response.json())
-    print(response.status_code)
-    print(response.content)
     if response.status_code == 200:
         return True
     else:
@@ -763,10 +739,6 @@ def create_platform(platform_name):
         return True
     url = fix_url("/dcim/platforms/")
     response = requests.post(url, headers=headers, json=data)
-    print(response)
-    print(response.json())
-    print(response.status_code)
-    print(response.content)
     if response.status_code == 200:
         return True
     else:
@@ -924,7 +896,6 @@ def create_iprange(iprange_description = "default"):
 
     url = fix_url("/ipam/ip-ranges/")
     response = requests.post(url, headers=headers, json=data)
-    print(response.content)
     if response.status_code == 200:
         return True
     else:
@@ -1172,7 +1143,6 @@ def add_device():
         url = fix_url("/dcim/devices/")
         response = requests.post(url, headers=headers, json=data)
         prettyllog("manage", "netbox", "device", "new", "000",  "Api call status is %s" % response.status_code)
-        print(response.content)
         if response.status_code == 200:
             return True
         else:
@@ -1402,7 +1372,6 @@ def get_roles():
     response = requests.get(url, headers=headers)
     roles = response.json()
     for role in roles["results"]:
-        print(role)
         try:
             if returnroles[role["name"]]:
                 print("Duplicate role name")
@@ -1422,7 +1391,6 @@ def get_device_types():
     response = requests.get(url, headers=headers)
     types = response.json()
     for type in types["results"]:
-        print(type)
         try:
             if returntypes[type["display"]]:
                 print("Duplicate type name")
@@ -1654,7 +1622,6 @@ def netboxdata(args):
     data = {
         "virtual_machines": vm_data
     }
-    print(json.dumps(data, indent=2))
     return data
 
 def ansible_inventory(args):
@@ -1696,8 +1663,6 @@ def ansible_inventory(args):
                 "cpu": vm["vcpus"],
                 "memory_mb": vm["memory"]
             }
-
-    print(yaml.dump(data))
 
 
 def sshconfig(args):    
