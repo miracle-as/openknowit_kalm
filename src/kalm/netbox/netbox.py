@@ -26,6 +26,30 @@ Host {hostname}
 """
 
 
+def create_random_color():
+    import random
+    r = lambda: random.randint(0,255)
+    return '%02X%02X%02X' % (r(),r(),r())
+
+def create_tag(tag_name):
+    prettyllog("manage", "netbox", "tag", "new", "000", "Creating tag")
+    url = fix_url("/extras/tags" )
+    headers = {
+        "Authorization": f"Token {NETBOX_TOKEN}",
+        "Accept": "application/json"
+    }
+    data = {
+        "name": tag_name,
+        "slug": tag_name.lower(),
+        "color": create_random_color()
+    }
+    response = requests.post(url, json=data, headers=headers, verify=False)
+    if response.status_code == 201:
+        return True
+    else:
+        return False
+
+
 def get_netbox_inventory_from_tag(tag):
     prettyllog("manage", "netbox", "inventory", "new", "000", "Getting inventory from tag %s" % tag)
     # This is the format of the inventory string :           'inventory': '[website]\n172.18.8.40\n172.18.8.41',
