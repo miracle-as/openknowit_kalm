@@ -46,7 +46,7 @@ def refresh_netbox_from_redis(myenv, netboxdata):
               except:
                 toolstatus = "unknown"
               prettyllog("netbox", "get", "server", key, "000" , "toolstatus is %s "  % toolstatus, severity="INFO")
-              create_tag(toolstatus, myenv, netboxdata)
+              create_tag(toolstatus)
               
               if toolstatus == "toolsOk":
                 prettyllog("netbox", "get", "server", key, "000" , "Server is OK", severity="INFO")
