@@ -163,9 +163,11 @@ def addtagtovm(vmname, tag, env):
     print(mytags)
     print("DEBUG--------------------------------")
     url = fix_url("/virtualization/virtual-machines/%s/tags/" % myserverid )
+    pprint.pprint(url)
     data = {
         "tags":  mytags + [tag]
     }
+    pprint.pprint(data)
     headers = {'Authorization': 'Token ' + env['KALM_NETBOX_TOKEN']}
     response = requests.post(url, headers=headers, json=data, verify=False)
     print("DEBUG--------------------------------")
