@@ -85,17 +85,25 @@ def get_all_tags(env):
                'Accept': 'application/json',
                'Content-Type': 'application/json'
             }
-    r = requests.get(url, headers=headers, verify=env['KALM_NETBOX_SSL'])
-    if r.status_code == 200:
-        data = r.json()
-        alltags = {}
-        for tag in data['results']:
-            alltags[tag['name']] = tag['id']
-        prettyllog("netbox", "get", "all tags", "000", r.status_code , "all tags found", severity="INFO")
-        return alltags
-    else:
-        prettyllog("netbox", "get", "all tags", "000", r.status_code , "unable to get all tags", severity="ERROR")
-        return False
+    # we need to have multipage support
+    multipage = True
+    alltags = {}
+    while multipage:
+        r = requests.get(url, headers=headers, verify=env['KALM_NETBOX_SSL'])
+        if r.status_code == 200:
+            data = r.json()
+            for tag in data['results']:
+                alltags[tag['name']] = tag['id']
+            if data['next'] == None:
+                multipage = False
+            else:
+                url = data['next']
+        else:
+            prettyllog("netbox", "get", "all tags", "000", r.status_code , "unable to get all tags", severity="ERROR")
+            return False
+    prettyllog("netbox", "get", "all tags", "000", r.status_code , "all tags found", severity="INFO")
+    return alltags
+
     
 def get_prefixed_tags(serverid, prefix , env):
     servertags = get_virtual_server_tags(serverid, env)
