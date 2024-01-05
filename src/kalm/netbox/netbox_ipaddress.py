@@ -122,10 +122,10 @@ def get_ip_address_id(ip, env):
 def create_ip_address(ip, env, netboxdata):
     if ip == "" or ip == None:
         return False
+    if netboxdata == False:
+        return False
+    
     prettyllog("netbox", "create", "ip address", ip, "000" , "creating ip address", severity="INFO")
-    print("-----------------")
-    pprint.pprint(netboxdata)
-    print("-----------------")
     tenant = netboxdata['name']
     tenantid = get_tenant_id(tenant,env)
     url = env['KALM_NETBOX_URL'] + "/api/ipam/ip-addresses/"
@@ -145,7 +145,6 @@ def create_ip_address(ip, env, netboxdata):
         "tags": []
     }
     r = requests.post(url, headers=headers, data=json.dumps(payload), verify=env['KALM_NETBOX_SSL'])
-    pprint.pprint(r.content.decode("utf-8"))
     if r.status_code == 201:
         prettyllog("netbox", "create", "ip address", ip, r.status_code , "ip address created", severity="INFO")
         return True
