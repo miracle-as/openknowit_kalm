@@ -91,6 +91,7 @@ def get_all_tags(env):
     while multipage:
         r = requests.get(url, headers=headers, verify=env['KALM_NETBOX_SSL'])
         pprint.pprint(r.reason)
+        pprint.pprint(r.json())
         if r.status_code == 200:
             data = r.json()
             for tag in data['results']:
