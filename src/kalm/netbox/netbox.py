@@ -211,37 +211,37 @@ def addvmwaretags(serverid, details, env):
 #               '7352c963-5404-41b8-66f6-0025b531a107/acs-db2.greennet.gl.vmx'}
 
 
-    prefix = "vmware_guestId"
+    prefix = "vmware_guestId_"
     # guestId
     guestId = "%s%s" % (prefix, details['guestId'])
     create_tag(guestId)
 
-    prefix = "vmware_hwVersion"
+    prefix = "vmware_hwVersion_"
     hwVersion = "%s%s" % (prefix, details['hwVersion'])
     create_tag(hwVersion)
 
-    prefix = "vmware_overallStatus"
+    prefix = "vmware_overallStatus_"
     overallStatus = "%s%s" % (prefix, details['overallStatus'])
     create_tag(overallStatus)
 
-    prefix = "vmware_toolsRunningStatus"
+    prefix = "vmware_toolsRunningStatus_"
     toolsRunningStatus = "%s%s" % (prefix, details['toolsRunningStatus'])
     create_tag(toolsRunningStatus)
 
-    prefix = "vmware_toolsVersionStatus"
+    prefix = "vmware_toolsVersionStatus_"
     toolsVersionStatus = "%s%s" % (prefix, details['toolsVersionStatus'])
     create_tag(toolsVersionStatus)
 
-    prefix = "vmware_toolsVersionStatus2"
+    prefix = "vmware_toolsVersionStatus2_"
     toolsVersionStatus2 = "%s%s" % (prefix, details['toolsVersionStatus2'])
     create_tag(toolsVersionStatus2)
 
-    prefix = "vmware_vmPathName"
+    prefix = "vmware_vmPathName_"
     vmPathNamefull = "%s%s" % (prefix, details['vmPathName'])
     vmPathName = vmPathNamefull.split("]")[1].split("/")[1].replace(".vmx", "").replace(".", "_")
     create_tag(vmPathName)
 
-    prefix = "vmware_toolsStatus"
+    prefix = "vmware_toolsStatus_"
     toolStatus ="%s%s" % (prefix, details['toolsStatus'])
     create_tag(toolStatus)
 
