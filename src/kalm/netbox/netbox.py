@@ -65,6 +65,17 @@ def get_virtual_server_tags(serverid, env):
     else:
         prettyllog("netbox", "get", "virtual server tags", serverid, r.status_code , "unable to get virtual server tags", severity="ERROR")
         return mytags   
+    
+def get_virtual_server_tagids(serverid, env):
+    prettyllog("netbox", "get", "virtual server tags", serverid, "000" , "getting virtual server tags", severity="INFO")
+    alltags = get_all_tags(env)
+    mytags = get_virtual_server_tags(serverid, env)
+    mytagids = []
+    for tag in mytags:
+        mytagids.append(alltags[tag])
+    return mytagids
+
+    
 
 
 def get_all_tags(env):
@@ -151,9 +162,9 @@ def removetagsfromvm(vmname, prefix, env):
                 }
             response = requests.patch(url, headers=headers,  verify=False)
     
-def addtagtovm(vmid, tag, env):
+def addtagtovm(vmid, tagid, env):
     prettyllog("manage", "netbox", "tag", "new", "000", "Adding tags to vm %s" % (vmid))
-    mytags = get_virtual_server_tags(vmid, env)
+    mytags = get_virtual_server_tagids(vmid, env)
     prettyllog("manage", "netbox", "tag", "new", "000", "Current tags %s" % (mytags))
     print("DEBUG--------------------------------")
     print(mytags)
@@ -161,7 +172,7 @@ def addtagtovm(vmid, tag, env):
     url = fix_url("/virtualization/virtual-machines/%s/" % vmid )
     pprint.pprint(url)
     data = {
-        "tags":  mytags + [tag]
+        "tags":  mytags + [tagid]
     }
     pprint.pprint(data)
     headers = {'Authorization': 'Token ' + env['KALM_NETBOX_TOKEN']}
@@ -191,8 +202,10 @@ def addvmwaretags(servername, details, env):
     toolStatus ="%s%s" % (prefix, details['toolsStatus'])
     create_tag(toolStatus)
     alltags = get_all_tags(env)
+    mynewid= alltags[toolStatus]
+
     prettyllog("manage", "netbox", "tag", "new", "000", "Adding tag %s to vm %s" % (toolStatus, servername))
-    addtagtovm(servername, toolStatus, env)
+    addtagtovm(servername, mynewid, env)
 
 
     
