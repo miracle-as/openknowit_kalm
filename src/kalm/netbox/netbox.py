@@ -90,6 +90,7 @@ def get_all_tags(env):
     alltags = {}
     while multipage:
         r = requests.get(url, headers=headers, verify=env['KALM_NETBOX_SSL'])
+        pprint.pprint(r.reason)
         if r.status_code == 200:
             data = r.json()
             for tag in data['results']:
@@ -98,9 +99,6 @@ def get_all_tags(env):
                 multipage = False
             else:
                 url = data['next']
-        else:
-            prettyllog("netbox", "get", "all tags", "000", r.status_code , "unable to get all tags", severity="ERROR")
-            return False
     prettyllog("netbox", "get", "all tags", "000", r.status_code , "all tags found", severity="INFO")
     return alltags
 
