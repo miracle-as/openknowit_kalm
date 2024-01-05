@@ -214,6 +214,7 @@ def addvmwaretags(serverid, details, env):
     prefix = "vmware_guestId_"
     # guestId
     guestId = "%s%s" % (prefix, details['guestId'])
+    
     create_tag(guestId)
 
     prefix = "vmware_hwVersion_"
@@ -247,6 +248,9 @@ def addvmwaretags(serverid, details, env):
 
 
     alltags = get_all_tags(env)
+    pprint.pprint(alltags)
+    
+    prettyllog("manage", "netbox", "tag", "new", "000", "Adding tags to vm %s" % (serverid))
     mynewids = []
     mynewids.append(alltags[toolStatus])
     mynewids.append(alltags[vmPathName])
