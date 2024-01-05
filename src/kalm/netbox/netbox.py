@@ -166,20 +166,12 @@ def addtagtovm(vmid, tagid, env):
     prettyllog("manage", "netbox", "tag", "new", "000", "Adding tags to vm %s" % (vmid))
     mytags = get_virtual_server_tagids(vmid, env)
     prettyllog("manage", "netbox", "tag", "new", "000", "Current tags %s" % (mytags))
-    print("DEBUG--------------------------------")
-    print(mytags)
-    print("DEBUG--------------------------------")
     url = fix_url("/virtualization/virtual-machines/%s/" % vmid )
-    pprint.pprint(url)
     data = {
         "tags":  mytags + [tagid]
     }
-    pprint.pprint(data)
     headers = {'Authorization': 'Token ' + env['KALM_NETBOX_TOKEN']}
     response = requests.patch(url, headers=headers, json=data, verify=False)
-    print("DEBUG--------------------------------")
-    pprint.pprint(response.reason)
-    print("DEBUG--------------------------------")
     if response.status_code == 200:
         return True
     else:
