@@ -107,8 +107,6 @@ def get_virtual_server_tags(serverid, env):
     r = requests.get(url, headers=headers, verify=env['KALM_NETBOX_SSL'])
     if r.status_code == 200:
         data = r.json()
-        pprint.pprint(data)
-
         for tag in data['tags']:
             mytags.append(tag['name'])
         prettyllog("netbox", "get", "virtual server tags", serverid, r.status_code , "virtual server tags found", severity="INFO")
