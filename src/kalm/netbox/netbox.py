@@ -158,7 +158,10 @@ def addtagtovm(vmname, tag, env):
         prettyllog("manage", "netbox", "tag", "new", "000", "Unable to find server %s" % (vmname))
         return False
     mytags = get_virtual_server_tags(myserverid, env)
+
     prettyllog("manage", "netbox", "tag", "new", "000", "Current tags %s" % (mytags))
+    print("DEBUG--------------------------------")
+    print(mytags)
 
 
 
