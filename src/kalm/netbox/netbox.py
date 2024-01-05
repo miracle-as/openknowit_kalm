@@ -232,7 +232,7 @@ def addvmwaretags(serverid, details, env):
     create_tag(toolsVersionStatus2)
 
     vmPathNamefull = "%s%s" % (prefix, details['vmPathName'])
-    vmPathName = vmPathNamefull.split("]")[1].split("/")[1].replace(".vmx", "")
+    vmPathName = vmPathNamefull.split("]")[1].split("/")[1].replace(".vmx", "").replace(".", "_")
     create_tag(vmPathName)
 
     toolStatus ="%s%s" % (prefix, details['toolsStatus'])
