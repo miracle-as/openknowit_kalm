@@ -141,7 +141,7 @@ def removetagsfromvm(vmname, prefix, env):
         if len(data['results']) == 1:
             vmid = data['results'][0]['id']
             keeptags = get_notprefixed_tags(vmid, prefix, env)
-            url = fix_url("/virtualization/virtual-machines/%s/tags/" % vmid )
+            url = fix_url("/virtualization/virtual-machines/%s/" % vmid )
             data = {
                 "tags":  keeptags
             }
@@ -162,7 +162,7 @@ def addtagtovm(vmname, tag, env):
     print("DEBUG--------------------------------")
     print(mytags)
     print("DEBUG--------------------------------")
-    url = fix_url("/virtualization/virtual-machines/%s/tags/" % myserverid )
+    url = fix_url("/virtualization/virtual-machines/%s/" % myserverid )
     pprint.pprint(url)
     data = {
         "tags":  mytags + [tag]
