@@ -173,6 +173,7 @@ def update_virtual_server(serverdetails, env , netboxdata):
         myvmwareid = create_tag("vmware", env)
         alltags = get_all_tags(env)
     for mytag in mytags:
+        pprint.pprint(mytag)
         if alltags[mytag] == "vmware":
             found = True
     if found == False:
