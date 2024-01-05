@@ -169,7 +169,7 @@ def addtagtovm(vmname, tag, env):
     headers = {'Authorization': 'Token ' + env['KALM_NETBOX_TOKEN']}
     response = requests.post(url, headers=headers, json=data, verify=False)
     print("DEBUG--------------------------------")
-    pprint.pprint(response.json())
+    pprint.pprint(response.reason)
     print("DEBUG--------------------------------")
     if response.status_code == 200:
         return True
