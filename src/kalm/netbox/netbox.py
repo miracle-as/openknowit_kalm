@@ -149,7 +149,7 @@ def removetagsfromvm(vmname, prefix, env):
                 "Authorization": f"Token {NETBOX_TOKEN}",
                  "Accept": "application/json"
                 }
-            response = requests.post(url, headers=headers,  verify=False)
+            response = requests.patch(url, headers=headers,  verify=False)
     
 def addtagtovm(vmname, tag, env):
     prettyllog("manage", "netbox", "tag", "new", "000", "Adding tags to vm %s" % (vmname))
@@ -169,7 +169,7 @@ def addtagtovm(vmname, tag, env):
     }
     pprint.pprint(data)
     headers = {'Authorization': 'Token ' + env['KALM_NETBOX_TOKEN']}
-    response = requests.post(url, headers=headers, json=data, verify=False)
+    response = requests.patch(url, headers=headers, json=data, verify=False)
     print("DEBUG--------------------------------")
     pprint.pprint(response.reason)
     print("DEBUG--------------------------------")

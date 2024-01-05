@@ -124,7 +124,6 @@ def update_subprojects(myenv):
                                         if r.status_code == 200:
                                                 print("tag %s added to server %s" % (subproject, myhost))
                                         else:
-                                                print(r.content)
                                                 print("unable to add tag %s to server %s" % (subproject, myhost))
 
 
