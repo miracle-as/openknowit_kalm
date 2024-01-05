@@ -162,13 +162,13 @@ def removetagsfromvm(vmname, prefix, env):
                 }
             response = requests.patch(url, headers=headers,  verify=False)
     
-def addtagtovm(vmid, tagid, env):
+def addtagtovm(vmid, tagids, env):
     prettyllog("manage", "netbox", "tag", "new", "000", "Adding tags to vm %s" % (vmid))
     mytags = get_virtual_server_tagids(vmid, env)
     prettyllog("manage", "netbox", "tag", "new", "000", "Current tags %s" % (mytags))
     url = fix_url("/virtualization/virtual-machines/%s/" % vmid )
     data = {
-        "tags":  mytags + [tagid]
+        "tags":  mytags + tagids
     }
     headers = {'Authorization': 'Token ' + env['KALM_NETBOX_TOKEN']}
     response = requests.patch(url, headers=headers, json=data, verify=False)
@@ -193,17 +193,65 @@ def addvmwaretags(serverid, details, env):
     print("----------------------------------------------------------")
     pprint.pprint(details)
     print("----------------------------------------------------------")
+    # guestId': 'debian10_64Guest',
+# 'hostName': 'acs-sndb2.greennet.gl',
+# 'hwVersion': 'vmx-19',
+# 'ipAddress': '194.177.224.46',
+# 'memory': 16384,
+# 'numCpu': 8,
+# 'numEthernetCards': 1,
+# 'numVirtualDisks': 2,
+# 'overallStatus': 'green',
+# 'toolsRunningStatus': 'guestToolsRunning',
+# 'toolsStatus': 'toolsOk',
+# 'toolsVersionStatus': 'guestToolsUnmanaged',
+# 'toolsVersionStatus2': 'guestToolsUnmanaged',
+# 'uuid': '4212ce39-15d2-ca2a-8c72-c0ee0676a6ee',
+# 'vmPathName': '[vsan_S3_Linux] '
+#               '7352c963-5404-41b8-66f6-0025b531a107/acs-db2.greennet.gl.vmx'}
+
 
     prefix = "wmware_"
+    # guestId
+    guestId = "%s%s" % (prefix, details['guestId'])
+    create_tag(guestId)
+
+    hwVersion = "%s%s" % (prefix, details['hwVersion'])
+    create_tag(hwVersion)
+
+    overallStatus = "%s%s" % (prefix, details['overallStatus'])
+    create_tag(overallStatus)
+
+    toolsRunningStatus = "%s%s" % (prefix, details['toolsRunningStatus'])
+    create_tag(toolsRunningStatus)
+
+    toolsVersionStatus = "%s%s" % (prefix, details['toolsVersionStatus'])
+    create_tag(toolsVersionStatus)
+
+    toolsVersionStatus2 = "%s%s" % (prefix, details['toolsVersionStatus2'])
+    create_tag(toolsVersionStatus2)
+
+    vmPathNamefull = "%s%s" % (prefix, details['vmPathName'])
+    vmPathName = vmPathNamefull.split("]")[1].split("/")[1]
+    create_tag(vmPathName)
+
     toolStatus ="%s%s" % (prefix, details['toolsStatus'])
     create_tag(toolStatus)
 
 
     alltags = get_all_tags(env)
-    mynewid= alltags[toolStatus]
-
+    mynewids = []
+    mynewids.append(alltags[toolStatus])
+    mynewids.append(alltags[vmPathName])
+    mynewids.append(alltags[toolsVersionStatus2])
+    mynewids.append(alltags[toolsVersionStatus])
+    mynewids.append(alltags[toolsRunningStatus])
+    mynewids.append(alltags[overallStatus])
+    mynewids.append(alltags[hwVersion])
+    mynewids.append(alltags[guestId])
+    mynewids.append(alltags[vmPathName])
     prettyllog("manage", "netbox", "tag", "new", "000", "Adding tag %s to vm %s" % (toolStatus, serverid))
-    addtagtovm(serverid, mynewid, env)
+    addtagtovm(serverid, mynewids, env)
 
 
     
