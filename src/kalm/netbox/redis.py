@@ -48,7 +48,7 @@ def refresh_netbox_from_redis(myenv, netboxdata):
               vmid = get_virtual_server_id(server, myenv)
               prettyllog("netbox", "get", "server", key, "000" , "server id : %s" % vmid, severity="INFO")
               prettyllog("netbox", "get", "server", key, "000" , "vmid: %s" % vmid, severity="INFO")
-              addvmwaretags(server, detailjson, myenv)
+              addvmwaretags(vmid, detailjson, myenv)
             else:
                 prettyllog("netbox", "get", "server", key, "000" , "No details found", severity="ERROR")
                 orphanservers.append(server)

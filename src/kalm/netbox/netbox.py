@@ -196,16 +196,16 @@ def addtagtovm(vmid, tagid, env):
 
 
                 
-def addvmwaretags(servername, details, env):
-    prettyllog("manage", "netbox", "tag", "new", "000", "Adding tags to vm %s" % servername)
+def addvmwaretags(serverid, details, env):
+    prettyllog("manage", "netbox", "tag", "new", "000", "Adding tags to vm %s" % serverid)
     prefix = "wmware_"
     toolStatus ="%s%s" % (prefix, details['toolsStatus'])
     create_tag(toolStatus)
     alltags = get_all_tags(env)
     mynewid= alltags[toolStatus]
 
-    prettyllog("manage", "netbox", "tag", "new", "000", "Adding tag %s to vm %s" % (toolStatus, servername))
-    addtagtovm(servername, mynewid, env)
+    prettyllog("manage", "netbox", "tag", "new", "000", "Adding tag %s to vm %s" % (toolStatus, serverid))
+    addtagtovm(serverid, mynewid, env)
 
 
     
