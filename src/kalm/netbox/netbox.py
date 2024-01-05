@@ -256,44 +256,71 @@ def addvmwaretags(serverid, details, env):
 
 
     alltags = get_all_tags(env)
-    pprint.pprint(alltags)
 
     prettyllog("manage", "netbox", "tag", "new", "000", "Adding tags to vm %s" % (serverid))
     mynewids = []
     prettyllog("manage", "netbox", "tag", "new", "000", "Adding tag %s to vm %s" % (toolStatus, serverid))
-    mynewids.append(alltags[toolStatus])
+    try:
+        mynewids.append(alltags[toolStatus])
+    except:
+        pass
     prettyllog("manage", "netbox", "tag", "new", "000", "Adding tag %s to vm %s" % (toolStatus, serverid))
     prettyllog("manage", "netbox", "tag", "new", "000", "Adding tag %s to vm %s" % (vmPathName, serverid))
-    mynewids.append(alltags[vmPathName])
+    try:
+        mynewids.append(alltags[vmPathName])
+    except:
+        pass
     prettyllog("manage", "netbox", "tag", "new", "000", "Adding tag %s to vm %s" % (vmPathName, serverid))
     prettyllog("manage", "netbox", "tag", "new", "000", "Adding tag %s to vm %s" % (toolsVersionStatus2, serverid))
-    mynewids.append(alltags[toolsVersionStatus2])
+    try:
+        mynewids.append(alltags[toolsVersionStatus2])
+    except:
+        pass
+
     prettyllog("manage", "netbox", "tag", "new", "000", "Adding tag %s to vm %s" % (toolsVersionStatus2, serverid))
-
     prettyllog("manage", "netbox", "tag", "new", "000", "Adding tag %s to vm %s" % (toolsVersionStatus, serverid))
-    pprint.pprint(alltags)
-    print("--------------------------------------------")
-    mynewids.append(alltags[toolsVersionStatus])
-    print("--------------------------------------------")
+    try:
+        mynewids.append(alltags[toolsVersionStatus])
+    except:
+        pass
     prettyllog("manage", "netbox", "tag", "new", "000", "Adding tag %s to vm %s" % (toolsVersionStatus, serverid))
-
     prettyllog("manage", "netbox", "tag", "new", "000", "Adding tag %s to vm %s" % (toolsRunningStatus, serverid))
-    mynewids.append(alltags[toolsRunningStatus])
+    try:
+        mynewids.append(alltags[toolsRunningStatus])
+    except:
+        pass
+
     prettyllog("manage", "netbox", "tag", "new", "000", "Adding tag %s to vm %s" % (toolsRunningStatus, serverid))
     prettyllog("manage", "netbox", "tag", "new", "000", "Adding tag %s to vm %s" % (overallStatus, serverid))
-    mynewids.append(alltags[overallStatus])
+    try:
+        mynewids.append(alltags[overallStatus])
+    except:
+        pass
     prettyllog("manage", "netbox", "tag", "new", "000", "Adding tag %s to vm %s" % (overallStatus, serverid))
     prettyllog("manage", "netbox", "tag", "new", "000", "Adding tag %s to vm %s" % (hwVersion, serverid))
-    mynewids.append(alltags[hwVersion])
+    try:
+        mynewids.append(alltags[hwVersion])
+    except:
+        pass
     prettyllog("manage", "netbox", "tag", "new", "000", "Adding tag %s to vm %s" % (hwVersion, serverid))
     prettyllog("manage", "netbox", "tag", "new", "000", "Adding tag %s to vm %s" % (guestId, serverid))
-    mynewids.append(alltags[guestId])
+    try:
+        mynewids.append(alltags[guestId])
+    except:
+        pass
     prettyllog("manage", "netbox", "tag", "new", "000", "Adding tag %s to vm %s" % (guestId, serverid))
     prettyllog("manage", "netbox", "tag", "new", "000", "Adding tag %s to vm %s" % (vmPathName, serverid))
-    mynewids.append(alltags[vmPathName])
+    try:
+        mynewids.append(alltags[vmPathName])
+    except:
+        pass
     prettyllog("manage", "netbox", "tag", "new", "000", "Adding tag %s to vm %s" % (vmPathName, serverid))
     prettyllog("manage", "netbox", "tag", "new", "000", "Adding tag %s to vm %s" % (toolStatus, serverid))
-    addtagtovm(serverid, mynewids, env)
+    try:
+        addtagtovm(serverid, mynewids, env)
+    except:
+        pass
+
     prettyllog("manage", "netbox", "tag", "new", "000", "Adding tag %s to vm %s" % (toolStatus, serverid))
 
 
