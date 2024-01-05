@@ -123,6 +123,9 @@ def create_ip_address(ip, env, netboxdata):
     if ip == "" or ip == None:
         return False
     prettyllog("netbox", "create", "ip address", ip, "000" , "creating ip address", severity="INFO")
+    print("-----------------")
+    pprint.pprint(netboxdata)
+    print("-----------------")
     tenant = netboxdata['name']
     tenantid = get_tenant_id(tenant,env)
     url = env['KALM_NETBOX_URL'] + "/api/ipam/ip-addresses/"
