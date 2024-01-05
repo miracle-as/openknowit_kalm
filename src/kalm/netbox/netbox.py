@@ -151,18 +151,14 @@ def removetagsfromvm(vmname, prefix, env):
                 }
             response = requests.patch(url, headers=headers,  verify=False)
     
-def addtagtovm(vmname, tag, env):
-    prettyllog("manage", "netbox", "tag", "new", "000", "Adding tags to vm %s" % (vmname))
-    myserverid = get_virtual_machine_id(vmname, env)
-    if myserverid == None:
-        prettyllog("manage", "netbox", "tag", "new", "000", "Unable to find server %s" % (vmname))
-        return False
-    mytags = get_virtual_server_tags(myserverid, env)
+def addtagtovm(vmid, tag, env):
+    prettyllog("manage", "netbox", "tag", "new", "000", "Adding tags to vm %s" % (vmid))
+    mytags = get_virtual_server_tags(vmid, env)
     prettyllog("manage", "netbox", "tag", "new", "000", "Current tags %s" % (mytags))
     print("DEBUG--------------------------------")
     print(mytags)
     print("DEBUG--------------------------------")
-    url = fix_url("/virtualization/virtual-machines/%s/" % myserverid )
+    url = fix_url("/virtualization/virtual-machines/%s/" % vmid )
     pprint.pprint(url)
     data = {
         "tags":  mytags + [tag]
