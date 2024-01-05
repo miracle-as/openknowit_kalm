@@ -211,30 +211,37 @@ def addvmwaretags(serverid, details, env):
 #               '7352c963-5404-41b8-66f6-0025b531a107/acs-db2.greennet.gl.vmx'}
 
 
-    prefix = "wmware_"
+    prefix = "vmware_guestId"
     # guestId
     guestId = "%s%s" % (prefix, details['guestId'])
     create_tag(guestId)
 
+    prefix = "vmware_hwVersion"
     hwVersion = "%s%s" % (prefix, details['hwVersion'])
     create_tag(hwVersion)
 
+    prefix = "vmware_overallStatus"
     overallStatus = "%s%s" % (prefix, details['overallStatus'])
     create_tag(overallStatus)
 
+    prefix = "vmware_toolsRunningStatus"
     toolsRunningStatus = "%s%s" % (prefix, details['toolsRunningStatus'])
     create_tag(toolsRunningStatus)
 
+    prefix = "vmware_toolsVersionStatus"
     toolsVersionStatus = "%s%s" % (prefix, details['toolsVersionStatus'])
     create_tag(toolsVersionStatus)
 
+    prefix = "vmware_toolsVersionStatus2"
     toolsVersionStatus2 = "%s%s" % (prefix, details['toolsVersionStatus2'])
     create_tag(toolsVersionStatus2)
 
+    prefix = "vmware_vmPathName"
     vmPathNamefull = "%s%s" % (prefix, details['vmPathName'])
     vmPathName = vmPathNamefull.split("]")[1].split("/")[1].replace(".vmx", "").replace(".", "_")
     create_tag(vmPathName)
 
+    prefix = "vmware_toolsStatus"
     toolStatus ="%s%s" % (prefix, details['toolsStatus'])
     create_tag(toolStatus)
 
