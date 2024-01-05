@@ -161,6 +161,9 @@ def addtagtovm(vmname, tag, env):
     prettyllog("manage", "netbox", "tag", "new", "000", "Current tags %s" % (mytags))
     print("DEBUG--------------------------------")
     print(mytags)
+    print("DEBUG--------------------------------")
+
+    
 
 
 
