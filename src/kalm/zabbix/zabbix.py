@@ -32,11 +32,10 @@ def list_host_group(hostgroup):
           },         
         "auth": AUTHTOKEN
     })
-    pprint.pprint(r.reason)
     try:
         print(json.dumps(r.json(), indent=4, sort_keys=True))
     except: 
-        return None
+        return False
 
 def list_host_groups():
     prettyllog("List host groups","info",   "zabbix", "list_host_groups", "zabbix.py", "kalm")
@@ -312,6 +311,13 @@ def serve():
             print(subgroup)
             print("-----------------------------------")
             hostgroupdata = list_host_group(subgroup)
+            if hostgroupdata == False:
+                print("no hostgroup found")
+                hostgroupdata = create_host_group(subgroup)
+                if hostgroupdata == None:
+                    print("no hostgroup created")
+                else:
+                    print("hostgroup created")
             pprint.pprint(hostgroupdata)
             print("-----------------------------------")
 
