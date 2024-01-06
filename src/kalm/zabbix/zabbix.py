@@ -6,6 +6,7 @@ import xml.etree.ElementTree as ET
 import platform
 import yaml
 from ..common import prettyllog
+from .common import get_env
 import pprint
 
 
@@ -302,3 +303,6 @@ def get_host_data(host_id):
 def serve():
     prettyllog("zabbix", "init", "main", "Kalm", "000", "Serving zabbix api", "info")
     myenv = get_env()
+    pprint.pprint(myenv)
+    
+
