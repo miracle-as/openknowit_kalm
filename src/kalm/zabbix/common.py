@@ -50,9 +50,10 @@ def  get_env():
   
   #read the zabbix json file 
   prettyllog("Read zabbix.json file","info",   "zabbix", "get_env", "common.py", "kalm")
-  conffile = os.path.exists(myenv['KALM_WORKDIR'] + "/etc/kalm/zabbix.json")
-  with open(conffile) as json_file:
-    prettyllog("Read zabbix.json file","info",   "zabbix", "get_env", "common.py", "kalm")
-    data = json.load(json_file)
-    myenv['zabbix'] = data
+  conf_path = myenv['KALM_WORKDIR'] + "/etc/kalm/zabbix.json"
+
+  if os.path.exists(conf_path):
+        with open(conf_path, 'r') as json_file:
+            data = json.load(json_file)
+            myenv['zabbix'] = data
   return myenv
