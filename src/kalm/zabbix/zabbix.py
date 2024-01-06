@@ -300,6 +300,9 @@ def serve():
     myenv = get_env()
     prettyllog("zabbix", "init", "main", "Kalm", "000", "Serving zabbix api", "info")
     print(myenv['zabbix'])
+    for hostgroup in myenv['zabbix']['hostGroups']:
+        print(hostgroup)
+        list_host_group(hostgroup)
     #list_host_groups()
     return 0
 
