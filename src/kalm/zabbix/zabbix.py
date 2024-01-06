@@ -202,6 +202,7 @@ def create_host_group(hostgroup = "Linux servers"):
           },     
         "auth": AUTHTOKEN
     })
+    pprint.pprint(r.reason)
     try:
         return r.json()['result']['groupids'][0]
     except:
