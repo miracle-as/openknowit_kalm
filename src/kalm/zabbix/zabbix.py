@@ -203,6 +203,11 @@ def create_host_group(hostgroup = "Linux servers"):
         "auth": AUTHTOKEN
     })
     pprint.pprint(r.reason)
+    pprint.pprint(r.content)
+    try:
+        pprint.pprint(r.json())
+    except:
+        pass
     try:
         return r.json()['result']['groupids'][0]
     except:
