@@ -1737,7 +1737,6 @@ def get_virtual_machines(env = get_env()):
     url = fix_url("/virtualization/virtual-machines/")
     morepages = True
     while morepages: 
-        url = fix_url("/virtualization/virtual-machines/")
         response = requests.get(url, headers=headers, verify=env['KALM_NETBOX_SSL'])
         vms = response.json()
         for vm in vms["results"]:
