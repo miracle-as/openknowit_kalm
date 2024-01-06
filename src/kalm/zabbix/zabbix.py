@@ -9,16 +9,12 @@ from ..common import prettyllog
 from .common import get_env
 import pprint
 
+myenv = get_env()
+ZABBIX_API_URL = myenv['KALM_ZABBIX_URL'] + "/api_jsonrpc.php"
+AUTHTOKEN =  myenv['KALM_ZABBIX_TOKEN']
 
-ZABBIX_API_URL = os.environ.get('ZABBIX_URL') + "/api_jsonrpc.php"
-AUTHTOKEN = os.environ.get('ZABBIX_TOKEN')
 
-#ZABBIX_API_URL = "https://zabbix.openknowit.com/api_jsonrpc.php"
-#AUTHTOKEN = "9e39c4605ff25083f230b22ccaf1c18128fb8123a502abddeaad73e0b6cff0b8"
-#  --data '{"jsonrpc":"2.0","method":"item.create","params":{"name":"Free disk space on /home/joe/","key_":"vfs.fs.size[/home/joe/,free]","hostid":"10084","type":0,"value_type":3,"interfaceid":"1","delay":30},"id":3}'
-
-def list_host_group():
-    HOSTGROUP= os.environ.get('ZABBIX_HOSTGROUP')
+def list_host_group(hostgroup):
     r = requests.post(ZABBIX_API_URL,
     json= {     
           "jsonrpc": "2.0",     
@@ -27,7 +23,7 @@ def list_host_group():
           "output": "extend",
                 "filter": {
                 "name": [
-                    HOSTGROUP
+                           hostgroup
                         ]         
                 }
 
@@ -302,7 +298,7 @@ def get_host_data(host_id):
     
 def serve():
     prettyllog("zabbix", "init", "main", "Kalm", "000", "Serving zabbix api", "info")
-    myenv = get_env()
-    pprint.pprint(myenv)
+    list_host_groups()
+
     
 
