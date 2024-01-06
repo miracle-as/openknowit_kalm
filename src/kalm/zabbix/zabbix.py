@@ -204,6 +204,9 @@ def create_host_group(hostgroup = "Linux servers"):
     })
     pprint.pprint(r.reason)
     pprint.pprint(r.content)
+    pprint.pprint(r.status_code)
+    pprint.pprint(r.text)
+    
     try:
         pprint.pprint(r.json())
     except:
