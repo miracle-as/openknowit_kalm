@@ -1749,14 +1749,14 @@ def get_virtual_machines(env = get_env()):
 
     
 def netboxdata(args):
-    prettyllog("neboxdata", "collect" "data", "kalm" "000", "Collecting data", "info")
-    prettyllog("neboxdata", "collect" "data", "kalm" "000", "Collecting cluster data", "info")
+    prettyllog("neboxdata", "collect", "data", "kalm", "000", "Collecting data", "info")
+    prettyllog("neboxdata", "collect", "data", "kalm", "000", "Collecting cluster data", "info")
     clusters = get_clusters()
-    prettyllog("neboxdata", "collect" "data", "kalm" "000", "Collecting my environment", "info")
+    prettyllog("neboxdata", "collect", "data", "kalm", "000", "Collecting my environment", "info")
     myenv = get_env()
-    prettyllog("neboxdata", "collect" "data", "kalm" "000", "Collecting my virtualmachines", "info")
+    prettyllog("neboxdata", "collect", "data", "kalm", "000", "Collecting my virtualmachines", "info")
     vms = get_virtual_machines(myenv)
-    
+
     vm_data = []
     for vm in vms:
         vmdata = get_virtual_machine(vms[vm])
