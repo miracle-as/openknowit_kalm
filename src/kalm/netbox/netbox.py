@@ -6,6 +6,7 @@ import base64
 import xml.etree.ElementTree as ET
 import platform
 import yaml
+from .common import get_env
 from ..common import prettyllog
 
 
@@ -1731,7 +1732,7 @@ def get_virtual_machine(id):
     vm = response.json()
     return vm
 
-def get_virtual_machines(env):
+def get_virtual_machines(env = get_env()):
     returnvms = {}
     headers = {'Authorization': 'Token ' + env['KALM_NETBOX_TOKEN']}
     url = fix_url("/virtualization/virtual-machines/")
@@ -1749,6 +1750,7 @@ def get_virtual_machines(env):
     
 def netboxdata(args):
     clusters = get_clusters()
+    myenv = get_env()
     vms = get_virtual_machines()
     vm_data = []
     for vm in vms:
