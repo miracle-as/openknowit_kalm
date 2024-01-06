@@ -15,7 +15,7 @@ def  get_env():
   try:
     myenv['KALM_ZABBIX_URL'] = os.getenv("KALM_ZABBIX_URL")
     myenv['KALM_ZABBIX_TOKEN'] = os.getenv("KALM_ZABBIX_TOKEN")
-    myenv['KALM_ZABBX_SSL'] = os.getenv("KALM_ZABBIX_SSL", "false")
+    myenv['KALM_ZABBIX_SSL'] = os.getenv("KALM_ZABBIX_SSL", "false")
     myenv['KALM_WORKDIR'] = os.getenv("KALM_WORKDIR", "/")
 
   except KeyError as key_error:
