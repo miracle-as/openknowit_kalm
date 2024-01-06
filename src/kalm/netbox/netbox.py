@@ -1736,14 +1736,22 @@ def get_virtual_machines(env = get_env()):
     returnvms = {}
     headers = {'Authorization': 'Token ' + env['KALM_NETBOX_TOKEN']}
     url = fix_url("/virtualization/virtual-machines/")
-    response = requests.get(url, headers=headers, verify=env['KALM_NETBOX_SSL'])
-    vms = response.json()
-    for vm in vms["results"]:
-        try:
-            if returnvms[vm["name"]]:
-                dupvm=True
-        except:
-           returnvms[vm["name"]] = vm["id"]
+    morepages = True
+    while morepages: 
+        url = fix_url("/virtualization/virtual-machines/")
+        response = requests.get(url, headers=headers, verify=env['KALM_NETBOX_SSL'])
+        vms = response.json()
+        for vm in vms["results"]:
+            try:
+                if returnvms[vm["name"]]:
+                    dupvm=True
+            except:
+                returnvms[vm["name"]] = vm["id"]
+        # we need to check if there are more pages 
+        if response['next'] is not None:
+            url = response['next']
+        else:
+            morepages = False 
     return returnvms
 
 
