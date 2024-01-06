@@ -1,5 +1,6 @@
 import os
 import json
+from ..common import prettyllog
 
 
 def usage():
@@ -10,6 +11,7 @@ def usage():
 
 
 def  get_env():
+  prettyllog("Get environment variables","info",   "zabbix", "get_env", "common.py", "kalm")
   myenv = {}
   myenv['subproject'] = {}
   try:
