@@ -1749,7 +1749,7 @@ def get_virtual_machines(env = get_env()):
         # we need to check if there are more pages 
         if vms['next'] is not None:
             url = vms['next']
-            pprint.pprint(vms)
+            pprint.pprint(vms['next'])
         else:
             morepages = False 
     return returnvms
