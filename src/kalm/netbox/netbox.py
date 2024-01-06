@@ -91,7 +91,6 @@ def get_all_tags(env):
     alltags = {}
     while multipage:
         r = requests.get(url, headers=headers, verify=env['KALM_NETBOX_SSL'])
-        pprint.pprint(r.reason)
         if r.status_code == 200:
             data = r.json()
             for tag in data['results']:
@@ -1748,8 +1747,8 @@ def get_virtual_machines(env = get_env()):
             except:
                 returnvms[vm["name"]] = vm["id"]
         # we need to check if there are more pages 
-        if response['next'] is not None:
-            url = response['next']
+        if vms['next'] is not None:
+            url = vms['next']
         else:
             morepages = False 
     return returnvms
