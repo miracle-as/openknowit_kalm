@@ -68,6 +68,6 @@ def list_vms():
         # Close the connection
         conn.close()
 
-def serve():
+def main():
     list_vms()
-    
+
