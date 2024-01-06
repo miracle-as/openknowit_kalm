@@ -297,8 +297,15 @@ def get_host_data(host_id):
         return None
     
 def serve():
+    myenv = get_env()
     prettyllog("zabbix", "init", "main", "Kalm", "000", "Serving zabbix api", "info")
     list_host_groups()
+    print(myenv['zabbix']['hostgroups'])
+    for hostgroup in myenv['zabbix']['hostgroups']:
+        list_host_group(hostgroup)
+    return 0
+
+
 
     
 

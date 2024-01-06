@@ -43,8 +43,12 @@ def  get_env():
     os.mkdir(myenv['KALM_WORKDIR'])
   files = os.listdir(myenv['KALM_WORKDIR'] + "/etc/kalm")
 
-  if os.path.exists(myenv['KALM_WORKDIR'] + "/etc/kalm/kalm.json") == False:
-    raise SystemExit("Unable to find " + myenv['KALM_WORKDIR'] +"/etc/kalm/kalm.json")
+  if os.path.exists(myenv['KALM_WORKDIR'] + "/etc/kalm/zabbix.json") == False:
+    raise SystemExit("Unable to find " + myenv['KALM_WORKDIR'] +"/etc/kalm/zabbix.json")
   
-
+  #read the zabbix json file 
+  conffile = os.path.exists(myenv['KALM_WORKDIR'] + "/etc/kalm/zabbix.json")
+  with open(conffile) as json_file:
+    data = json.load(json_file)
+    myenv['zabbix'] = data
   return myenv
