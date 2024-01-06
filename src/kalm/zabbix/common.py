@@ -49,6 +49,7 @@ def  get_env():
     raise SystemExit("Unable to find " + myenv['KALM_WORKDIR'] +"/etc/kalm/zabbix.json")
   
   #read the zabbix json file 
+  prettyllog("Read zabbix.json file","info",   "zabbix", "get_env", "common.py", "kalm")
   conffile = os.path.exists(myenv['KALM_WORKDIR'] + "/etc/kalm/zabbix.json")
   with open(conffile) as json_file:
     data = json.load(json_file)
