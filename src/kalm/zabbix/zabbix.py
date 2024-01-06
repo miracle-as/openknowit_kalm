@@ -15,6 +15,7 @@ AUTHTOKEN =  myenv['KALM_ZABBIX_TOKEN']
 
 
 def list_host_group(hostgroup):
+    prettyllog("zabbix", "list_host_group", "zabbix", "000", "list_host_group", "info")
     r = requests.post(ZABBIX_API_URL,
     json= {     
           "jsonrpc": "2.0",     
