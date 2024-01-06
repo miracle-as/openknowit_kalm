@@ -1,6 +1,6 @@
 [project]
 name = "kalm"
-version = "3.11.133"
+version = "3.11.134"
 description = "Knowit automation lifecycle management"
 readme = "README.md"
 requires-python = ">=3.7"
@@ -51,7 +51,7 @@ kalm_ssh = "kalm.ssh:main"
 
 [tool.poetry]
 name = "kalm"
-version = "3.11.133"
+version = "3.11.134"
 description = "Knowit Automation lifecycle management"
 authors = [ "Jakob Holst <jakob.holst@knowit.dk>",]
 license = "MIT"

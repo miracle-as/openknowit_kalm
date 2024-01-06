@@ -48,7 +48,7 @@ def  get_env():
   return myenv
 
 def list_vms():
-    # Connect to the QEMU endpoint
+    prettyllog("libvirt", "init", "service", "redis" "ok", "000" , "updating servers", severity="INFO")
     conn = libvirt.open('qemu:///system')
     if conn is None:
         print('Failed to open connection to qemu:///system')
