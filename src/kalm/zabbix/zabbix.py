@@ -299,3 +299,5 @@ def get_host_data(host_id):
         print("no host found")
         return None
     
+def serve():
+    prettyllog("zabbix", "init", "main", "Kalm", "000", "Serving zabbix api", "info")
