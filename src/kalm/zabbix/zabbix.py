@@ -35,7 +35,68 @@ def list_host_group(hostgroup):
         print(json.dumps(r.json(), indent=4, sort_keys=True))
     except: 
         return False
-
+def get_host_groups():
+    prettyllog("zabbix", "get_host_groups", "zabbix", "000", "get_host_groups", "info")
+    r = requests.post(ZABBIX_API_URL,
+    json= {     
+          "jsonrpc": "2.0",     
+          "method": "hostgroup.get",     
+          "params": {         
+          "output": "extend"
+          },         
+        "auth": AUTHTOKEN
+    })
+    try:
+        print(json.dumps(r.json(), indent=4, sort_keys=True))
+    except: 
+        return False
+    
+def get_next_hostigroup_id():
+    prettyllog("zabbix", "get_next_hostigroup_id", "zabbix", "000", "get_next_hostigroup_id", "info")
+    hostgroups = get_host_groups()
+    pprint.pprint(hostgroups)
+    biggest = 0
+    if hostgroups == False:
+        return 1
+    else:
+        for hostgroup in hostgroups['result']:
+            if int(hostgroup['groupid']) > biggest:
+                biggest = int(hostgroup['groupid'])
+        return biggest + 1
+    
+def get_hosts():
+    prettyllog("zabbix", "get_hosts", "zabbix", "000", "get_hosts", "info")
+    r = requests.post(ZABBIX_API_URL,
+    json= {     
+          "jsonrpc": "2.0",     
+          "method": "host.get",     
+          "params": {         
+          "output": "extend",
+            "selectGroups": [
+                "id",
+                "name"
+            ]
+          },         
+        "auth": AUTHTOKEN
+    })
+    try:
+        print(json.dumps(r.json(), indent=4, sort_keys=True))
+    except: 
+        return False
+    
+def get_next_host_id():
+    prettyllog("zabbix", "get_next_host_id", "zabbix", "000", "get_next_host_id", "info")
+    hosts = get_hosts()
+    biggest = 0
+    if hosts == False:
+        return 1
+    else:
+        for host in hosts['result']:
+            if int(host['hostid']) > biggest:
+                biggest = int(host['hostid'])
+        return biggest + 1
+    
+        
 def list_host_groups():
     prettyllog("List host groups","info",   "zabbix", "list_host_groups", "zabbix.py", "kalm")
     r = requests.post(ZABBIX_API_URL,
@@ -49,7 +110,6 @@ def list_host_groups():
             ] 
             }
         },
-        "id": 1,
         "auth": AUTHTOKEN
     })
     pprint.pprint(r.content)
@@ -314,6 +374,9 @@ def serve():
     myenv = get_env()
     prettyllog("zabbix", "init", "main", "Kalm", "000", "Serving zabbix api", "info")
     print(myenv['zabbix'])
+    next_host_id = get_next_host_id()
+    print("next_host_id: " + str(next_host_id))
+    print("-----------------------------------")
     for group in myenv['zabbix']['hostGroups']:
         for subgroup in group['subgroups']:
             print("-----------------------------------")
