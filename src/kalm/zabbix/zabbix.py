@@ -199,14 +199,15 @@ def create_host_group(hostgroup = "Linux servers"):
           "method": "hostgroup.create",     
           "params": {         
           "name": hostgroup
-          },     
+          },
+        "id": 1,       
         "auth": AUTHTOKEN
     })
     pprint.pprint(r.reason)
     pprint.pprint(r.content)
     pprint.pprint(r.status_code)
     pprint.pprint(r.text)
-    
+
     try:
         pprint.pprint(r.json())
     except:
