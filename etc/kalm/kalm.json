@@ -1,10 +1,10 @@
 {
   "organisation": {
-    "name": "kalm",
+    "name": "Unix Ansible Automation",
     "description": "Miracle knowit all"
   },
   "subprojects": [
-    { "name": "bootstrap", "engine": "semaphore" }
+    { "name": "Unix Ansible Automation", "engine": "semaphore" }
   ]
 }
 

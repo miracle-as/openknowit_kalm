@@ -3,6 +3,7 @@ import os
 from ..common import prettyllog
 from ..gitea.git import clone_git_project
 from ..netbox.netbox import get_netbox_inventory_from_tag
+from ..netbox.netbox import get_netbox_master_inventory
 
 
 import pprint
@@ -469,32 +470,34 @@ def check_project(projectname, env):
     if env['KALM_GIT_TYPE'] == 'gitea':
         from ..gitea.git import get_git_projects
         git_projects = get_git_projects()
-        git_project_names = []
-        for git_project in git_projects:
-            git_project_names.append(git_project['name'])
-        if projectname in git_project_names:
-            prettyllog("semaphore", "Check", projectname, "ok", 0 , "project exists in git", severity="INFO")
+        if git_projects == False:
+            prettyllog("semaphore", "Check", "gitea", "error", 0 , "Git inaccesable ignoring git", severity="ERROR")
+            return False
+        else:
+            git_project_names = []
+            for git_project in git_projects:
+                git_project_names.append(git_project['name'])
+            if projectname in git_project_names:
+                prettyllog("semaphore", "Check", projectname, "ok", 0 , "project exists in git", severity="INFO")
             # check if project exists in semaphore
             # if not create it
             # if it exists check if it has the correct settings
             # if not update it
-        else:
-            prettyllog("semaphore", "Create", projectname, "missing", 1 , "project missing in git", severity="WARNING")
-            from ..gitea.git import create_git_project 
-            project = {}
-            project['name'] = projectname
-            project['description'] = "kalm project"
-            project['private'] = True
-            project['auto_init'] = True
+            else:
+                prettyllog("semaphore", "Create", projectname, "missing", 1 , "project missing in git", severity="WARNING")
+                from ..gitea.git import create_git_project 
+                project = {}
+                project['name'] = projectname
+                project['description'] = "kalm project"
+                project['private'] = True
+                project['auto_init'] = True
 
             # create project in git
-            create_git_project(project)
+                create_git_project(project)
             # create a temporary dir and clone the project
-        prettyllog("semaphore", "Init", "clone", projectname , "000", "kalm.json missing", severity="DEBUG")
-        configdata = clone_git_project(projectname)
-        pprint.pprint(configdata)
+            prettyllog("semaphore", "Init", "clone", projectname , "000", "Cloning git", severity="DEBUG")
+            configdata = clone_git_project(projectname)
             # create project in semaphore
-
             # create project in git
             # create project in semaphore
             # create project in awx
@@ -630,15 +633,15 @@ def main():
         ssh_key_id = get_sshkey_id(session, projects[project]['id'], sshkey['name'])
         become_key_id = get_sshkey_id(session, projects[project]['id'], becomekey['name'])
 
-        myinventory = get_netbox_inventory_from_tag(projectname)
+        myinventory = get_netbox_master_inventory()
         myinvdata = get_inventory(session, projects[project]['id'], projectname)
+    
         invexists = False
         try:
             if myinvdata[projectname]:
                invexists = True 
         except:
             invexists = False
-        pprint.pprint(invexists)
         if not invexists:
             invetoryname = "%s-%s" % (projectname, "netbox")
             inventorydata = {

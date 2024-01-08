@@ -10,8 +10,6 @@ import time
 from pyVim.connect import SmartConnect, Disconnect
 from ..common import prettyllog
 
-print("Starting vmware")    
-print("-------------------------------------------------------")
 redishost=os.getenv("KALM_REDIS_HOST")
 if redishost is None:
     redishost="localhost"
@@ -24,11 +22,6 @@ if redisport is None:
 redisdb=os.getenv("KALM_REDIS_DB")
 if redisdb is None:
     redisdb="0"
-print("Using redis host: %s" % redishost)
-print("Using redis port: %s" % redisport)
-print("Using redis db: %s" % redisdb)
-
-print("-------------------------------------------------------")
 
 r = redis.Redis(host=redishost, port=redisport, db=redisdb)
 
@@ -92,7 +85,6 @@ def get_cluster_list(content):
         content.rootFolder, [vim.ClusterComputeResource], True
     )
     # promnt items in container
-    pprint.pprint(container.view)
 
     for cluster in container.view:
         if limit == 0:

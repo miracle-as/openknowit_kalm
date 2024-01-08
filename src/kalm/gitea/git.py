@@ -21,6 +21,8 @@ def getenv():
   myenv["KALM_GIT_TYPE"] = os.getenv("KALM_GIT_TYPE")
   username = os.getenv("KALM_GIT_USER")
   password = os.getenv("KALM_GIT_PASSWORD")
+  token = os.getenv('KALM_GIT_TOKEN')
+  myenv['KALM_GIT_TOKEN'] = token
   myenv["verifyssl"] = os.getenv("KALM_GIT_VERIFY_SSL", "False")
 
   credentials = f"{username}:{password}"
@@ -33,11 +35,24 @@ def init():
   myenv = getenv()
   session = requests.Session()
   url = os.getenv("KALM_GIT_URL") + "/api/v1/user"
+
   headers = {
     "Content-Type": "application/json",
     "Authorization": "Basic " + myenv['base64_credentials']
     }
-  resp = session.get(url,headers=headers)
+  try:
+    headers = {
+      "Content-Type": "application/json",
+      "Authorization": "Token " + myenv['KALM_GIT_TOKEN']
+    }
+  except:
+    headers = {
+      "Content-Type": "application/json",
+      "Authorization": "Basic " + myenv['base64_credentials']
+      }
+    
+  resp = requests.get(url,headers=headers, verify=False)
+  pprint.pprint(resp.reason)
   if resp.status_code == 200:
     prettyllog("state", "Init", "git", "ok", resp.status_code, "login successful", severity="INFO")
     return session
@@ -58,8 +73,6 @@ def clone_git_project(projectname):
     endpoint = os.getenv("KALM_GIT_URL").split("://")[1]
     remote = f"{protocol}://{username}:{password}@{endpoint}/gitea/{projectname}.git"
     remoteanonym = f"{protocol}://{endpoint}/gitea/{projectname}.git"
-    pprint.pprint(remote)
-    
 
     repo = git.Repo.clone_from(remote, tempfiledir)
     configdata = {}
@@ -140,13 +153,20 @@ def create_git_project(project):
   
 def get_git_projects():
   myenv = getenv() 
-  session = init()
+  #session = init()
   url = myenv['KALM_GIT_URL'] + "/api/v1/user/repos"
   headers = {
     "Content-Type": "application/json",
     "Authorization": "Basic " + myenv['base64_credentials']
     }
-  resp = session.get(url,headers=headers, verify=False)
+  headers = {
+      "Content-Type": "application/json",
+      "Authorization": "Token " + myenv['KALM_GIT_TOKEN']
+    }
+  resp = requests.get(url,headers=headers, verify=False)
+  if resp.reason == "Forbidden":
+    prettyllog("state", "Init", "git", "ok", resp.status_code, "get projects failed", severity="ERROR")
+    return False
   if resp.status_code == 200:
     prettyllog("state", "Init", "git", "ok", resp.status_code, "get projects successful", severity="INFO")
     return resp.json()
@@ -225,7 +245,7 @@ def get_git_tokens():
   data = {
     "username": myenv['KALM_GIT_USER']
     }
-  resp = session.get(url,headers=headers, json=data)
+  resp = session.get(url,headers=headers, json=data, verify=False)
   if (resp.status_code == 200):
     prettyllog("state", "Init", "git", "ok", resp.status_code, "get token successful", severity="INFO")
     return resp.json()

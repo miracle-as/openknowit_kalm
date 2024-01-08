@@ -180,7 +180,10 @@ def update_virtual_server(serverdetails, env , netboxdata):
         except:
             pass
     if found == False:
-        mytags.append(alltags["vmware"])
+        try:
+            mytags.append(alltags["vmware"])
+        except: 
+            pass
 
     url = env['KALM_NETBOX_URL'] + "/api/virtualization/virtual-machines/" + str(serverid) + "/"
     headers = {'Authorization': 'Token ' + env['KALM_NETBOX_TOKEN'],

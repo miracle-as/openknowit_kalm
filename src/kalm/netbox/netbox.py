@@ -336,6 +336,55 @@ def addvmwaretags(serverid, details, env):
 
 
            
+def get_netbox_master_inventory():
+    prettyllog("manage", "netbox", "inventory", "new", "000", "Getting master inventory")
+
+
+    invstring = ""
+    invstring = '[all]' + os.linesep 
+    multipage = True
+    url = fix_url("/virtualization/virtual-machines/")
+    headers = {
+        "Authorization": f"Token {NETBOX_TOKEN}",
+        "Accept": "application/json"
+    }
+    myitems = []
+    mytags = {}
+    while multipage:
+        response = requests.get(url, headers=headers, verify=False)
+        pprint.pprint(response.reason)
+        try:
+            mydata = response.json()
+            for myitem in mydata['results']:
+                invstring += myitem['name'] + os.linesep 
+                myitems.append(myitem)
+            if mydata['next']:
+                url = mydata['next']
+            else:
+                multipage = False
+        except:
+            multipage = False
+    for myitem in myitems:
+        try:
+            for mytag in myitem['tags']:
+                try:
+                    mytags[mytag['name']].append(myitem['name'])
+                except:
+                    mytags[mytag['name']] = []
+                    mytags[mytag['name']].append(myitem['name'])
+        except:
+            pass
+    for tag in mytags:
+        taghead = "[%s]" % tag
+        invstring += taghead + os.linesep
+        try:
+            for myhost in mytags[tag]:
+                print(myhost)
+                invstring += myhost + os.linesep
+        except:
+            pass
+    return invstring
+    
 
 
 def get_netbox_inventory_from_tag(tag):
@@ -343,15 +392,13 @@ def get_netbox_inventory_from_tag(tag):
     # This is the format of the inventory string :           'inventory': '[website]\n172.18.8.40\n172.18.8.41',
 
     invstring = ""
-
     invstring = '[%s]\n' % tag
-
     url = fix_url("/virtualization/virtual-machines/?tag=%s" % tag)
     headers = {
         "Authorization": f"Token {NETBOX_TOKEN}",
         "Accept": "application/json"
     }
-    response = requests.get(url, headers=headers)
+    response = requests.get(url, headers=headers, verify=False)
     if response.status_code == 200:
         data = response.json()
         for server in data['results']:
