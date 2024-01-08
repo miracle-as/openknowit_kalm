@@ -1,0 +1,85 @@
+{
+  "hostGroups": [
+    {
+      "name": "Operating Systems",
+      "subgroups": [
+        "Windows Servers",
+        "Linux Servers",
+        "Unix Servers"
+      ]
+    },
+    {
+      "name": "Server Roles",
+      "subgroups": [
+        "Web Servers",
+        "Database Servers",
+        "Application Servers",
+        "File Servers",
+        "Mail Servers"
+      ]
+    },
+    {
+      "name": "Network Devices",
+      "subgroups": [
+        "Routers",
+        "Switches",
+        "Firewalls"
+      ]
+    },
+    {
+      "name": "Environment",
+      "subgroups": [
+        "Production Servers",
+        "Development Servers",
+        "Testing Servers"
+      ]
+    },
+    {
+      "name": "Location",
+      "subgroups": [
+        "Data Center 1",
+        "Data Center 2",
+        "Office Locations"
+      ]
+    },
+    {
+      "name": "Infrastructure Components",
+      "subgroups": [
+        "Virtual Machines",
+        "Physical Servers",
+        "Cloud Instances"
+      ]
+    },
+    {
+      "name": "Application-specific",
+      "subgroups": [
+        "CRM Applications",
+        "ERP Applications",
+        "Custom Applications"
+      ]
+    },
+    {
+      "name": "Security",
+      "subgroups": [
+        "Security Appliances",
+        "Intrusion Detection Systems (IDS)",
+        "Antivirus Servers"
+      ]
+    },
+    {
+      "name": "Monitoring Devices",
+      "subgroups": [
+        "Zabbix Proxies",
+        "Monitoring Appliances"
+      ]
+    },
+    {
+      "name": "Web Services",
+      "subgroups": [
+        "Web Frontends",
+        "API Servers"
+      ]
+    }
+  ]
+}
+

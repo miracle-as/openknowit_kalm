@@ -1,0 +1,11 @@
+{
+  "hostGroups": [
+    {
+      "name": "aap",
+      "subgroups": [
+        "Ansible Automation"
+      ]
+    }
+  ]
+}
+
