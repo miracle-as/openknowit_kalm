@@ -1753,6 +1753,17 @@ def get_virtual_machines(env = get_env()):
             morepages = False 
     return returnvms
 
+def get_host(hostname):
+    prettyllog("netbox", "gethost", "host", "kalm", "000", "Getting host %s " % hostname , "info")
+    hostdata = {}
+    hostdata['inventory'] = {}
+    hostdata['inventory']['netbox'] = {}
+    hostdata['inventory']['netbox']['name']="test"
+    myenv = get_env()
+    vms = get_virtual_machines(myenv)
+    pprint.pprint(vms)
+    return hostdata
+
 
     
 def netboxdata(args):

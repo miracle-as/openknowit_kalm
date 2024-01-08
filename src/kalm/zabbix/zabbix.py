@@ -7,7 +7,10 @@ import platform
 import yaml
 from ..common import prettyllog
 from .common import get_env
+from ..netbox import netbox
+
 import pprint
+
 
 myenv = get_env()
 ZABBIX_API_URL = myenv['KALM_ZABBIX_URL'] + "/api_jsonrpc.php"
@@ -356,7 +359,18 @@ def serve():
         for host in hosts['result']:
             hostsnames[host['host']] = host['hostid']
             hostsids[host['hostid']] = host['host']
+            hostdata = get_host_data(host['hostid'])
+            netboxdata = netbox.get_host(host['host'])
+            if netboxdata == None:
+                prettyllog("zabbix", "init", "main", "Kalm", "000", "no netbox data found for %s" % host['host'], "info")
+            else:
+                prettyllog("zabbix", "init", "main", "Kalm", "000", "netbox data found for %s" % host['host'], "info")
+                pprint.pprint(netboxdata)
+
+            pprint.pprint(hostdata)
         prettyllog("zabbix", "init", "main", "Kalm", "000", "hosts: %d" % len(hostsnames), "info")
+    
+    pprint.pprint(hostsids)
 
 
     return 0
