@@ -1,12 +1,12 @@
 [project]
 name = "kalm"
-version = "3.11.174"
+version = "3.11.175"
 description = "Knowit automation lifecycle management"
 readme = "README.md"
 requires-python = ">=3.7"
 keywords = [ "kalm", "awx", "ansible", "automation",]
 classifiers = [ "Development Status :: 3 - Alpha", "Intended Audience :: Developers", "Topic :: Software Development :: Libraries :: Python Modules", "License :: OSI Approved :: MIT License", "Programming Language :: Python :: 3",]
-dependencies = [ "redis", "flask", "libvirt-python", "pynetbox", "wheel", "hvac", "xmltodict", "netbox", "urllib3", "cryptography", "PyYAML", "toml",]
+dependencies = [ "redis", "flask", "pynetbox", "wheel", "hvac", "xmltodict", "netbox", "urllib3", "cryptography", "PyYAML", "toml",]
 [[project.authors]]
 name = "Jakob Holst"
 email = "jho@miracle.dk"
@@ -51,7 +51,7 @@ kalm_ssh = "kalm.ssh:main"
 
 [tool.poetry]
 name = "kalm"
-version = "3.11.174"
+version = "3.11.175"
 description = "Knowit Automation lifecycle management"
 authors = [ "Jakob Holst <jakob.holst@knowit.dk>",]
 license = "MIT"
@@ -92,7 +92,6 @@ cryptography = "^41.0.2"
 paramiko = "^3.3.1"
 toml = "^0.10.2"
 pyvmomi = "^8.0.2.0.1"
-libvirt-python = "^9.10.0"
 
 [tool.setuptools.package-data]
 kalm = [ "*.dat",]
