@@ -11,7 +11,7 @@ def usage():
 
 
 def  get_env():
-  prettyllog("Get environment variables","info",   "zabbix", "get_env", "common.py", "kalm")
+  prettyllog("get_env", "Read", "Environment", "kalm" ,"000", "Reading zabbix environment", "info")
   myenv = {}
   myenv['subproject'] = {}
   try:
@@ -49,7 +49,7 @@ def  get_env():
     raise SystemExit("Unable to find " + myenv['KALM_WORKDIR'] +"/etc/kalm/zabbix.json")
   
   #read the zabbix json file 
-  prettyllog("Read zabbix.json file","info",   "zabbix", "get_env", "common.py", "kalm")
+  prettyllog("get_env", "Read", "zabbix.json", "kalm", "000", "Reading zabbix.json file", "info")
   conf_path = myenv['KALM_WORKDIR'] + "/etc/kalm/zabbix.json"
 
   if os.path.exists(conf_path):

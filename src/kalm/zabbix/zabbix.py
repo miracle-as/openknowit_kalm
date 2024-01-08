@@ -29,92 +29,64 @@ def list_host_group(hostgroup):
                 }
 
           },         
+        "id": 1,
         "auth": AUTHTOKEN
     })
     try:
-        print(json.dumps(r.json(), indent=4, sort_keys=True))
+        return(r.json())
     except: 
         return False
+    
 def get_host_groups():
     prettyllog("zabbix", "get_host_groups", "zabbix", "000", "get_host_groups", "info")
     r = requests.post(ZABBIX_API_URL,
-    json= {     
+        json= {     
           "jsonrpc": "2.0",     
           "method": "hostgroup.get",     
           "params": {         
-          "output": "extend"
-          },         
-        "auth": AUTHTOKEN
-    })
+            "output": "extend"
+           },
+          "id": 1,
+          "auth": AUTHTOKEN
+        }, verify=False)
+
     try:
-        print(json.dumps(r.json(), indent=4, sort_keys=True))
+        return r.json()
     except: 
         return False
     
-def get_next_hostigroup_id():
-    prettyllog("zabbix", "get_next_hostigroup_id", "zabbix", "000", "get_next_hostigroup_id", "info")
-    hostgroups = get_host_groups()
-    pprint.pprint(hostgroups)
-    biggest = 0
-    if hostgroups == False:
-        return 1
-    else:
-        for hostgroup in hostgroups['result']:
-            if int(hostgroup['groupid']) > biggest:
-                biggest = int(hostgroup['groupid'])
-        return biggest + 1
-    
 def get_hosts():
-    prettyllog("zabbix", "get_hosts", "zabbix", "000", "get_hosts", "info")
     r = requests.post(ZABBIX_API_URL,
     json= {     
           "jsonrpc": "2.0",     
           "method": "host.get",     
           "params": {         
-          "output": "extend",
-            "selectGroups": [
-                "id",
-                "name"
-            ]
+            "output": "extend"
           },         
-        "auth": AUTHTOKEN
-    })
+          "id": 1,
+          "auth": AUTHTOKEN
+    }, verify=False)
     try:
-        print(json.dumps(r.json(), indent=4, sort_keys=True))
+        return r.json()
     except: 
         return False
     
-def get_next_host_id():
-    prettyllog("zabbix", "get_next_host_id", "zabbix", "000", "get_next_host_id", "info")
-    hosts = get_hosts()
-    biggest = 0
-    if hosts == False:
-        return 1
-    else:
-        for host in hosts['result']:
-            if int(host['hostid']) > biggest:
-                biggest = int(host['hostid'])
-        return biggest + 1
-    
         
 def list_host_groups():
-    prettyllog("List host groups","info",   "zabbix", "list_host_groups", "zabbix.py", "kalm")
     r = requests.post(ZABBIX_API_URL,
     json= {     
           "jsonrpc": "2.0",     
           "method": "hostgroup.get",     
           "params": {         
           "output": "extend",
-                 "filter": {
-                 "name": [
-            ] 
-            }
         },
+        "id": 1,
         "auth": AUTHTOKEN
-    })
-    pprint.pprint(r.content)
-    
-    print(json.dumps(r.json(), indent=4, sort_keys=True))
+    }, verify=False)
+    try:
+        return(r.json())
+    except:
+        return False
 
 def get_host_id(hostname):
     r = requests.post(ZABBIX_API_URL,
@@ -132,11 +104,10 @@ def get_host_id(hostname):
             },
             "auth": AUTHTOKEN,
             "id": 1
-        })
+        }, verify=False)
     try:
         return r.json()['result'][0]['hostid']
     except:
-        print("no host found")
         return None
     
 def get_host_group_id(hostgroup):
@@ -155,11 +126,10 @@ def get_host_group_id(hostgroup):
             },
             "auth": AUTHTOKEN,
             "id": 1
-        })
+        }, verify=False)
     try:
         return r.json()['result'][0]['groupid']
     except:
-        print("no hostgroup found")
         return None
     
 def create_host(hostname , hostgroup_id, ipadress):    
@@ -198,13 +168,10 @@ def create_host(hostname , hostgroup_id, ipadress):
           },
         "id": 1,
         "auth": AUTHTOKEN
-    })
+    }, verify=False)
     try:
         return r.json()['result']['hostids'][0]
     except:
-        print(r.status_code)
-        print(r.content)
-        print("no host created")
         return None
     
 def  host_update(hostname, host_id, hostgroup_id, ipadress):
@@ -243,13 +210,10 @@ def  host_update(hostname, host_id, hostgroup_id, ipadress):
           },
         "id": 1,
         "auth": AUTHTOKEN
-    })
+    }, verify=False)
     try:
         return r.json()['result']['hostids'][0]
     except:
-        print(r.status_code)
-        print(r.content)
-        print("host not updated")
         return None
 
 def create_host_group(hostgroup = "Linux servers"):
@@ -262,20 +226,10 @@ def create_host_group(hostgroup = "Linux servers"):
           },
         "id": 1,       
         "auth": AUTHTOKEN
-    })
-    pprint.pprint(r.reason)
-    pprint.pprint(r.content)
-    pprint.pprint(r.status_code)
-    pprint.pprint(r.text)
-
-    try:
-        pprint.pprint(r.json())
-    except:
-        pass
+    }, verify=False)
     try:
         return r.json()['result']['groupids'][0]
     except:
-        print("no hostgroup created")
         return None
     
 def status():
@@ -363,7 +317,7 @@ def get_host_data(host_id):
             },
             "auth": AUTHTOKEN,
             "id": 1
-        })
+        }, verify=False)
     try:
         return r.json()['result'][0]
     except:
@@ -373,27 +327,38 @@ def get_host_data(host_id):
 def serve():
     myenv = get_env()
     prettyllog("zabbix", "init", "main", "Kalm", "000", "Serving zabbix api", "info")
-    print(myenv['zabbix'])
-    next_host_id = get_next_host_id()
-    print("next_host_id: " + str(next_host_id))
-    print("-----------------------------------")
+    hostgroups = get_host_groups()
+    hostgroupsnames = {}
+    hostgroupids = {}
+    for hostgroup in hostgroups['result']:
+        hostgroupids[hostgroup['name']] = hostgroup['groupid']
+        hostgroupsnames[hostgroup['groupid']] = hostgroup['name']
+
+    prettyllog("zabbix", "init", "main", "Kalm", "000", "hostgroups: %d" % len(hostgroupids), "info")
     for group in myenv['zabbix']['hostGroups']:
         for subgroup in group['subgroups']:
-            print("-----------------------------------")
-            print(subgroup)
-            print("-----------------------------------")
-            hostgroupdata = list_host_group(subgroup)
-            if hostgroupdata == False:
-                print("no hostgroup found")
-                hostgroupdata = create_host_group(subgroup)
-                if hostgroupdata == None:
-                    print("no hostgroup created")
-                else:
-                    print("hostgroup created")
-            pprint.pprint(hostgroupdata)
-            print("-----------------------------------")
+            try:    
+                hostgroupid = hostgroupids[subgroup]
+                prettyllog("zabbix", "init", "main", "Kalm", "000", "hostgroup %s found" % subgroup, "info")
+            except:
+                prettyllog("zabbix", "init", "main", "Kalm", "000", "hostgroup %s not found" % subgroup, "info")
+                hostgroupid = create_host_group(subgroup)
+                hostgroupids[subgroup] = hostgroupid
+                hostgroupsnames[hostgroupid] = subgroup
+    prettyllog("zabbix", "init", "main", "Kalm", "000", "hostgroups: %d" % len(hostgroupids), "info")
 
-    #list_host_groups()
+    hosts = get_hosts()
+    hostsnames = {}
+    hostsids = {}
+    if hosts == False:
+        prettyllog("zabbix", "init", "main", "Kalm", "000", "no hosts found", "info")
+    else:
+        for host in hosts['result']:
+            hostsnames[host['host']] = host['hostid']
+            hostsids[host['hostid']] = host['host']
+        prettyllog("zabbix", "init", "main", "Kalm", "000", "hosts: %d" % len(hostsnames), "info")
+
+
     return 0
 
 
