@@ -637,7 +637,9 @@ def main():
         print("my org: %s" % organization)
         print("my project: %s" % projectname)
 
-        
+        pprint.pprint(myinvdata)
+
+
 
         
     
@@ -657,7 +659,6 @@ def main():
                         "become_key_id": become_key_id,
                         "type": "static"
             }
-            prettyllog("semaphore", "check", "inventory", "master", "000" , "check if inventoty exists" % projectname, severity="INFO")
             get_inventory(session, projects[project]['id'], invetoryname) 
 
 
