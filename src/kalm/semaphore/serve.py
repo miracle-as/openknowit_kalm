@@ -267,6 +267,8 @@ def update_inventory(session, project_id, inventory_id, inventory):
     # check if inventory exists
     baseurl = os.getenv('KALM_SEMAPHORE_URL')
     inventory_url = f"{baseurl}/api/project/{project_id}/inventory/{inventory_id}"  # Adjust the URL as needed
+    pprint.pprint(inventory_url)
+    
     headers = {
         'accept': 'application/json',
         'Content-Type': 'application/json'
