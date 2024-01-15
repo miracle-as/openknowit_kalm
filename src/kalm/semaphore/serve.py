@@ -634,14 +634,9 @@ def main():
         myinventory = get_netbox_master_inventory()
         prettyllog("semaphore", "check", "inventoty", "master", "000" , "Get master inventory from semaphore", severity="INFO")
         myinvdata = get_inventory(session, projects[project]['id'], projectname)
-        print("my org: %s" % organization)
-        print("my project: %s" % projectname)
-        pprint.pprint(organization)
-        pprint.pprint(projectname)
-
         if organization in projectname:
             print("my project: %s" % projectname)
-            for line in myinvdata:
+            for line in myinventory:
                 print("line: %s" % line)
                 if line != "master":
                     print("line: %s" % line)
