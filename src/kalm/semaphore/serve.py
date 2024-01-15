@@ -273,6 +273,10 @@ def update_inventory(session, project_id, inventory_id, inventory):
     }
     inventory['id'] = inventory_id
     response = session.put(inventory_url, headers=headers, json=inventory)
+    pprint.pprint(response.reason)
+    pprint.pprint(response.request.body)
+    pprint.pprint(response.status_code)
+    
     if response.status_code == 204:
         # Successful request
         prettyllog("semaphore", "update", inventory['name'], "ok", response.status_code , "update inventory", severity="INFO")
