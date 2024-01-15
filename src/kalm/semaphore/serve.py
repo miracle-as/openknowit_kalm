@@ -675,7 +675,7 @@ def main():
                         "become_key_id": become_key_id,
                         "type": "static"
             }
-            #update_inventory(session, projects[project]['id'], myinvdata[invetoryname]['id'], inventorydata)
+            update_inventory(session, projects[project]['id'], myinvdata[invetoryname]['id'], inventorydata)
     return 0
 
 
