@@ -636,7 +636,10 @@ def main():
         myinvdata = get_inventory(session, projects[project]['id'], projectname)
         print("my org: %s" % organization)
         print("my project: %s" % projectname)
-        if projectname is organization:
+        pprint.pprint(organization)
+        pprint.pprint(projectname)
+
+        if organization in projectname:
             print("my project: %s" % projectname)
             for line in myinvdata:
                 print("line: %s" % line)
