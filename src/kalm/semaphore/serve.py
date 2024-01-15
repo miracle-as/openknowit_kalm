@@ -381,6 +381,7 @@ def get_inventory(session, project_id, projectname):
     response = session.get(inventory_url, headers=headers)
     print("----------HER-----------------")
     pprint.pprint(response.reason)
+    pprint.pprint(response.status_code)
     print("---------------------------")
     if response.status_code == 200:
         # Successful request
