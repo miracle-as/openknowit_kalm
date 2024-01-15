@@ -198,9 +198,6 @@ def addtagtovm(vmid, tagids, env):
                 
 def addvmwaretags(serverid, details, env):
     prettyllog("manage", "netbox", "tag", "new", "000", "Adding tags to vm %s" % serverid)
-    print("----------------------------------------------------------")
-    pprint.pprint(details)
-    print("----------------------------------------------------------")
     # guestId': 'debian10_64Guest',
 # 'hostName': 'acs-sndb2.greennet.gl',
 # 'hwVersion': 'vmx-19',
@@ -338,8 +335,6 @@ def addvmwaretags(serverid, details, env):
            
 def get_netbox_master_inventory():
     prettyllog("manage", "netbox", "inventory", "new", "000", "Getting master inventory")
-
-
     invstring = ""
     invstring = '[all]' + os.linesep 
     multipage = True
@@ -352,7 +347,6 @@ def get_netbox_master_inventory():
     mytags = {}
     while multipage:
         response = requests.get(url, headers=headers, verify=False)
-        pprint.pprint(response.reason)
         try:
             mydata = response.json()
             for myitem in mydata['results']:
@@ -1795,7 +1789,6 @@ def get_virtual_machines(env = get_env()):
         # we need to check if there are more pages 
         if vms['next'] is not None:
             url = vms['next']
-            pprint.pprint(vms['next'])
         else:
             morepages = False 
     return returnvms
@@ -1808,7 +1801,6 @@ def get_host(hostname):
     hostdata['inventory']['netbox']['name']="test"
     myenv = get_env()
     vms = get_virtual_machines(myenv)
-    pprint.pprint(vms)
     return hostdata
 
 
