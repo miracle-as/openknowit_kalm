@@ -639,7 +639,7 @@ def main():
             mysplitinv = myinventory.split("\n")
             for line in mysplitinv:
                 print("line: %s" % line)
-                if line != "master":
+                if line.startswith('['):
                     print("line: %s" % line)
                     #delete_inventory(session, projects[project]['id'], myinvdata[line]['id'])
         else:
