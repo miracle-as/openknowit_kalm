@@ -379,10 +379,6 @@ def get_inventory(session, project_id, projectname):
         'Content-Type': 'application/json'
     }
     response = session.get(inventory_url, headers=headers)
-    print("----------HER-----------------")
-    pprint.pprint(response.reason)
-    pprint.pprint(response.status_code)
-    print("---------------------------")
     if response.status_code == 200:
         # Successful request
         inventory = response.json()
@@ -634,7 +630,10 @@ def main():
         become_key_id = get_sshkey_id(session, projects[project]['id'], becomekey['name'])
 
         myinventory = get_netbox_master_inventory()
+        prettyllog("semaphore", "check", "inventoty", "master", "000" , "check project" % projectname, severity="INFO")
         myinvdata = get_inventory(session, projects[project]['id'], projectname)
+        pprint.pprint(myinvdata)
+
     
     
         invexists = False
