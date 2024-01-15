@@ -372,6 +372,7 @@ def get_netbox_master_inventory():
             pass
     for tag in mytags:
         prettyllog("netbox", "tags", "inventory", "new", "000", "creating inventory group %s" % tag)
+        tag.replace("_", "-")
         taghead = "[%s]" % tag
         invstring += taghead + os.linesep
         try:
