@@ -199,6 +199,7 @@ def addtagtovm(vmid, tagids, env):
                 
 def addvmwaretags(serverid, details, env):
     prettyllog("manage", "netbox", "tag", "new", "000", "Adding tags to vm %s" % serverid)
+    details['guestId'] = details['guestId'].replace("_", "-")
     # guestId': 'debian10_64Guest',
 # 'hostName': 'acs-sndb2.greennet.gl',
 # 'hwVersion': 'vmx-19',
