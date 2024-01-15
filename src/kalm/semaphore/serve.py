@@ -646,17 +646,8 @@ def main():
                     myinventories[mynameis] = line
                     #delete_inventory(session, projects[project]['id'], myinvdata[line]['id'])
             pprint.pprint(myinventories)
-                
-            
         else:
             print("my project: %s is not a uniproject (%s)" % (projectname, organization))
-
-
-
-
-
-        
-    
         invexists = False
         if myinvdata == None:
             invexists = False
@@ -685,8 +676,6 @@ def main():
                         "type": "static"
             }
             #update_inventory(session, projects[project]['id'], myinvdata[invetoryname]['id'], inventorydata)
-    return 0m
-
-
+    return 0
 
 
