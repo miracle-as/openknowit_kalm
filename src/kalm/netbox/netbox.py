@@ -374,7 +374,6 @@ def get_netbox_master_inventory():
         invstring += taghead + os.linesep
         try:
             for myhost in mytags[tag]:
-                print(myhost)
                 invstring += myhost + os.linesep
         except:
             pass
