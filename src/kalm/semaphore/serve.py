@@ -640,7 +640,7 @@ def main():
         prettyllog("semaphore", "check", "inventoty", "master", "000" , "Get master inventory from semaphore", severity="INFO")
         myinvdata = get_inventory(session, projects[project]['id'], projectname)
         print("----------------------------------------")
-        pprint(myinvdata)
+        pprint.pprint(myinvdata)
         print("----------------------------------------")
         if organization in projectname:
             print("my project: %s" % projectname)
