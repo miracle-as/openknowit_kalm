@@ -637,6 +637,7 @@ def main():
         print("my org: %s" % organization)
         print("my project: %s" % projectname)
         if projectname == organization:
+            print("my project: %s" % projectname)
             for line in myinvdata:
                 print("line: %s" % line)
                 if line != "master":
