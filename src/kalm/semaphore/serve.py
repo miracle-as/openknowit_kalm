@@ -668,7 +668,7 @@ def main():
         else:
             invetoryname = "%s-%s" % (projectname, "-netbox")
             myinvid = get_inventory(session, projects[project]['id'], invetoryname)
-                        inventorydata = {
+            inventorydata = {
                         "name": invetoryname,
                         "project_id": projects[project]['id'],
                         "inventory": myinventory,
