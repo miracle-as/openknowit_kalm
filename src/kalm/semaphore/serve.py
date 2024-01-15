@@ -630,9 +630,16 @@ def main():
         ssh_key_id = get_sshkey_id(session, projects[project]['id'], sshkey['name'])
         become_key_id = get_sshkey_id(session, projects[project]['id'], becomekey['name'])
 
+        prettyllog("semaphore", "check", "inventoty", "master", "000" , "Get master inventory from netbox", severity="INFO")
         myinventory = get_netbox_master_inventory()
-        prettyllog("semaphore", "check", "inventoty", "master", "000" , "check project" % projectname, severity="INFO")
+        prettyllog("semaphore", "check", "inventoty", "master", "000" , "Get master inventory from semaphore", severity="INFO")
         myinvdata = get_inventory(session, projects[project]['id'], projectname)
+        print("my org: %s" % organization)
+        print("my project: %s" % projectname)
+
+        
+
+        
     
         invexists = False
         try:
