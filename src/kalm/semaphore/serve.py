@@ -636,8 +636,14 @@ def main():
         myinvdata = get_inventory(session, projects[project]['id'], projectname)
         print("my org: %s" % organization)
         print("my project: %s" % projectname)
+        if projectname == organization:
+            for line in myinvdata:
+                print("line: %s" % line)
+                if line != "master":
+                    print("line: %s" % line)
+                    #delete_inventory(session, projects[project]['id'], myinvdata[line]['id'])
 
-        pprint.pprint(myinvdata)
+
 
 
 
@@ -670,7 +676,7 @@ def main():
                         "become_key_id": become_key_id,
                         "type": "static"
             }
-            update_inventory(session, projects[project]['id'], myinvdata[invetoryname]['id'], inventorydata)
+            #update_inventory(session, projects[project]['id'], myinvdata[invetoryname]['id'], inventorydata)
     return 0
 
 
