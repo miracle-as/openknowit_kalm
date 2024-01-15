@@ -636,13 +636,15 @@ def main():
         myinvdata = get_inventory(session, projects[project]['id'], projectname)
         print("my org: %s" % organization)
         print("my project: %s" % projectname)
-        if projectname == organization:
+        if projectname is organization:
             print("my project: %s" % projectname)
             for line in myinvdata:
                 print("line: %s" % line)
                 if line != "master":
                     print("line: %s" % line)
                     #delete_inventory(session, projects[project]['id'], myinvdata[line]['id'])
+        else:
+            print("my project: %s is not a uniproject (%s)" % (projectname, organization))
 
 
 
