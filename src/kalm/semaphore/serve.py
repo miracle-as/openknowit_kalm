@@ -287,6 +287,7 @@ def create_inventory(session, project_id, inventory):
     # check if inventory exists
 
     myinv =  get_inventory(session, project_id, inventory['name'])
+    
     try:
         if myinv[inventory['name']]:
             prettyllog("semaphore", "update", inventory['name'], "ok", 0 , "update inventory", severity="INFO")
@@ -383,6 +384,9 @@ def get_inventory(session, project_id, projectname):
         'Content-Type': 'application/json'
     }
     response = session.get(inventory_url, headers=headers)
+    print("----------HER-----------------")
+    pprint.pprint(response.reason)
+    print("---------------------------")
     if response.status_code == 200:
         # Successful request
         inventory = response.json()
