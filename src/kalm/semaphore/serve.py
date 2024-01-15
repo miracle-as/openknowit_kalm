@@ -668,6 +668,14 @@ def main():
         else:
             invetoryname = "%s-%s" % (projectname, "-netbox")
             myinvid = get_inventory(session, projects[project]['id'], invetoryname)
+                        inventorydata = {
+                        "name": invetoryname,
+                        "project_id": projects[project]['id'],
+                        "inventory": myinventory,
+                        "ssh_key_id": ssh_key_id,
+                        "become_key_id": become_key_id,
+                        "type": "static"
+            }
             update_inventory(session, projects[project]['id'], myinvid, inventorydata)
     return 0
 
