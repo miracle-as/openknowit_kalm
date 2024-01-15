@@ -641,9 +641,9 @@ def main():
             for line in mysplitinv:
                 if line.startswith('['):
                     mynameis = line.split('[')[1].split(']')[0]
-                    myinventories[mynameis] = {}
+                    myinventories[mynameis] = []
                 else:
-                    myinventories[mynameis] = line
+                    myinventories[mynameis].append = line
                     #delete_inventory(session, projects[project]['id'], myinvdata[line]['id'])
             pprint.pprint(myinventories)
         else:
