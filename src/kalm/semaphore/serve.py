@@ -272,7 +272,7 @@ def update_inventory(session, project_id, inventory_id, inventory):
         'Content-Type': 'application/json'
     }
     inventory['id'] = inventory_id
-    response = session.patch(inventory_url, headers=headers, json=inventory)
+    response = session.put(inventory_url, headers=headers, json=inventory)
     pprint.pprint(response.reason)
     pprint.pprint(response.status_code)
 
