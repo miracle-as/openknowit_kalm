@@ -636,12 +636,18 @@ def main():
         myinvdata = get_inventory(session, projects[project]['id'], projectname)
         if organization in projectname:
             print("my project: %s" % projectname)
+            myinventories = {}
             mysplitinv = myinventory.split("\n")
             for line in mysplitinv:
-                print("line: %s" % line)
                 if line.startswith('['):
-                    print("line: %s" % line)
+                    mynameis = line.split('[')[1].split(']')[0]
+                    myinventories[mynameis] = {}
+                else:
+                    myinventories[mynameis] = line
                     #delete_inventory(session, projects[project]['id'], myinvdata[line]['id'])
+            pprint.pprint(myinventories)
+                
+            
         else:
             print("my project: %s is not a uniproject (%s)" % (projectname, organization))
 
@@ -679,7 +685,7 @@ def main():
                         "type": "static"
             }
             #update_inventory(session, projects[project]['id'], myinvdata[invetoryname]['id'], inventorydata)
-    return 0
+    return 0m
 
 
 
