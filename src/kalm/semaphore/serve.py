@@ -643,7 +643,7 @@ def main():
                     mynameis = line.split('[')[1].split(']')[0]
                     myinventories[mynameis] = ""
                 else:
-                    myinventories[mynameis].append(line)
+                    myinventories[mynameis] += line
                     #delete_inventory(session, projects[project]['id'], myinvdata[line]['id'])
             pprint.pprint(myinventories)
         else:
