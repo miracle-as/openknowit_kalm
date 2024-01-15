@@ -636,7 +636,8 @@ def main():
         myinvdata = get_inventory(session, projects[project]['id'], projectname)
         if organization in projectname:
             print("my project: %s" % projectname)
-            for line in myinventory:
+            mysplitinv = myinventory.split("\n")
+            for line in mysplitinv:
                 print("line: %s" % line)
                 if line != "master":
                     print("line: %s" % line)
