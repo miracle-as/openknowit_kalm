@@ -130,6 +130,7 @@ def create_random_color():
     return '%02X%02X%02X' % (r(),r(),r())
 
 def create_tag(tag_name):
+    tag_name = tag_name.replace("_", "-")
     prettyllog("manage", "netbox", "tag", "new", "000", "Creating tag")
     url = fix_url("/extras/tags/" )
     headers = {
