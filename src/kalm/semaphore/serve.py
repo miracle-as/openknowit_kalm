@@ -655,7 +655,7 @@ def main():
             invexists = True
 
         if not invexists:
-            invetoryname = "%s-%s" % (projectname, "netbox")
+            invetoryname = "%s-%s" % (projectname, "-netbox")
             inventorydata = {
                         "name": invetoryname,
                         "project_id": projects[project]['id'],
@@ -666,16 +666,9 @@ def main():
             }
             create_inventory(session, projects[project]['id'], inventorydata)
         else:
-            invetoryname = "%s-%s" % (projectname, "netbox")
-            inventorydata = {
-                        "name": invetoryname,
-                        "project_id": projects[project]['id'],
-                        "inventory": myinventory,
-                        "ssh_key_id": ssh_key_id,
-                        "become_key_id": become_key_id,
-                        "type": "static"
-            }
-            update_inventory(session, projects[project]['id'], myinvdata[invetoryname]['id'], inventorydata)
+            invetoryname = "%s-%s" % (projectname, "-netbox")
+            myinvid = get_inventory(session, projects[project]['id'], invetoryname)
+            update_inventory(session, projects[project]['id'], myinvid, inventorydata)
     return 0
 
 
