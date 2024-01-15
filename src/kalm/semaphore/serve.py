@@ -183,7 +183,6 @@ def create_repository(session, repository):
         'accept': 'application/json',
         'Content-Type': 'application/json'
     }
-    pprint.pprint(repository)
     # Use the session for the request
     response = session.post(repository_url, headers=headers, json=repository)
     if response.status_code == 201:
@@ -319,8 +318,6 @@ def create_credemtial(session, project_id, credential):
     baseurl = os.getenv('KALM_SEMAPHORE_URL')
     credential_url = f"{baseurl}/api/project/{project_id}/keys"  # Adjust the URL as needed
     
-    pprint.pprint(credential_url)
-
     headers = {
         'accept': 'application/json',
         'Content-Type': 'application/json'
@@ -338,7 +335,6 @@ def create_credemtial(session, project_id, credential):
         prettyllog("semaphore", "create", credential['name'], "error", response.status_code , "create credential", severity="DEBUG")
 
     response = session.post(credential_url, headers=headers, json=credential)
-    pprint.pprint(response.content)
     if response.status_code == 204:
         # Successful request
         prettyllog("semaphore", "create", credential['name'], "ok", response.status_code , "create credential", severity="INFO")
@@ -347,7 +343,6 @@ def create_credemtial(session, project_id, credential):
         if response.status_code == 404:
             # Failed request
             prettyllog("semaphore", "create", credential['name'], "error", response.status_code , "create credential", severity="ERROR")
-            pprint.pprint(response.content)
             return False
 
         # Failed request
@@ -639,6 +634,7 @@ def main():
 
         myinventory = get_netbox_master_inventory()
         myinvdata = get_inventory(session, projects[project]['id'], projectname)
+    
     
         invexists = False
         try:
