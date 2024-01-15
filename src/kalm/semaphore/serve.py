@@ -268,7 +268,7 @@ def update_inventory(session, project_id, inventory_id, inventory):
     baseurl = os.getenv('KALM_SEMAPHORE_URL')
     inventory_url = f"{baseurl}/api/project/{project_id}/inventory/{inventory_id}"  # Adjust the URL as needed
     pprint.pprint(inventory_url)
-    
+
     headers = {
         'accept': 'application/json',
         'Content-Type': 'application/json'
@@ -639,6 +639,9 @@ def main():
         myinventory = get_netbox_master_inventory()
         prettyllog("semaphore", "check", "inventoty", "master", "000" , "Get master inventory from semaphore", severity="INFO")
         myinvdata = get_inventory(session, projects[project]['id'], projectname)
+        print("----------------------------------------")
+        pprint(myinvdata)
+        print("----------------------------------------")
         if organization in projectname:
             print("my project: %s" % projectname)
             myinventories = {}
@@ -654,6 +657,8 @@ def main():
         else:
             print("my project: %s is not a uniproject (%s)" % (projectname, organization))
         invexists = False
+
+
         if myinvdata == None:
             invexists = False
         else:
