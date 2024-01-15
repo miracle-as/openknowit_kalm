@@ -394,6 +394,7 @@ def get_inventory(session, project_id, projectname):
     else:
         # Failed request
         prettyllog("semaphore", "get", "inventory", "error", response.status_code , "loadning inventory", severity="ERROR")
+        return None
 
 def check_env():
     envok = True
@@ -632,9 +633,6 @@ def main():
         myinventory = get_netbox_master_inventory()
         prettyllog("semaphore", "check", "inventoty", "master", "000" , "check project" % projectname, severity="INFO")
         myinvdata = get_inventory(session, projects[project]['id'], projectname)
-        pprint.pprint(myinvdata)
-
-    
     
         invexists = False
         try:
@@ -652,6 +650,9 @@ def main():
                         "become_key_id": become_key_id,
                         "type": "static"
             }
+            get_inventory(session, projects[project]['id'], invetoryname) 
+
+
             create_inventory(session, projects[project]['id'], inventorydata)
     return 0
 
