@@ -653,12 +653,12 @@ def main():
                 else:
                     myinventories[mynameis] += line + ";"
                     #delete_inventory(session, projects[project]['id'], myinvdata[line]['id'])
-            pprint.pprint(myinventories)
+#            pprint.pprint(myinventories)
         else:
             print("my project: %s is not a uniproject (%s)" % (projectname, organization))
         invexists = False
 
-
+        pprint.pprint(myinvdata)
         if myinvdata == None:
             invexists = False
         else:
