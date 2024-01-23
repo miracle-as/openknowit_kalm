@@ -70,8 +70,15 @@ def setrandomcolor():
 def update_subprojects(myenv):
         prettyllog("netbox", "init", "subprojects", "kalm" "ok", "000" , "updating subprojects", severity="INFO")
         for subproject in myenv['subproject']:
-                print(subproject)
                 for myhost in myenv['subproject'][subproject]['hosts']:
+                        tagall = False
+                        if myhost == "all":
+                                # WE NEED TO TAG ALL SERVERS WITH THIS SUBPROJECT TAG
+                                print("tagging all servers with subproject %s" % subproject)
+                                prettyllog("netbox", "init", "subprojects", "kalm" "ok", "000" , "tag all servers %s" % subproject, severity="INFO")
+                                tagall = True
+                        prettyllog("netbox", "init", "subprojects", "kalm" "ok", "000" , "updating subprojects", severity="INFO")
+
                         myserverid = get_virtual_server_id(myhost, myenv)
                         if myserverid:
                                 alltags = get_all_tags(myenv)
@@ -129,6 +136,8 @@ def update_subprojects(myenv):
 
                         else:
                                 print("server %s not found" % myhost)
+                prettyllog("netbox", "init", "subprojects", "kalm" "ok", "000" , "subprojects updated", severity="INFO")
+                # we need to ensure that semaphores have an inventory in the project named after the subproject
         return True
 
 

@@ -23,8 +23,6 @@ if redisdb is None:
     redisdb="0"
 r = redis.Redis(host=redishost, port=redisport, db=redisdb)
 
-
-
 def refresh_netbox_from_redis(myenv, netboxdata):
     knownservers = {}
     knownlinuxservers = {}
@@ -64,7 +62,7 @@ def refresh_netbox_from_redis(myenv, netboxdata):
               if vmid:
                 addvmwaretags(vmid, detailjson, myenv)
             else:
-                prettyllog("netbox", "get", "server", key, "000" , "No details found", severity="ERROR")
+                prettyllog("netbox", "get", "server", key, "001" , "No details found", severity="ERROR")
                 orphanservers.append(server)
     print("orphanservers: %s" % len(orphanservers))
     print("knownservers:  %s" % len(knownservers))

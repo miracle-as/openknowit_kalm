@@ -267,21 +267,22 @@ def update_inventory(session, project_id, inventory_id, inventory):
     # check if inventory exists
     baseurl = os.getenv('KALM_SEMAPHORE_URL')
     inventory_url = f"{baseurl}/api/project/{project_id}/inventory/{inventory_id}"  # Adjust the URL as needed
-    pprint.pprint(inventory_url)
-
     headers = {
         'accept': 'application/json',
         'Content-Type': 'application/json'
     }
     inventory['id'] = inventory_id
     response = session.put(inventory_url, headers=headers, json=inventory)
-    pprint.pprint(response.reason)
-    pprint.pprint(response.status_code)
-
     if response.status_code == 204:
         # Successful request
         prettyllog("semaphore", "update", inventory['name'], "ok", response.status_code , "update inventory", severity="INFO")
         return response.json()
+    elif response.status_code == 400:
+        # Failed request
+        prettyllog("semaphore", "update", inventory['name'], "error", response.status_code , "update inventory", severity="INFO")
+        return True
+            
+            
     else:
         # Failed request
         prettyllog("semaphore", "update", inventory['name'], "error", response.status_code , "update inventory", severity="ERROR")
@@ -316,13 +317,10 @@ def create_inventory(session, project_id, inventory):
             # Failed request
             prettyllog("semaphore", "create", inventory['name'], "error", response.status_code , "create inventory", severity="ERROR")
 
-def create_credemtial(session, project_id, credential):
+def create_credential(session, project_id, credential):
     prettyllog("semaphore", "create", credential['name'], "ok", 0 , "create credential", severity="INFO")
-
-
     baseurl = os.getenv('KALM_SEMAPHORE_URL')
     credential_url = f"{baseurl}/api/project/{project_id}/keys"  # Adjust the URL as needed
-    
     headers = {
         'accept': 'application/json',
         'Content-Type': 'application/json'
@@ -618,31 +616,87 @@ def main():
         state[projectname] = {}
         state[projectname]['project'] = projects[project]
         state[projectname]['inventory'] = {}
-        sshkey  = {
-            "name": "dummy",
-            "type": "none",
-            "project_id": projects[project]['id']
-        }
-        create_credemtial(session, projects[project]['id'] , sshkey)
-
+        state[projectname]['credentials'] = {}
+        credential  = {}
+        credential = state[projectname]['credentials']
+        credential['name'] = state[projectname]['credentials']['name']
+        credential['type'] = "ssh"
+        credential['project_id'] = projects[project]['id']
+        credential['ssh'] = {}
+        credential['ssh']['login'] = state[projectname]['credentials']['login']
+        # the private key needs to be read from the file
+        filename =  state[projectname]['credentials']['privatekey']
+        f = open(filename, "r")
+        credential['ssh']['private_key'] = f.read()
+        f.close()
+        create_credential(session, projects[project]['id'] , credential)
         becomekey  = {
-            "name": "dummyroot",
+            "name": "becomekey",
             "type": "none",
             "project_id": projects[project]['id']
         }
-        create_credemtial(session, projects[project]['id'] , becomekey)
-
-        ssh_key_id = get_sshkey_id(session, projects[project]['id'], sshkey['name'])
+        create_credential(session, projects[project]['id'] , becomekey)
+        ssh_key_id = get_sshkey_id(session, projects[project]['id'], credential['name'])
         become_key_id = get_sshkey_id(session, projects[project]['id'], becomekey['name'])
 
         prettyllog("semaphore", "check", "inventoty", "master", "000" , "Get master inventory from netbox", severity="INFO")
         myinventory = get_netbox_master_inventory()
         prettyllog("semaphore", "check", "inventoty", "master", "000" , "Get master inventory from semaphore", severity="INFO")
         myinvdata = get_inventory(session, projects[project]['id'], projectname)
-        print("----------------------------------------")
-        pprint.pprint(myinvdata)
-        print("----------------------------------------")
-        if organization in projectname:
+        if organization in projectname: # We are in a uniproject environment
+            prettyllog("semaphore", "check", "inventoty", "master", "000" , "Get master inventory from netbox for uniproject %s" % projectname , severity="INFO")
+            mysubprojects = mainconf['subprojects']
+            # We need to create a inventory for each subproject
+            for mysubproject in mysubprojects:
+                mysubprojectname = mysubproject['name']
+                mylongname = "%s-%s" % (projectname, mysubprojectname)
+                if mysubprojectname in organization and organization in mysubprojectname:
+                    pass
+                else:
+                    myinventory = ""
+                    try:
+                        mysemaphoreinventory = get_inventory(session, projects[project]['id'], mylongname)
+                    except:
+                        mysemaphoreinventory = {}
+                    try:
+                        myinvetory = get_netbox_inventory_from_tag(mysubprojectname)
+                    except:
+                        myinvetory = ""
+                    pprint.pprint(myinvetory)
+                    pprint.pprint(myinvdata)
+                    print("''''''''''''''''''''''''''''''''''''''")
+
+                    if len(mysemaphoreinventory) == 0:
+                        invetoryname = "%s-%s" % (mysubprojectname, "netbox")
+                        inventorydata = {
+                                "name": mylongname,
+                                "project_id": projects[project]['id'],
+                                "inventory": myinventory,
+                                "ssh_key_id": ssh_key_id,
+                                "become_key_id": become_key_id,
+                                "type": "static"
+                        }
+                        create_inventory(session, projects[project]['id'], inventorydata)
+                    else:
+                        invetoryname = "%s-%s" % (mysubprojectname, "netbox")
+                        myinvid = get_inventory(session, projects[project]['id'], invetoryname)
+                        inventorydata = {
+                                "name": mylongname,
+                                "project_id": projects[project]['id'],
+                                "inventory": myinventory,
+                                "ssh_key_id": ssh_key_id,
+                                "become_key_id": become_key_id,
+                                "type": "static"
+                        }
+                        update_inventory(session, projects[project]['id'], myinvid, inventorydata)
+
+
+
+
+
+        else: # We are in a multiproject environment
+
+            print("----------------------------------------------------")
             print("my project: %s" % projectname)
             myinventories = {}
             mysplitinv = myinventory.split("\n")
@@ -654,31 +708,70 @@ def main():
                     myinventories[mynameis] += line + ";"
                     #delete_inventory(session, projects[project]['id'], myinvdata[line]['id'])
 #            pprint.pprint(myinventories)
-        else:
-            print("my project: %s is not a uniproject (%s)" % (projectname, organization))
-        invexists = False
-
-        pprint.pprint(myinvdata)
-        if myinvdata == None:
+                    
+            # Create an inventory call projectname - netbox with all hosts
             invexists = False
-        else:
-            invexists = True
+            if len(myinvdata) == 0:
+                invexists = False
+            else:
+                invexists = True
 
-        if not invexists:
-            invetoryname = "%s-%s" % (projectname, "-netbox")
-            inventorydata = {
+            if not invexists:
+                invetoryname = "%s-%s" % (projectname, "netbox")
+                inventorydata = {
                         "name": invetoryname,
                         "project_id": projects[project]['id'],
                         "inventory": myinventory,
                         "ssh_key_id": ssh_key_id,
                         "become_key_id": become_key_id,
                         "type": "static"
-            }
-            create_inventory(session, projects[project]['id'], inventorydata)
+                }
+                create_inventory(session, projects[project]['id'], inventorydata)
+            else:
+                invetoryname = "%s-%s" % (projectname, "netbox")
+                myinvid = get_inventory(session, projects[project]['id'], invetoryname)
+                inventorydata = {
+                        "name": invetoryname,
+                        "project_id": projects[project]['id'],
+                        "inventory": myinventory,
+                        "ssh_key_id": ssh_key_id,
+                        "become_key_id": become_key_id,
+                        "type": "static"
+                }
+                update_inventory(session, projects[project]['id'], myinvid, inventorydata)
+                # create multible inventpories for each subproject
+                for myproject in projects:
+                    pprint.pprint(myproject)
+                    print("----------------------PROJECRT")
+                    myprojectname = projects[myproject]['name']
+                    if organization != myprojectname:
+                        prettyllog("semaphore", "check", "inventoty", "master", "000" , "Get master inventory from netbox for subproject %s" % projectname , severity="INFO")
+                        myinventory = get_netbox_inventory_from_tag(projectname)
+                        try:
+                            mysemaphoreinventory = get_inventory(session, projects[project]['id'], projectname) 
+                        except:
+                            mysemaphoreinventory = {}
+
+                        print(len(mysemaphoreinventory))
+                        print("-------------------------------")
+
+
+
+
+
+
+        if organization in projectname and projectname in organization:
+            pass
         else:
-            invetoryname = "%s-%s" % (projectname, "-netbox")
-            myinvid = get_inventory(session, projects[project]['id'], invetoryname)
-            inventorydata = {
+            invexists = False
+            if len(myinvdata) == 0:
+                invexists = False
+            else:
+                invexists = True
+
+            if not invexists:
+                invetoryname = "%s-%s" % (projectname, "netbox")
+                inventorydata = {
                         "name": invetoryname,
                         "project_id": projects[project]['id'],
                         "inventory": myinventory,
@@ -686,7 +779,20 @@ def main():
                         "become_key_id": become_key_id,
                         "type": "static"
             }
-            update_inventory(session, projects[project]['id'], myinvid, inventorydata)
+                create_inventory(session, projects[project]['id'], inventorydata)
+            else:
+                invetoryname = "%s-%s" % (projectname, "netbox")
+                myinvid = get_inventory(session, projects[project]['id'], invetoryname)
+                inventorydata = {
+                            "name": invetoryname,
+                            "project_id": projects[project]['id'],
+                            "inventory": myinventory,
+                            "ssh_key_id": ssh_key_id,
+                            "become_key_id": become_key_id,
+                            "type": "static"
+                }
+                update_inventory(session, projects[project]['id'], myinvid, inventorydata)
+
     return 0
 
 

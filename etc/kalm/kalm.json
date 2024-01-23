@@ -4,7 +4,8 @@
     "description": "Miracle knowit all"
   },
   "subprojects": [
-    { "name": "Unix Ansible Automation", "engine": "semaphore" }
+    { "name": "Unix Ansible Automation", "engine": "semaphore" },
+    { "name": "zabbix", "engine": "semaphore" }
   ]
 }
 
