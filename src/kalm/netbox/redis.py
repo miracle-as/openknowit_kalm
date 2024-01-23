@@ -9,10 +9,23 @@ from .netbox import create_tag, addtagtovm, removetagsfromvm, addvmwaretags,  ge
 from .common import get_env
 import os
 
+redishost=os.getenv("KALM_REDIS_HOST")
+if redishost is None:
+    redishost="localhost"
+
+    
+redisport=os.getenv("KALM_REDIS_PORT")
+if redisport is None:
+    redisport="6379"
+
+redisdb=os.getenv("KALM_REDIS_DB")
+if redisdb is None:
+    redisdb="0"
+r = redis.Redis(host=redishost, port=redisport, db=redisdb)
+
 
 
 def refresh_netbox_from_redis(myenv, netboxdata):
-    r = redis.Redis(host='localhost', port=6379, db=0)
     knownservers = {}
     knownlinuxservers = {}
     orphanservers = []
