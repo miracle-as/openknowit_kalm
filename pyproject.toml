@@ -92,6 +92,8 @@ cryptography = "^41.0.2"
 paramiko = "^3.3.1"
 toml = "^0.10.2"
 pyvmomi = "^8.0.2.0.1"
+GitPython = "^3.1.41"
+
 
 [tool.setuptools.package-data]
 kalm = [ "*.dat",]
