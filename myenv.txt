@@ -1,0 +1,250 @@
+TOWER_HOST=https://ansible.openknowit.com
+DISTR=linux-x64
+KALM_ZABBIX_TOKEN=c48501438e48b1d6f7f283e669742acbb068c8a4fe4318d12523a10c17121b24
+CONDA_SHLVL=0
+LS_COLORS=rs=0:di=38;5;33:ln=38;5;51:mh=00:pi=40;38;5;11:so=38;5;13:do=38;5;5:bd=48;5;232;38;5;11:cd=48;5;232;38;5;3:or=48;5;232;38;5;9:mi=01;05;37;41:su=48;5;196;38;5;15:sg=48;5;11;38;5;16:ca=48;5;196;38;5;226:tw=48;5;10;38;5;16:ow=48;5;10;38;5;21:st=48;5;21;38;5;15:ex=38;5;40:*.tar=38;5;9:*.tgz=38;5;9:*.arc=38;5;9:*.arj=38;5;9:*.taz=38;5;9:*.lha=38;5;9:*.lz4=38;5;9:*.lzh=38;5;9:*.lzma=38;5;9:*.tlz=38;5;9:*.txz=38;5;9:*.tzo=38;5;9:*.t7z=38;5;9:*.zip=38;5;9:*.z=38;5;9:*.dz=38;5;9:*.gz=38;5;9:*.lrz=38;5;9:*.lz=38;5;9:*.lzo=38;5;9:*.xz=38;5;9:*.zst=38;5;9:*.tzst=38;5;9:*.bz2=38;5;9:*.bz=38;5;9:*.tbz=38;5;9:*.tbz2=38;5;9:*.tz=38;5;9:*.deb=38;5;9:*.rpm=38;5;9:*.jar=38;5;9:*.war=38;5;9:*.ear=38;5;9:*.sar=38;5;9:*.rar=38;5;9:*.alz=38;5;9:*.ace=38;5;9:*.zoo=38;5;9:*.cpio=38;5;9:*.7z=38;5;9:*.rz=38;5;9:*.cab=38;5;9:*.wim=38;5;9:*.swm=38;5;9:*.dwm=38;5;9:*.esd=38;5;9:*.jpg=38;5;13:*.jpeg=38;5;13:*.mjpg=38;5;13:*.mjpeg=38;5;13:*.gif=38;5;13:*.bmp=38;5;13:*.pbm=38;5;13:*.pgm=38;5;13:*.ppm=38;5;13:*.tga=38;5;13:*.xbm=38;5;13:*.xpm=38;5;13:*.tif=38;5;13:*.tiff=38;5;13:*.png=38;5;13:*.svg=38;5;13:*.svgz=38;5;13:*.mng=38;5;13:*.pcx=38;5;13:*.mov=38;5;13:*.mpg=38;5;13:*.mpeg=38;5;13:*.m2v=38;5;13:*.mkv=38;5;13:*.webm=38;5;13:*.ogm=38;5;13:*.mp4=38;5;13:*.m4v=38;5;13:*.mp4v=38;5;13:*.vob=38;5;13:*.qt=38;5;13:*.nuv=38;5;13:*.wmv=38;5;13:*.asf=38;5;13:*.rm=38;5;13:*.rmvb=38;5;13:*.flc=38;5;13:*.avi=38;5;13:*.fli=38;5;13:*.flv=38;5;13:*.gl=38;5;13:*.dl=38;5;13:*.xcf=38;5;13:*.xwd=38;5;13:*.yuv=38;5;13:*.cgm=38;5;13:*.emf=38;5;13:*.ogv=38;5;13:*.ogx=38;5;13:*.aac=38;5;45:*.au=38;5;45:*.flac=38;5;45:*.m4a=38;5;45:*.mid=38;5;45:*.midi=38;5;45:*.mka=38;5;45:*.mp3=38;5;45:*.mpc=38;5;45:*.ogg=38;5;45:*.ra=38;5;45:*.wav=38;5;45:*.oga=38;5;45:*.opus=38;5;45:*.spx=38;5;45:*.xspf=38;5;45:
+KALM_DNS_URL=https://api.cloudflare.com
+JENKINS_URL=https://jenkins.openknowit.com/
+KALM_SEMAPHORE_PASSWORD=ixj90j2s
+TERMINATOR_UUID=urn:uuid:f2f37c29-54a2-4bee-a430-4051c23570dc
+ANDROID_HOME=/home/jho/android-studio/bin
+XDG_MENU_PREFIX=gnome-
+NETBOX_URL=https://netbox.openknowit.com
+KALM_ZABBIX_SSL=True
+TOWER_USERNAME=admin
+MODULES_RUN_QUARANTINE=LD_LIBRARY_PATH LD_PRELOAD
+LANG=en_DK.UTF-8
+GDM_LANG=en_DK.UTF-8
+HISTCONTROL=ignoredups
+AIRFLOW_USERNAME=kalm
+DISPLAY=:1
+GUESTFISH_RESTORE=\e[0m
+HOSTNAME=benny
+ZABBIX_TOKEN=ee04ca17f0d056455b264bf1f7374dee505a4c75ec125f9176ad5ec7cf4b8935
+OLDPWD=/home/jho/projects
+SDKMAN_CANDIDATES_API=https://api.sdkman.io/2
+NBTOKEN=a4248726fe32ba758ac73a41a4ee65cb70980cb9
+KALM_VMWARE_HOST=rmvmwc0001.it.rm.dk
+BW_USER=jho
+VAULT_TOKEN=hvs.13HJTof2PbvGyu3jvvESxV5C
+COLORTERM=truecolor
+JAVA_HOMe=/usr/lib/jvm/java-17-openjdk-17.0.6.0.10-3.el8_7.x86_64
+GUESTFISH_INIT=\e[1;34m
+PERL_MB_OPT=--install_base "/home/jho/perl5"
+VPN_USERNAME=jho
+USERNAME=jho
+FOREMAN_PROVIDER_LOGLEVEL=INFO
+JAVA_HOME=/home/jho/.sdkman/candidates/java/current
+KALM_VMWARE_PASSWORD=glBU3o_l1r+Bl&reBAYa
+RH_SUBSCRIPTION_MANAGER_ORG=14498519
+KDEDIRS=/usr
+KALM_WORKDIR=.
+XDG_VTNR=3
+GIO_LAUNCHED_DESKTOP_FILE_PID=1129145
+KALM_DNS_ACCOUNTID=66cee30d8fbbc313f559c43ac26922f5
+PASSWORD=Run44Fun2!!!!!!
+SSH_AUTH_SOCK=/run/user/1000/keyring/ssh
+VIRTUAL_ENV=/home/jho/projects/openknowit_kalm/venv
+KALM_DNS_PROVIDER=cloudflare
+DOTNET_ROOT=/usr/lib64/dotnet
+KALM_ZABBIX_USER=jakobholst
+which_declare=declare -f
+GROOVY_HOME=/opt/groovy
+KALM_NETBOX_URL=http://exrhel0494.it.rm.dk:8080
+XDG_SESSION_ID=6
+MODULES_CMD=/usr/share/Modules/libexec/modulecmd.tcl
+DOTNET_BUNDLE_EXTRACT_BASE_DIR=/home/jho/.cache/dotnet_bundle_extract
+USER=jho
+GUESTFISH_PS1=\[\e[1;32m\]><fs>\[\e[0;31m\] 
+DESKTOP_SESSION=gnome
+VERSION=v18.1.0
+KALM_GIT_USER=gitea
+XOA_PASSWORD=start1234
+NIX_PROFILES=/nix/var/nix/profiles/default /home/jho/.nix-profile
+KALM_GIT_PASSWORD=vtk1pmp.fbj6ymp4CRU
+VAGRANT_DEFAULT_PROVIDER=virtualbox
+GRADLE_HOME=/home/jho/.sdkman/candidates/gradle/current
+VAULT_FORMAT=json
+FOREMAN_CLIENT_USERNAME=jho
+PWD=/home/jho/projects/openknowit_kalm
+JENKINS_API_TOKEN=1101aa6e246205b6e30194a0e8deec1e55
+SSH_ASKPASS=/usr/libexec/openssh/gnome-ssh-askpass
+HOME=/home/jho
+KALM_SEMAPHORE_USER=knowit
+NBURL=https://netbox.openknowit.com
+KALM_GIT_VERIFY_SSL=True
+JIRATOKEN=ODM4OTcwODE1NTQ0Os70w7dea0fpokaNgr+D/xF8MRaj
+FOREMAN_CLIENT_PASSWORD=Go44Gold2!!!
+XDG_SESSION_TYPE=x11
+XDG_DATA_DIRS=/home/jho/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop
+AIRFLOW_URL=https://airflow.openknowit.com/api/v1
+TERMINATOR_DBUS_NAME=net.tenshu.Terminator23558193cd9818af7fe4d2c2f5bd9d00f
+LPASSUSER=jho@miracle.dk
+XDG_SESSION_DESKTOP=gnome
+PERL_MM_OPT=INSTALL_BASE=/home/jho/perl5
+JENKINS_USER_ID=jho
+TOWER_PASSWORD=MTY2NzgxMDkxNwo=
+GJS_DEBUG_OUTPUT=stderr
+KALM_SEMAPHORE_URL=https://semaphore.openknowit.com
+FOREMAN_PROVIDER_LOGFILE=-
+NETBOX_TOKEN=a4248726fe32ba758ac73a41a4ee65cb70980cb9
+KALM_VMWARE_SSL=False
+LOADEDMODULES=
+JIRAURL=https://jira.ccta.dk/
+PERL_LOCAL_LIB_ROOT=/home/jho/perl5:/home/jho/perl5:/home/jho/perl5
+SDKMAN_DIR=/home/jho/.sdkman
+KALM_VMWARE_URL=https://rmvmwc0001.it.rm.dk
+ZABBIX=9e39c4605ff25083f230b22ccaf1c18128fb8123a502abddeaad73e0b6cff0b8
+JENKINS_PASSWORD=Dontu4get
+TERMINATOR_DBUS_PATH=/net/tenshu/Terminator2
+COLUMNS=238
+MAIL=/var/spool/mail/jho
+KALM_NETBOX_DISCOVER=True
+XOA_USER=jho
+KALM_NETBOX_TOKEN=dda41e95953f3eab7833b8e565be359fe0fe6cf7
+WINDOWPATH=3
+VTE_VERSION=5204
+SHELL=/bin/bash
+TERM=xterm-256color
+KALM_DNS_TYPE=cloudflare
+RH_SUBSCRIPTION_MANAGER_KEY=packer
+QT_IM_MODULE=ibus
+XMODIFIERS=@im=ibus
+SDKMAN_CANDIDATES_DIR=/home/jho/.sdkman/candidates
+XDG_CURRENT_DESKTOP=GNOME
+PERL5LIB=/home/jho/perl5/lib/perl5:/home/jho/perl5/lib/perl5:/home/jho/perl5/lib/perl5
+VAULT_ADDR=https://vault.openknowit.com
+VPN_PASSWORD=Run44Fun2!!!!!!
+GIO_LAUNCHED_DESKTOP_FILE=/usr/share/applications/terminator.desktop
+NIX_SSL_CERT_FILE=/etc/ssl/certs/ca-bundle.crt
+XDG_SEAT=seat0
+SHLVL=2
+BW_PASSWORD=Dontu4get
+MANPATH=::/opt/thinlinc/share/man
+KALM_NETBOX_HOST=http://exrhel0494.it.rm.dk:8080
+KALM_GIT_URL=https://git.it.rm.dk:3000
+JENKINS_USER=jho
+GDK_BACKEND=x11
+MODULEPATH=/etc/scl/modulefiles:/etc/scl/modulefiles:/usr/share/Modules/modulefiles:/etc/modulefiles:/usr/share/modulefiles
+KALM_DNS_ZONEID=f694677684d00ce0d183930cf05f5d34
+GDMSESSION=gnome
+KALM_DNS_TOKEN=7QKNfSEZtMEK1yEGXSEfgG63-AJn1Rdr2nMVoOUr
+NETBOX_API_URL=https://netbox.openknowit.com/api
+GNOME_DESKTOP_SESSION_ID=this-is-deprecated
+LOGNAME=jho
+DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+OPENFAAS_URL=http://faas.openknowit.com/ui/
+XDG_RUNTIME_DIR=/run/user/1000
+AIRFLOW_PASSWORD=qgm9tzt4kzn_grw_VEG
+XAUTHORITY=/run/user/1000/gdm/Xauthority
+KALM_DNS_DOMAIN=openknowit.com
+CONSUL_HTTP_ADDR=http://consul.traeckle.com
+MODULEPATH_modshare=/usr/share/Modules/modulefiles:2:/etc/modulefiles:2:/usr/share/modulefiles:2
+KALM_VMWARE_USERNAME=SSAVMWareAnsible
+PATH=/home/jho/projects/openknowit_kalm/venv/bin:/home/jho/perl5/bin:/var/traeckle/.local/bin:/usr/local/lib/nodejs/node-v18.1.0-/bin:/home/jho/.local/bin:/home/jho/bin:/home/jho/.nix-profile/bin:/nix/var/nix/profiles/default/bin:/home/jho/.sdkman/candidates/java/current/bin:/home/jho/.sdkman/candidates/groovy/current/bin:/home/jho/.sdkman/candidates/gradle/current/bin:/home/jho/perl5/bin:/var/traeckle/.local/bin:/usr/local/lib/nodejs/node-v18.1.0-/bin:/home/jho/.local/bin:/home/jho/bin:/home/jho/.nix-profile/bin:/nix/var/nix/profiles/default/bin:/usr/share/Modules/bin:/usr/condabin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/home/jho/.dotnet/tools:/var/lib/snapd/snap/bin:/opt/thinlinc/bin:/opt/thinlinc/sbin:/usr/local/go/bin:/opt/groovy/bin:/usr/lib/jvm/java-17-openjdk-17.0.6.0.10-3.el8_7.x86_64/bin:/usr/local/go/bin:/opt/groovy/bin:/usr/lib/jvm/java-17-openjdk-17.0.6.0.10-3.el8_7.x86_64/bin
+ZABBIX_URL=https://zabbix.openknowit.com
+SDKMAN_VERSION=5.17.0
+GUESTFISH_OUTPUT=\e[0m
+LPASSWORD=Run44Fun2!
+PS1=(venv) \[\033[95m\]\u@\h \[\033[32m\]\W\[\033[33m\] [$(git symbolic-ref --short HEAD 2>/dev/null)]\[\033[00m\]$ 
+KALM_ZABBIX_URL=https://exrhel0403.it.rm.dk
+JIRAUSER=w86816
+MODULESHOME=/usr/share/Modules
+HISTSIZE=1000
+GJS_DEBUG_TOPICS=JS ERROR;JS LOG
+SDKMAN_PLATFORM=linuxx64
+SESSION_MANAGER=local/unix:@/tmp/.ICE-unix/15716,unix/unix:/tmp/.ICE-unix/15716
+NETBOX_API_TOKEN=a4248726fe32ba758ac73a41a4ee65cb70980cb9
+KALM_GIT_TYPE=gitea
+KALM_ZABBIX_PASSWORD=jakholst
+LESSOPEN=||/usr/bin/lesspipe.sh %s
+BASH_FUNC_which%%=() {  ( alias;
+ eval ${which_declare} ) | /usr/bin/which --tty-only --read-alias --read-functions --show-tilde --show-dot $@
+}
+BASH_FUNC_module%%=() {  _module_raw "$@" 2>&1
+}
+BASH_FUNC__module_raw%%=() {  unset _mlshdbg;
+ if [ "${MODULES_SILENT_SHELL_DEBUG:-0}" = '1' ]; then
+ case "$-" in 
+ *v*x*)
+ set +vx;
+ _mlshdbg='vx'
+ ;;
+ *v*)
+ set +v;
+ _mlshdbg='v'
+ ;;
+ *x*)
+ set +x;
+ _mlshdbg='x'
+ ;;
+ *)
+ _mlshdbg=''
+ ;;
+ esac;
+ fi;
+ unset _mlre _mlIFS;
+ if [ -n "${IFS+x}" ]; then
+ _mlIFS=$IFS;
+ fi;
+ IFS=' ';
+ for _mlv in ${MODULES_RUN_QUARANTINE:-};
+ do
+ if [ "${_mlv}" = "${_mlv##*[!A-Za-z0-9_]}" -a "${_mlv}" = "${_mlv#[0-9]}" ]; then
+ if [ -n "`eval 'echo ${'$_mlv'+x}'`" ]; then
+ _mlre="${_mlre:-}${_mlv}_modquar='`eval 'echo ${'$_mlv'}'`' ";
+ fi;
+ _mlrv="MODULES_RUNENV_${_mlv}";
+ _mlre="${_mlre:-}${_mlv}='`eval 'echo ${'$_mlrv':-}'`' ";
+ fi;
+ done;
+ if [ -n "${_mlre:-}" ]; then
+ eval `eval ${_mlre} /usr/bin/tclsh /usr/share/Modules/libexec/modulecmd.tcl bash '"$@"'`;
+ else
+ eval `/usr/bin/tclsh /usr/share/Modules/libexec/modulecmd.tcl bash "$@"`;
+ fi;
+ _mlstatus=$?;
+ if [ -n "${_mlIFS+x}" ]; then
+ IFS=$_mlIFS;
+ else
+ unset IFS;
+ fi;
+ unset _mlre _mlv _mlrv _mlIFS;
+ if [ -n "${_mlshdbg:-}" ]; then
+ set -$_mlshdbg;
+ fi;
+ unset _mlshdbg;
+ return $_mlstatus
+}
+BASH_FUNC_switchml%%=() {  typeset swfound=1;
+ if [ "${MODULES_USE_COMPAT_VERSION:-0}" = '1' ]; then
+ typeset swname='main';
+ if [ -e /usr/share/Modules/libexec/modulecmd.tcl ]; then
+ typeset swfound=0;
+ unset MODULES_USE_COMPAT_VERSION;
+ fi;
+ else
+ typeset swname='compatibility';
+ if [ -e /usr/share/Modules/libexec/modulecmd-compat ]; then
+ typeset swfound=0;
+ MODULES_USE_COMPAT_VERSION=1;
+ export MODULES_USE_COMPAT_VERSION;
+ fi;
+ fi;
+ if [ $swfound -eq 0 ]; then
+ echo "Switching to Modules $swname version";
+ source /usr/share/Modules/init/bash;
+ else
+ echo "Cannot switch to Modules $swname version, command not found";
+ return 1;
+ fi
+}
+BASH_FUNC_scl%%=() {  if [ "$1" = "load" -o "$1" = "unload" ]; then
+ eval "module $@";
+ else
+ /usr/bin/scl "$@";
+ fi
+}
+BASH_FUNC_ml%%=() {  module ml "$@"
+}
+_=/usr/bin/env
