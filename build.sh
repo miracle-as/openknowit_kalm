@@ -1,4 +1,4 @@
-kalm_bump patch
+ign8_bump patch
 MYMESSAGE=$(git status)
 git commit -a -m  "$MYMESSAGE"
 git push 
