@@ -1,4 +1,6 @@
 venv/
+dist/
+poetry.lock
 build/
 secret/ 
 src/kalm.egg-info/
