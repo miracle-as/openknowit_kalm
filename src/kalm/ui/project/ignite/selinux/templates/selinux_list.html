@@ -1,0 +1,49 @@
+<!-- cv/templates/cv/selinux_list.html -->
+
+{% extends 'base.html' %}
+
+{% block title %}Selinux List{% endblock %}
+
+{% block content %}
+    <h2>Selinux List</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Hostname</th>
+                <th>Status</th>
+                <th>Mount</th>
+                <th>Root Directory</th>
+                <th>Policy Name</th>
+                <th>Current Mode</th>
+                <th>Configured Mode</th>
+                <th>MSL Status</th>
+                <th>Mem Protect</th>
+                <th>Max Kernel</th>
+                <th>Total</th>
+                <th>Prevented</th>
+                <th>details</th>
+                <th>SE Alerts</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in selinux_entries %}
+                <tr>
+                    <td>{{ entry.hostname }}</td>
+                    <td>{{ entry.status }}</td>
+                    <td>{{ entry.mount }}</td>
+                    <td>{{ entry.rootdir }}</td>
+                    <td>{{ entry.policyname }}</td>
+                    <td>{{ entry.current_mode }}</td>
+                    <td>{{ entry.configured_mode }}</td>
+                    <td>{{ entry.mslstatus }}</td>
+                    <td>{{ entry.memprotect }}</td>
+                    <td>{{ entry.maxkernel }}</td>
+                    <td>{{ entry.total }}</td>
+                    <td>{{ entry.success }}</td>
+                    <td>{{ entry.failed }}</td>
+                    <td> <a href="{% url 'selinux_messages_by_host_list' pk=entry.hostname %}">Go to Messages</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

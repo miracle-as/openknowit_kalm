@@ -1,0 +1,37 @@
+<!-- selinux_event_list.html -->
+{% extends 'base.html' %}
+
+{% block title %}
+    SElinux Event List
+{% endblock %}
+
+{% block heading %}
+    SElinux Event List
+{% endblock %}
+
+{% block content %}
+    <table>
+        <thead>
+            <tr>
+                <th>Digest</th>
+                <th>Hostname</th>
+                <th>Event</th>
+                <th>Date</th>
+                <th>Time</th>
+                <!-- Add more headers as needed -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for event in selinux_event_entries %}
+                <tr>
+                    <td>{{ event.digest }}</td>
+                    <td>{{ event.hostname }}</td>
+                    <td>{{ event.event }}</td>
+                    <td>{{ event.date }}</td>
+                    <td>{{ event.time }}</td>
+                    <!-- Add more columns as needed -->
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

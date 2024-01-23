@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Setroubleshoot Events</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Cursor</th>
+                <th>Realtime Timestamp</th>
+                <th>Monotonic Timestamp</th>
+                <th>Boot ID</th>
+                <th>Priority</th>
+                <th>Syslog Facility</th>
+                <th>Syslog Identifier</th>
+                <th>Transport</th>
+                <th>PID</th>
+                <th>UID</th>
+                <th>GID</th>
+                <th>Comm</th>
+                <th>Exe</th>
+                <th>Cmdline</th>
+                <th>Cap Effective</th>
+                <th>Selinux Context</th>
+                <th>Systemd Cgroup</th>
+                <th>Systemd Unit</th>
+                <th>Systemd Slice</th>
+                <th>Machine ID</th>
+                <th>Hostname</th>
+                <th>Code File</th>
+                <th>Code Line</th>
+                <th>Code Func</th>
+                <th>Message ID</th>
+                <th>Unit</th>
+                <th>Message</th>
+                <th>Invocation ID</th>
+                <th>Source Realtime Timestamp</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for event in events %}
+                <tr>
+                    <td>{{ event.CURSOR }}</td>
+                    <td>{{ event.REALTIMETIMESTAMP}}</td>
+                    <td>{{ event.MONOTONICTIMESTAMP}}</td>
+                    <td>{{ event.BOOTID }}</td>
+                    <td>{{ event.PRIORITY }}</td>
+                    <td>{{ event.SYSLOGFACILITY }}</td>
+                    <td>{{ event.SYSLOGIDENTIFIER }}</td>
+                    <td>{{ event.TRANSPORT }}</td>
+                    <td>{{ event.PID }}</td>
+                    <td>{{ event.UID }}</td>
+                    <td>{{ event.GID }}</td>
+                    <td>{{ event.COMM }}</td>
+                    <td>{{ event.EXE }}</td>
+                    <td>{{ event.CMDLINE }}</td>
+                    <td>{{ event.CAPEFFECTIVE }}</td>
+                    <td>{{ event.SELINUXCONTEXT }}</td>
+                    <td>{{ event.SYSTEMDCGROUP }}</td>
+                    <td>{{ event.SYSTEMDUNIT }}</td>
+                    <td>{{ event.SYSTEMDSLICE }}</td>
+                    <td>{{ event.MACHINEID }}</td>
+                    <td>{{ event.HOSTNAME }}</td>
+                    <td>{{ event.CODEFILE }}</td>
+                    <td>{{ event.CODELINE }}</td>
+                    <td>{{ event.CODEFUNC }}</td>
+                    <td>{{ event.MESSAGEID }}</td>
+                    <td>{{ event.UNIT }}</td>
+                    <td>{{ event.MESSAGE }}</td>
+                    <td>{{ event.INVOCATIONID }}</td>
+                    <td>{{ event.SOURCEREALTIMETIMESTAMP }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+

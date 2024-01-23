@@ -1,0 +1,12 @@
+{
+  "subproject": {
+    "description": "The Unix Ansible Automation project"
+  },
+  "inventory": {
+    "autoupdate": "True",
+    "filter": "all",
+    "groupby": "tags",
+    "globalvars": {}
+  },
+  "hosts": []
+}

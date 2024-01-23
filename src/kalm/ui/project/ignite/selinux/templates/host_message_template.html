@@ -1,0 +1,46 @@
+<!-- selinux/templates/host_message_template.html'
+
+{% extends 'base.html' %}
+
+{% block title %}Selinux Messages List{% endblock %}
+
+{% block content %}
+
+    <h1>{{ host_message.hostname }} Message</h1>
+    <p>Last Seen: {{ host_message.lastseen }}</p>
+    <p>Count: {{ host_message.count }}</p>
+    <p>Message: {{ host_message.message }}</p>
+    <p>Machine ID: {{ host_message.machineid }}</p>
+    <hr>
+    <h2>Suggestions</h2>
+        <table>
+        <thead>
+            <tr>
+                <th>Message</th>
+                <th>Hostname</th>
+                <th>Count</th>
+                <th>Last Seen</th>
+                <th>Machine ID</th>
+                <th>Suggestions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for suggestion in suggestions %}
+                <tr>
+                    <td>    <form method="post" action="">
+                            {{ form.as_p }}
+                            <input type="submit" value="Submit">
+                            </form>
+                    {{ suggestion.status }}</td>
+                    <td>{{ suggestion.hostname }}</td>
+                    <td>{{ suggestion.solution }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <hr>
+    <h2>Complete Message</h2>
+    <pre>{{ host_message.completemessage }}</pre>
+    <hr>
+
+{% endblock %}

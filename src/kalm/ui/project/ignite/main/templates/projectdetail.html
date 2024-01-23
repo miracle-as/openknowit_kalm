@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}Ignite it all{% endblock %}
+{% block content %}
+<hr>
+<h1><center>Ignite it all</center></h1>
+<hr>
+<h2>About</h2>
+{% for entry in maindata_entries %}
+    <p>{{ entry.about }}</p>
+{% endfor %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Projects</h2>
+            <ul>
+                {% for project in maindata_projects %}
+                <li>
+                    <a href="{% url 'project_detail' pk=project.pk %}">
+                        {{ project.name }} | {{ project.description }}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+{% endblock %}
+```

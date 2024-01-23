@@ -1,0 +1,33 @@
+<!-- cv/templates/cv/selinux_list.html -->
+
+{% extends 'base.html' %}
+
+{% block title %}Selinux Messages List{% endblock %}
+
+{% block content %}
+    <h2>Selinux message List</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Message</th>
+                <th>Hostname</th>
+                <th>Count</th>
+                <th>Last Seen</th>
+                <th>Machine ID</th>
+                <th>Suggestions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in messages %}
+                <tr>
+                    <td>{{ entry.message }}</td>
+                    <td>{{ entry.hostname }}</td>
+                    <td>{{ entry.count }}</td>
+                    <td>{{ entry.lastseen }}</td>
+                    <td>{{ entry.machineid }}</td>
+                    <td> <a href="{% url 'host_message' pk=entry.digest %}">Go to message</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

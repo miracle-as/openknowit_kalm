@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Setroubleshoot Events</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Hostname</th>
+                <th>Digest</th>
+                <th>Realtime Timestamp</th>
+                <th>Priority</th>
+                <th>Message ID</th>
+                <th>Message</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for event in events %}
+                <tr>
+                    <td>{{ event.HOSTNAME }}</td>
+                    <td>{{ event.digest }}</td>
+                    <td>{{ event.REALTIMETIMESTAMP}}</td>
+                    <td>{{ event.PRIORITY }}</td>
+                    <td>{{ event.MESSAGEID }}</td>
+                    <td>{{ event.MESSAGE }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+

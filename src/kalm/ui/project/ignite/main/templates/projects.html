@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Ignite it all{% endblock %}
+{% block content %}
+<hr>
+<h1><center>Ignite it all projects</center></h1>
+<hr>
+<h2>Projects</h2>
+<ul>
+    {% for project in projects %}
+    <li><a href="{% url 'project:detail' project.id %}">{{ project.name }}</a></li>
+    {% endfor %}
+</ul>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Projects</h2>
+            <ul>
+                {% for project in projects %}
+                <li><a href="{% url 'project:detail' project.id %}">{{ project.name }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+{% endblock %}

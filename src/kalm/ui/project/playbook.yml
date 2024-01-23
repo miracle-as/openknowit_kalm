@@ -1,0 +1,14 @@
+- hosts: 127.0.0.1
+  connection: local
+  tasks:
+  
+  - name: Get Python Venv Path
+    set_fact:
+      virtual_environment: "{{ lookup('env', 'VIRTUAL_ENV', default='Not in a virtual environment') }}"
+
+  - name: "Create the file when in a virtual environment"
+    template: src={{ virtual_environment }}/lib/python3.9/site-packages/ign8/ui/project/nginx.conf.j2 dest=/tmp/nginx.conf
+    delegate_to: localhost
+    when: virtual_environment != "Not in a virtual environment"
+
+# Path: src/ign8/ui/project/nginx.conf.j2

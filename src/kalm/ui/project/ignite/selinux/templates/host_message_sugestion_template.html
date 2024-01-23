@@ -1,0 +1,22 @@
+<!-- selinux/templates/host_message_template.html'
+
+{% extends 'base.html' %}
+
+{% block title %}Selinux Messages sugestion List{% endblock %}
+
+{% block content %}
+
+    <h1>{{ host_message.hostname }} Message</h1>
+    <p>Last Seen: {{ host_message.lastseen }}</p>
+    <p>Count: {{ host_message.count }}</p>
+    <p>Message: {{ host_message.message }}</p>
+    <p>Machine ID: {{ host_message.machineid }}</p>
+
+    <h2>Suggestions</h2>
+    <ul>
+        {% for suggestion in host_message.suggestions %}
+            <li>{{ suggestion }}</li>
+        {% endfor %}
+    </ul>
+
+{% endblock %}
