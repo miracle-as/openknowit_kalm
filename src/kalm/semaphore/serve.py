@@ -176,23 +176,6 @@ def create_key(session, key):
         # Failed request
         prettyllog("semaphore", "create", key['name'], "error", response.status_code , "create key", severity="ERROR")
 
-def create_repository(session, repository):
-    baseurl = os.getenv('KALM_SEMAPHORE_URL')
-    repository_url = f"{baseurl}/api/repositories"  # Adjust the URL as needed
-    headers = {
-        'accept': 'application/json',
-        'Content-Type': 'application/json'
-    }
-    # Use the session for the request
-    response = session.post(repository_url, headers=headers, json=repository)
-    if response.status_code == 201:
-        # Successful request
-        prettyllog("semaphore", "create", repository['name'], "ok", response.status_code , "create repository", severity="INFO")
-        return response.json()
-    else:
-        # Failed request
-        prettyllog("semaphore", "create", repository['name'], "error", response.status_code , "create repository", severity="ERROR")
-
 def get_repository(session):
     baseurl = os.getenv('KALM_SEMAPHORE_URL')
     repository_url = f"{baseurl}/api/repositories"  # Adjust the URL as needed
@@ -451,15 +434,6 @@ def read_config():
             prettyllog("semaphore", "Init", "subpropject", subproject['name'] , "000", "Getting subproject config", severity="DEBUG")
     return True, mainconf, subconf
 
-
-
-    
-
-
-
-        
-
-
  # Example: Get a list of your projects
 
 def check_project(projectname, env):
@@ -507,13 +481,69 @@ def check_project(projectname, env):
         prettyllog("project", "semaphore", projectname, "error", 1 , "git type not supported", severity="ERROR")
         exit(1)
 
+def create_repository(session, project_id, reponame):
+    baseurl = os.getenv('KALM_SEMAPHORE_URL')
+    giturl = os.getenv('KALM_GIT_URL') 
+    repo_prefix = os.getenv('KALM_SEMAPHORE_REPO_PREFIX')
+    repodata = {}
+    repodata['name'] = reponame
+    repodata['project_id'] = project_id
+    repodata['url'] = "%s/%s/%s.git" % (giturl, repo_prefix, reponame)
+    repodata['git_branch'] = "master"
+    repodata['ssh_key_id'] = get_sshkey_id(session, project_id, "git")
+
+ #   {
+ # "name": "Test",
+ # "project_id": 0,
+ # "git_url": "git@example.com",
+ # "git_branch": "master",
+ # "ssh_key_id": 0
+#}
+    # https://git.it.rm.dk:3000/ansible-automation-platform/ansibleautomation-zabbix.git
+
+    repo_url = f"{baseurl}/api/project/{project_id}/repositories"  # Adjust the URL as needed
+    headers = {
+        'accept': 'application/json',
+        'Content-Type': 'application/json'
+    }
+    response = session.post(repo_url, headers=headers, json=repodata)
+    if response.status_code == 201:
+        # Successful request
+        prettyllog("semaphore", "create", repodata['name'], "ok", response.status_code , "create repository", severity="INFO")
+        return response.json()
+    elif response.status_code == 400:
+        prettyllog("semaphore", "create", repodata['name'], "error", response.status_code , "update repository", severity="INFO")
+        return True
+    else:
+        # Failed request
+        prettyllog("semaphore", "create", repodata['name'], "error", response.status_code , "create repository", severity="ERROR")
+
+def get_repository(session, project_id, reponame):
+    baseurl = os.getenv('KALM_SEMAPHORE_URL')
+    repo_url = f"{baseurl}/api/project/{project_id}/repositories?name=%s" % reponame  # Adjust the URL as needed
+    headers = {
+        'accept': 'application/json',
+        'Content-Type': 'application/json'
+    }
+    response = session.get(repo_url, headers=headers)
+    if response.status_code == 200:
+        # Successful request
+        repositories = response.json()
+        # map repositories by name
+        repositories_by_name = {}
+        for repository in repositories:
+            repositories_by_name[repository['name']] = repository
+            if debug:
+                prettyllog("semaphore", "get", repository['name'], "ok", response.status_code , "loadning repositories", severity="DEBUG")
+        prettyllog("semaphore", "get", "repository", "ok", response.status_code , "loadning repositories", severity="INFO")
+        return repositories_by_name
+    else:
+        # Failed request
+        prettyllog("semaphore", "get", "repository", "error", response.status_code , "loadning repositories", severity="ERROR")
 
 
-    
 
 
-
-    
 
 
 def get_sshkey_id(session, project_id, sshkeyname):
@@ -739,11 +769,14 @@ def main():
                         "type": "static"
                 }
                 update_inventory(session, projects[project]['id'], myinvid, inventorydata)
-                # create multible inventpories for each subproject
+                # create multible inventpories and repos for each subproject
                 for myproject in projects:
                     pprint.pprint(myproject)
                     print("----------------------PROJECRT")
                     myprojectname = projects[myproject]['name']
+                    myrepoprefix = os.getenv('KALM_REPO_PREFIX')
+                    create_repository(session, projects[project]['id'], myprojectname)
+
                     if organization != myprojectname:
                         prettyllog("semaphore", "check", "inventoty", "master", "000" , "Get master inventory from netbox for subproject %s" % projectname , severity="INFO")
                         myinventory = get_netbox_inventory_from_tag(projectname)
