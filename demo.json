@@ -1,0 +1,2 @@
+{'subproject': {'description': 'The zabbix agent installation and configuration'}, 'inventory': {'globalvars': {'zabbix_server': 'zabbix.it.rm.dk'}}, 'credentials': {'name': 'foreman', 'login': 'root', 'privatekey': '/opt/keys/id_rsa_foreman_proxy'}, 'hosts': ['extest0036.it.rm.dk', 'extest0047.it.rm.dk', 'extest0048.it.rm.dk', 'extest0064.it.rm.dk', 'extest0065.it.rm.dk', 'extest0066.it.rm.dk', 'extest0067.it.rm.dk', 'extest0068.it.rm.dk', 'extest0071.it.rm.dk', 'extest0075.it.rm.dk']}
+

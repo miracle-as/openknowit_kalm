@@ -385,17 +385,24 @@ def get_netbox_master_inventory():
 
 
 def get_netbox_inventory_from_tag(tag):
+    if " " in tag:
+        return None
     prettyllog("manage", "netbox", "inventory", "new", "000", "Getting inventory from tag %s" % tag)
     # This is the format of the inventory string :           'inventory': '[website]\n172.18.8.40\n172.18.8.41',
 
     invstring = ""
     invstring = '[%s]\n' % tag
     url = fix_url("/virtualization/virtual-machines/?tag=%s" % tag)
+    pprint.pprint(url)
+    
     headers = {
         "Authorization": f"Token {NETBOX_TOKEN}",
         "Accept": "application/json"
     }
     response = requests.get(url, headers=headers, verify=False)
+    pprint.pprint(response.status_code)
+    pprint.pprint(response.reason)
+    print("¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤")
     if response.status_code == 200:
         data = response.json()
         for server in data['results']:

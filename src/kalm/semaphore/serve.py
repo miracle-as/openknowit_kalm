@@ -176,9 +176,9 @@ def create_key(session, key):
         # Failed request
         prettyllog("semaphore", "create", key['name'], "error", response.status_code , "create key", severity="ERROR")
 
-def get_repository(session):
+def get_repositories(session, project_id):
     baseurl = os.getenv('KALM_SEMAPHORE_URL')
-    repository_url = f"{baseurl}/api/repositories"  # Adjust the URL as needed
+    repository_url = f"{baseurl}/api/project/{project_id}/repositories"  # Adjust the URL as needed
     headers = {
         'accept': 'application/json',
         'Content-Type': 'application/json'
@@ -355,9 +355,27 @@ def popoulate_inventory(session, project_id, inventory_id, inventory):
     inventorydata = response.json()
     inventorydata[''] = inventory
 
+def get_semaphore_inventories(session, project_id):
+    baseurl = os.getenv('KALM_SEMAPHORE_URL')
+    inventory_url = f"{baseurl}/api/project/{project_id}/inventory"  # Adjust the URL as needed
+    headers = {
+        'accept': 'application/json',
+        'Content-Type': 'application/json'
+    }
+    response = session.get(inventory_url, headers=headers)
+    if response.status_code == 201:
+        # Successful request
+        return response.json()
+    elif response.status_code == 200:
+        # Successful request
+        return response.json()
+    else:
+        # Failed request
+        pprint.pprint(response.status_code)
+        pprint.pprint(response.reason)
+        return False
 
 def get_inventory(session, project_id, projectname):
-    prettyllog("semaphore", "get", "inventory", "ok", 0 , "loadning inventory %s" % projectname, severity="INFO")
     baseurl = os.getenv('KALM_SEMAPHORE_URL')
     inventory_url = f"{baseurl}/api/project/{project_id}/inventory?sort=name&order=asc' "  # Adjust the URL as needed
     headers = {
@@ -431,6 +449,16 @@ def read_config():
     for subproject in mainconf['subprojects']:
         if subproject['engine'] == 'semaphore':
             subconf[subproject['name']] = subproject
+            try:
+                sf = open("etc/kalm/conf.d/%s.json" % subproject['name'], "r")
+                subconf[subproject['name']]['json'] = json.load(sf)
+                prettyllog("semaphore", "Init", "subpropject", subproject['name'] , "000", "Getting subproject config", severity="INFO")
+                sf.close()
+            except:
+                prettyllog("semaphore", "Init", "subpropject", subproject['name'] , "000", "Getting subproject config", severity="ERROR")
+                subconf[subproject['name']]['json'] = {}
+                
+
             prettyllog("semaphore", "Init", "subpropject", subproject['name'] , "000", "Getting subproject config", severity="DEBUG")
     return True, mainconf, subconf
 
@@ -480,7 +508,65 @@ def check_project(projectname, env):
     else:
         prettyllog("project", "semaphore", projectname, "error", 1 , "git type not supported", severity="ERROR")
         exit(1)
+def get_repository_id(session, project_id, reponame):
+    baseurl = os.getenv('KALM_SEMAPHORE_URL')
+    repo_url = f"{baseurl}/api/project/{project_id}/repositories?name=%s" % reponame  # Adjust the URL as needed
+    headers = {
+        'accept': 'application/json',
+        'Content-Type': 'application/json'
+    }
+    response = session.get(repo_url, headers=headers)
+    if response.status_code == 200:
+        # Successful request
+        repositories = response.json()
+        # map repositories by name
+        repositories_by_name = {}
+        for repository in repositories:
+            repositories_by_name[repository['name']] = repository
+            if debug:
+                prettyllog("semaphore", "get", repository['name'], "ok", response.status_code , "loadning repositories", severity="DEBUG")
+        prettyllog("semaphore", "get", "repository", "ok", response.status_code , "loadning repositories", severity="INFO")
+        return repositories_by_name
+    else:
+        # Failed request
+        prettyllog("semaphore", "get", "repository", "error", response.status_code , "loadning repositories", severity="ERROR")
 
+def update_repository(session, project_id, reponame):
+    repoids = get_repository_id(session, project_id, reponame)
+    try:
+        repoid = repoids[reponame]['id']
+    except:
+        repoid = None
+        return False
+    baseurl = os.getenv('KALM_SEMAPHORE_URL')
+    giturl = os.getenv('KALM_GIT_URL') 
+    repo_prefix = os.getenv('KALM_SEMAPHORE_REPO_PREFIX')
+    repodata = {}
+    repodata['name'] = reponame
+    repodata['project_id'] = project_id
+    repodata['git_url'] = "%s%s%s.git" % (giturl, repo_prefix, reponame)
+    repodata['git_branch'] = "main"
+    repodata['ssh_key_id'] = get_sshkey_id(session, project_id, "git")
+    repo_url = f"{baseurl}/api/project/{project_id}/repositories/{repoid}"  # Adjust the URL as needed
+    headers = {
+        'accept': 'application/json',
+        'Content-Type': 'application/json'
+    }
+    response = session.put(repo_url, headers=headers, json=repodata)
+    if response.status_code == 201:
+        # Successful request
+        prettyllog("semaphore", "create", repodata['name'], "ok", response.status_code , "create repository", severity="INFO")
+        return response.json()
+    elif response.status_code == 400:
+        prettyllog("semaphore", "create", repodata['name'], "error", response.status_code , "update repository", severity="INFO")
+        return True
+    elif response.status_code == 204:
+        prettyllog("semaphore", "create", repodata['name'], "ok", response.status_code , "update repository", severity="INFO")
+        return True
+    else:
+        # Failed request
+        prettyllog("semaphore", "create", repodata['name'], "error", response.status_code , "create repository", severity="ERROR")
+    
 def create_repository(session, project_id, reponame):
     baseurl = os.getenv('KALM_SEMAPHORE_URL')
     giturl = os.getenv('KALM_GIT_URL') 
@@ -488,19 +574,9 @@ def create_repository(session, project_id, reponame):
     repodata = {}
     repodata['name'] = reponame
     repodata['project_id'] = project_id
-    repodata['url'] = "%s/%s/%s.git" % (giturl, repo_prefix, reponame)
-    repodata['git_branch'] = "master"
+    repodata['git_url'] = "%s%s%s.git" % (giturl, repo_prefix, reponame)
+    repodata['git_branch'] = "main"
     repodata['ssh_key_id'] = get_sshkey_id(session, project_id, "git")
-
- #   {
- # "name": "Test",
- # "project_id": 0,
- # "git_url": "git@example.com",
- # "git_branch": "master",
- # "ssh_key_id": 0
-#}
-    # https://git.it.rm.dk:3000/ansible-automation-platform/ansibleautomation-zabbix.git
-
     repo_url = f"{baseurl}/api/project/{project_id}/repositories"  # Adjust the URL as needed
     headers = {
         'accept': 'application/json',
@@ -513,6 +589,9 @@ def create_repository(session, project_id, reponame):
         return response.json()
     elif response.status_code == 400:
         prettyllog("semaphore", "create", repodata['name'], "error", response.status_code , "update repository", severity="INFO")
+        return True
+    elif response.status_code == 204:
+        prettyllog("semaphore", "create", repodata['name'], "ok", response.status_code , "update repository", severity="INFO")
         return True
     else:
         # Failed request
@@ -568,6 +647,7 @@ def get_sshkey_id(session, project_id, sshkeyname):
         prettyllog("semaphore", "get", "sshkey", "error", response.status_code , "loadning sshkeys", severity="ERROR")
 
 def main():
+    prettyllog("semaphore", "main", "main", "START", 0 , "main", severity="DEBUG")
 
     semaphore, mainconf, subprojects = read_config()
     organization = mainconf['organisation']['name']
@@ -585,10 +665,6 @@ def main():
     # if not update it
     prettyllog("semaphore", "main", "config", organization, 1 , "Check the main project", severity="INFO")
     check_project(organization, env)
-
-
-
-
     if session:
         projects = get_project(session)
         for project in projects:
@@ -638,27 +714,57 @@ def main():
     # prettyllog("semaphore", "main", "main", "ok", 0 , "subproject", severity="INFO")
 
     projects = get_project(session)
+    prettyllog("semaphore", "projects", "main", "ok", 0 , "project", severity="DEBUG")
+
     for project in projects:
         prettyllog("semaphore", "projects", project, "ok", 0 , "project", severity="INFO")
         # We need to check if the project exists in git
     
         projectname = projects[project]['name']
+        # delete trailing spaces    
+        #"delete the last character from string"
+        # if projectname.endswith(" "):
+        #    projectname2 = projectname[:-1]
+
+        prettyllog("semaphore", "check", projectname, "ok", 0 , "project", severity="INFO")
         state[projectname] = {}
         state[projectname]['project'] = projects[project]
         state[projectname]['inventory'] = {}
         state[projectname]['credentials'] = {}
+        # print the keys in subprojects
+        prettyllog("semaphore", "check", "credentials", "ok", 0 , "project", severity="DEBUG")
         credential  = {}
-        credential = state[projectname]['credentials']
-        credential['name'] = state[projectname]['credentials']['name']
-        credential['type'] = "ssh"
-        credential['project_id'] = projects[project]['id']
+        projectname2 = projectname
+        if projectname.endswith(" "):
+            projectname2 = projectname2[:-1]
+        try:
+            credential['name'] = subprojects[projectname2]['json']['credentials']['name']
+        except:
+            credential['name'] = "dummy"
+        try:
+            credential['type'] = subprojects[projectname2]['json']['credentials']['type']
+        except:
+            credential['type'] = "none"
+            credential['project_id'] = projects[project]['id']
+
         credential['ssh'] = {}
-        credential['ssh']['login'] = state[projectname]['credentials']['login']
+        try:
+            credential['ssh']['login'] = subprojects[projectname2]['json']['credentials']['login']
+        except:
+            credential['ssh']['login'] = "dummyroot"
+
         # the private key needs to be read from the file
-        filename =  state[projectname]['credentials']['privatekey']
-        f = open(filename, "r")
-        credential['ssh']['private_key'] = f.read()
-        f.close()
+        try:
+            filename =  subprojects[projectname2]['json']['credentials']['private_key']
+        except:
+            filename = None
+        if filename == None:
+            credential['ssh']['private_key'] = ""
+            prettyllog("semaphore", "check", "credentials", "error", 1 , "private key not found", severity="ERROR")
+        else:
+            f = open(filename, "r")
+            credential['ssh']['private_key'] = f.read()
+            f.close()
         create_credential(session, projects[project]['id'] , credential)
         becomekey  = {
             "name": "becomekey",
@@ -669,65 +775,89 @@ def main():
         ssh_key_id = get_sshkey_id(session, projects[project]['id'], credential['name'])
         become_key_id = get_sshkey_id(session, projects[project]['id'], becomekey['name'])
 
+        ########################################################################################
+        #   START OF INVENTORY
+        ########################################################################################
+
+        prettyllog("semaphore", "check", "inventoty", "master", "000" , "INENTORY", severity="DEBUG")
         prettyllog("semaphore", "check", "inventoty", "master", "000" , "Get master inventory from netbox", severity="INFO")
         myinventory = get_netbox_master_inventory()
         prettyllog("semaphore", "check", "inventoty", "master", "000" , "Get master inventory from semaphore", severity="INFO")
+
+        mysemaphoreinventories = get_semaphore_inventories(session, projects[project]['id'])
+        if mysemaphoreinventories == False:
+            prettyllog("semaphore", "check", "inventoty", "master", "000" , "No inventories found", severity="ERROR")
+
         myinvdata = get_inventory(session, projects[project]['id'], projectname)
-        if organization in projectname: # We are in a uniproject environment
+        print("ONE")
+        projectname2 = projectname
+        if projectname.endswith(" "):
+            projectname2 = projectname[:-1]
+        if organization in projectname2 and projectname2 in organization: # We are in a uniproject environment
+            print("TWO")
             prettyllog("semaphore", "check", "inventoty", "master", "000" , "Get master inventory from netbox for uniproject %s" % projectname , severity="INFO")
             mysubprojects = mainconf['subprojects']
             # We need to create a inventory for each subproject
+            mysemaphoreinventories = get_semaphore_inventories(session, projects[project]['id'])
+            pprint.pprint(mysemaphoreinventories)
+            print("............................................")
             for mysubproject in mysubprojects:
                 mysubprojectname = mysubproject['name']
                 mylongname = "%s-%s" % (projectname, mysubprojectname)
-                if mysubprojectname in organization and organization in mysubprojectname:
-                    pass
-                else:
-                    myinventory = ""
-                    try:
-                        mysemaphoreinventory = get_inventory(session, projects[project]['id'], mylongname)
-                    except:
-                        mysemaphoreinventory = {}
-                    try:
-                        myinvetory = get_netbox_inventory_from_tag(mysubprojectname)
-                    except:
-                        myinvetory = ""
-                    pprint.pprint(myinvetory)
-                    pprint.pprint(myinvdata)
-                    print("''''''''''''''''''''''''''''''''''''''")
+                prettyllog("semaphore", "check", "longname", "master", "000" , "%s" % mylongname , severity="INFO")
+                try:
+                    mysemaphoreinventory = mysemaphoreinventories[mylongname]
+                    pprint.pprint(mysemaphoreinventory)
+                except:
+                    mysemaphoreinventory = {}
+                try: 
+                    mysemaphoreinventory[mylongname]
+                except:
+                    mysemaphoreinventory = {}
+                print(len(mysemaphoreinventory))
+                if len(mysemaphoreinventory) == 0:
+                    print("FIVE")
+                    print(myinventory)
+                    if mysubprojectname not in organization:
+                        myinventory = ""
+                        for host in mysubproject['json']['hosts']:
+                            myinventory += "%s\n" % host
+                            
 
-                    if len(mysemaphoreinventory) == 0:
-                        invetoryname = "%s-%s" % (mysubprojectname, "netbox")
-                        inventorydata = {
-                                "name": mylongname,
-                                "project_id": projects[project]['id'],
-                                "inventory": myinventory,
-                                "ssh_key_id": ssh_key_id,
-                                "become_key_id": become_key_id,
-                                "type": "static"
-                        }
-                        create_inventory(session, projects[project]['id'], inventorydata)
-                    else:
-                        invetoryname = "%s-%s" % (mysubprojectname, "netbox")
-                        myinvid = get_inventory(session, projects[project]['id'], invetoryname)
-                        inventorydata = {
-                                "name": mylongname,
-                                "project_id": projects[project]['id'],
-                                "inventory": myinventory,
-                                "ssh_key_id": ssh_key_id,
-                                "become_key_id": become_key_id,
-                                "type": "static"
-                        }
-                        update_inventory(session, projects[project]['id'], myinvid, inventorydata)
+
+                    print(myinventory)
+                    invetoryname = "%s-%s" % (mysubproject, "netbox")
+                    inventorydata = {
+                            "name": mylongname,
+                            "project_id": projects[project]['id'],
+                            "inventory": myinventory,
+                            "ssh_key_id": ssh_key_id,
+                            "become_key_id": become_key_id,
+                            "type": "static"
+                    }
+                    create_inventory(session, projects[project]['id'], inventorydata)
+                else:
+                    invetoryname = "%s-%s" % (mysubproject, "netbox")
+                    myinvid = get_inventory(session, projects[project]['id'], invetoryname)
+                    inventorydata = {
+                            "name": mylongname,
+                            "project_id": projects[project]['id'],
+                            "inventory": myinvdata,
+                            "ssh_key_id": ssh_key_id,
+                            "become_key_id": become_key_id,
+                            "type": "static"
+                    }
+                    update_inventory(session, projects[project]['id'], myinvid, inventorydata)
+
+###############################################################################################################
+#                                      END OF INVENTORY
+###############################################################################################################
 
 
 
 
 
         else: # We are in a multiproject environment
-
-            print("----------------------------------------------------")
-            print("my project: %s" % projectname)
             myinventories = {}
             mysplitinv = myinventory.split("\n")
             for line in mysplitinv:
@@ -770,62 +900,53 @@ def main():
                 }
                 update_inventory(session, projects[project]['id'], myinvid, inventorydata)
                 # create multible inventpories and repos for each subproject
-                for myproject in projects:
-                    pprint.pprint(myproject)
-                    print("----------------------PROJECRT")
-                    myprojectname = projects[myproject]['name']
-                    myrepoprefix = os.getenv('KALM_REPO_PREFIX')
-                    create_repository(session, projects[project]['id'], myprojectname)
-
-                    if organization != myprojectname:
-                        prettyllog("semaphore", "check", "inventoty", "master", "000" , "Get master inventory from netbox for subproject %s" % projectname , severity="INFO")
-                        myinventory = get_netbox_inventory_from_tag(projectname)
+                for mysubproject in subprojects:
+                    if organization in mysubproject and mysubproject in organization:
+                        prettyllog("semaphore", "check", "inventoty", "master", "000" , "We are in a single project env %s" % projectname , severity="INFO")
+                        mysemaphorerepos = get_repositories(session, projects[project]['id'])
                         try:
-                            mysemaphoreinventory = get_inventory(session, projects[project]['id'], projectname) 
+                            prettyllog("semaphore", "check", "inventoty", "master", "000" , "trying to locate %s" % mysubproject , severity="DEBUG")
+                            mysemaphorerepo = mysemaphorerepos[mysubproject]
                         except:
-                            mysemaphoreinventory = {}
+                            prettyllog("semaphore", "check", "inventoty", "master", "000" , "trying to create %s" % mysubproject , severity="DEBUG")
+                            create_repository(session, projects[project]['id'], mysubproject)
+                            mysemaphorerepos = get_repositories(session, projects[project]['id'])
+                            mysemaphorerepo = mysemaphorerepos[mysubproject]
+                        update_repository(session, projects[project]['id'], mysubproject)
 
-                        print(len(mysemaphoreinventory))
-                        print("-------------------------------")
-
-
-
-
-
-
-        if organization in projectname and projectname in organization:
-            pass
-        else:
-            invexists = False
-            if len(myinvdata) == 0:
-                invexists = False
-            else:
-                invexists = True
-
-            if not invexists:
-                invetoryname = "%s-%s" % (projectname, "netbox")
-                inventorydata = {
-                        "name": invetoryname,
-                        "project_id": projects[project]['id'],
-                        "inventory": myinventory,
-                        "ssh_key_id": ssh_key_id,
-                        "become_key_id": become_key_id,
-                        "type": "static"
-            }
-                create_inventory(session, projects[project]['id'], inventorydata)
-            else:
-                invetoryname = "%s-%s" % (projectname, "netbox")
-                myinvid = get_inventory(session, projects[project]['id'], invetoryname)
-                inventorydata = {
-                            "name": invetoryname,
-                            "project_id": projects[project]['id'],
-                            "inventory": myinventory,
-                            "ssh_key_id": ssh_key_id,
-                            "become_key_id": become_key_id,
-                            "type": "static"
-                }
-                update_inventory(session, projects[project]['id'], myinvid, inventorydata)
-
+                        prettyllog("semaphore", "check", "inventoty", "master", "000" , "Get master inventory from netbox for subproject %s" % projectname , severity="INFO")
+                        myinventories = get_netbox_master_inventory()
+                        try:
+                            mysemaphoreinventory = get_inventory(session, projects[project]['id'], mysubproject) 
+                            update_repository(session, projects[project]['id'], mysubproject)
+                        except:
+                            create_repository(session, projects[project]['id'], mysubproject)
+                            try:
+                                mysemaphoreinventory = get_inventory(session, projects[project]['id'], mysubproject) 
+                            except:
+                                mysemaphoreinventory = {}
+                            subinv= False
+                            for subproject in subprojects:
+                                prettyllog("semaphore", "check", "inventoty", "master", "000" , "Creating inventory for subproject %s" % subproject, severity="DEBUG")
+                                try:
+                                    subinv = True
+                                except:
+                                    subinv = False
+                                if subinv:
+                                    prettyllog("semaphore", "check", "inventoty", "master", "000" , "Creating inventory for subproject %s" % subproject, severity="INFO")
+                                    create_inventory(session, projects[project]['id'], mysubproject)
+                    else:
+                        prettyllog("semaphore", "check", "inventoty", "master", "000" , "Get master inventory from netbox for subproject %s" % projectname , severity="INFO")
+                        mysemaphorerepos = get_repository(session, projects[project]['id'], mysubproject)
+                        mysemapgorerepo = {}
+                        try:
+                            mysemapgorerepo = mysemaphorerepos[mysubproject]
+                            update_repository(session, projects[project]['id'], mysubproject)    
+                        except:
+                            mysemapgorerepo = {}
+                            create_repository(session, projects[project]['id'], mysubproject)
+                            mysemaphorerepos = get_repository(session, projects[project]['id'], mysubproject)
+                        prettyllog("semaphore", "check", "inventoty", "master", "000" , "repos created and updated %s" % projectname , severity="INFO")
     return 0
 
 
