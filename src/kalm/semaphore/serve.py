@@ -14,14 +14,7 @@ import json
 import tempfile
 import git
 
-
-
-
 debug = True
-
-
-
-
 
 import os
 import requests
@@ -538,7 +531,7 @@ def update_repository(session, project_id, reponame):
     except:
         repoid = None
         return False
-    baseurl = os.getenv('KALM_SEMAPHORE_URL')
+    baseurl = os.getenv('KALM_SEMAPHORE_SSH')
     giturl = os.getenv('KALM_GIT_URL') 
     repo_prefix = os.getenv('KALM_SEMAPHORE_REPO_PREFIX')
     repodata = {}
@@ -566,9 +559,14 @@ def update_repository(session, project_id, reponame):
     else:
         # Failed request
         prettyllog("semaphore", "create", repodata['name'], "error", response.status_code , "create repository", severity="ERROR")
-    
+
+#####################################################################################################################
+#    Create Repository
+#####################################################################################################################
+           
 def create_repository(session, project_id, reponame):
-    baseurl = os.getenv('KALM_SEMAPHORE_URL')
+    print("---------------------------------------- DEBUG ------------------------------------")
+    baseurl = os.getenv('KALM_SEMAPHORE_SSH')
     giturl = os.getenv('KALM_GIT_URL') 
     repo_prefix = os.getenv('KALM_SEMAPHORE_REPO_PREFIX')
     repodata = {}
@@ -851,8 +849,11 @@ def main():
 
 ###############################################################################################################
 #                                      END OF INVENTORY
-###############################################################################################################
-
+############################################################################################################### 
+                    
+                    ###########################################################################################
+                    # Start of 
+                    ###########################################################################################
 
 
 
