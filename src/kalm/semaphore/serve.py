@@ -787,6 +787,72 @@ def get_inventory_id(session, project_id, inventoryname):
 
 
 
+def update_template(session, project_id, template, subproject = None, inventory_id = "auto", repository_id = "auto", environment_id = "auto", view_id = "auto"):
+    if inventory_id == "auto" and subproject != None:
+        inventory_id = get_inventory_id(session, project_id, subproject )
+    if repository_id == "auto" and subproject != None:
+        repository_id = get_repository_id(session, project_id, subproject )
+    if environment_id == "auto" and subproject != None:
+        environment_id = get_environment_id(session, project_id, subproject )
+    if view_id == "auto" and subproject != None:
+        view_id = get_view_id(session, project_id, subproject )
+    pprint.pprint(view_id)
+    print("---------------------------------------- DEBUG ------------------------UPDATE------------ %s " % template['name'])
+    prettyllog("semaphore", "update", template['name'], "ok", 0 , "update template", severity="INFO")
+    playbook = "playbooks/%s.yml" % template['name']
+    data = {
+      "project_id": project_id,
+      "inventory_id": inventory_id,
+      "repository_id": repository_id,
+      "environment_id": environment_id,
+      "view_id": view_id,
+      "name": template['name'],
+      "playbook": "test.yml",
+      "arguments": "[]",
+      "description": template['description'],
+      "allow_override_args_in_task": False,
+      "limit": "limitall",
+      "suppress_success_alerts": True,
+      "survey_vars": [
+      {
+        "name": "mystringsurveyvar",
+        "title": "thestringtitle",
+        "description": "thestringdescriptio",
+        "type": "String",
+        "required": False
+      }
+      ]
+    }
+    mytemplateexists = False
+    mytemplateid = None
+    templates = get_templates(session, project_id)
+    for mytemplate in templates:
+        if mytemplate == template['name']:
+            mytemplateexists = True
+            mytemplateid = templates[mytemplate]['id']
+    if mytemplateexists:
+        prettyllog("semaphore", "update", template['name'], "ok", 0 , "template already exists", severity="INFO")
+        baseurl = os.getenv('KALM_SEMAPHORE_URL')
+        template_url = f"{baseurl}/api/project/{project_id}/templates/{mytemplateid}"  # Adjust the URL as needed
+        headers = {
+            'accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+        response = session.put(template_url, headers=headers, json=template)
+        if response.status_code == 201:
+            # Successful request
+            prettyllog("semaphore", "update", template['name'], "ok", response.status_code , "update template", severity="INFO")
+            return True
+        elif response.status_code == 400:
+            # Failed request
+            prettyllog("semaphore", "update", template['name'], "error", response.status_code , "update template", severity="INFO")
+            return False
+        else:
+            # Failed request
+            prettyllog("semaphore", "update", template['name'], "error", response.status_code , "update template", severity="ERROR")
+            return False
+
+
 
 
 def create_template(session, project_id, template, subproject = None, inventory_id = "auto", repository_id = "auto", environment_id = "auto", view_id = "auto"):
@@ -900,28 +966,28 @@ def update_environment(session, project_id, environment):
         prettyllog("semaphore", "create", environment['name'], "error", response.status_code , "update environment", severity="ERROR")
     
 def create_view(session, project_id, view):
-    prettyllog("semaphore", "create", view['name'], "ok", 0 , "create view", severity="INFO")
+    prettyllog("semaphore", "create", view, "ok", 0 , "create view", severity="INFO")
     baseurl = os.getenv('KALM_SEMAPHORE_URL')
     view_url = f"{baseurl}/api/project/{project_id}/views"  # Adjust the URL as needed
     headers = {
         'accept': 'application/json',
         'Content-Type': 'application/json'
     }
-
+    viewdata = {
+        "title": view,
+        "project_id": project_id
+    }
     # Use the session for the request
-    response = session.post(view_url, headers=headers, json=view)
+    response = session.post(view_url, headers=headers, json=viewdata)
     if response.status_code == 201:
         # Successful request
-        prettyllog("semaphore", "create", view['name'], "ok", response.status_code , "create view", severity="INFO")
+        prettyllog("semaphore", "create", view, "ok", response.status_code , "create view", severity="INFO")
         return response.json()
     else:
         # Failed request
-        prettyllog("semaphore", "create", view['name'], "error", response.status_code , "create view", severity="ERROR")
+        prettyllog("semaphore", "create", view, "error", response.status_code , "create view", severity="ERROR")
 
 def update_view(session, project_id, view):
-    print("-------------")
-    pprint.pprint(view)
-    print("-------------")
     prettyllog("semaphore", "create", view, "ok", 0 , "update view", severity="INFO")
     baseurl = os.getenv('KALM_SEMAPHORE_URL')
     view_id = get_view_id(session, project_id, view)
@@ -937,6 +1003,10 @@ def update_view(session, project_id, view):
         # Successful request
         prettyllog("semaphore", "create", view, "ok", response.status_code , "update view", severity="INFO")
         return response.json()
+    elif response.status_code == 400:
+        prettyllog("semaphore", "create", view, "error", response.status_code , "update view", severity="INFO")
+        return True
+    
     else:
         # Failed request
         prettyllog("semaphore", "create", view, "error", response.status_code , "update view", severity="ERROR")
@@ -1090,7 +1160,7 @@ def main():
         myinvdata = get_inventory(session, projects[project]['id'], projectname)
         print("ONE")
         if organization in projectname and projectname in organization: # We are in a uniproject environment
-            print("TWO")
+            print("TWO---------------------------------------------------------------------------------------------------------------------------------------------->")
             prettyllog("semaphore", "check", "inventoty", "master", "000" , "Get master inventory from netbox for uniproject %s" % projectname , severity="INFO")
             mysubprojects = mainconf['subprojects']
             # We need to create a inventory for each subproject
@@ -1155,6 +1225,21 @@ def main():
                     else:
                         prettyllog("semaphore", "check", "view", "master", "000" , "view does not exists %s" % mysubproject, severity="INFO")
                         create_view(session, projects[project]['id'], mysubproject)
+                ###########################################################################################
+                # Start of  templates
+                ###########################################################################################
+                prettyllog("semaphore", "check", "template", "master", "000" , "Creating template for subproject %s" % mysubproject, severity="DEBUG")
+                mysemaphoretemplates = get_templates(session, projects[project]['id'])
+                pprint.pprint(mysemaphoretemplates)
+                pprint.pprint(mysubproject)
+            print("------------------------->>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<.-----------------------,,,.-..  ")
+
+
+
+
+                        
+
+                    
 
 
 
@@ -1278,7 +1363,18 @@ def main():
                         if templatesexists:
                             for template in mytemplates:
                                 prettyllog("semaphore", "check", "templates", "master", "000" , "Creating template %s" % template , severity="INFO")
-                                create_template(session, projects[project]['id'], template)
+                                mysemaphoretemplates = get_templates(session, projects[project]['id'])
+                                pprint.pprint(mysemaphoretemplates)
+                                mytemplateexists = False
+                                for mytemplate in mysemaphoretemplates:
+                                    if mytemplate == template:
+                                        mytemplateexists = True
+                                if mytemplateexists:
+                                    prettyllog("semaphore", "check", "templates", "master", "000" , "template exists %s" % template , severity="INFO")
+                                    update_template(session, projects[project]['id'], template)
+                                else:
+                                    prettyllog("semaphore", "check", "templates", "master", "000" , "No templates found %s" % template , severity="INFO")
+                                    create_template(session, projects[project]['id'], template)
                         else:
                             prettyllog("semaphore", "check", "templates", "master", "000" , "No templates found %s" % template , severity="INFO")
     return 0
