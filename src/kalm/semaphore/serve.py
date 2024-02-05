@@ -1158,7 +1158,7 @@ def main():
             prettyllog("semaphore", "check", "inventoty", "master", "000" , "No inventories found", severity="ERROR")
 
         myinvdata = get_inventory(session, projects[project]['id'], projectname)
-        print("ONE")
+        print("ONE ---------------------------------------------------------------------------------------------------------------------------------------------->")
         if organization in projectname and projectname in organization: # We are in a uniproject environment
             print("TWO---------------------------------------------------------------------------------------------------------------------------------------------->")
             prettyllog("semaphore", "check", "inventoty", "master", "000" , "Get master inventory from netbox for uniproject %s" % projectname , severity="INFO")
@@ -1379,4 +1379,6 @@ def main():
                             prettyllog("semaphore", "check", "templates", "master", "000" , "No templates found %s" % template , severity="INFO")
     return 0
 
+
+# END OF MAIN
 
