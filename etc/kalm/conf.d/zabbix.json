@@ -12,6 +12,16 @@
 	"login": "root",
 	"privatekey": "/opt/keys/id_rsa_foreman_proxy"
   },
+  "templates": [
+    { 
+      "name": "checkup",
+      "description": "Check access to the servers in this scope"
+    },
+    { 
+      "name": "install agent",
+      "description": "install agent"
+    }
+  ],
   "hosts": [
       "extest0036.it.rm.dk",	
       "extest0047.it.rm.dk",	
