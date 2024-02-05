@@ -5,5 +5,12 @@
   "inventory": {
     "globalvars": {}
   },
+
+  "templates": [
+    {
+      "name": "checkup",
+      "description": "Check access to the servers in this scope"
+    }
+  ],
   "hosts": []
 }
