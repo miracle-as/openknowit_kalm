@@ -15,6 +15,7 @@ def main():
                 devices_types             list device types\n\
                 manufacturers             list manufacturers\n\
                 tenants                   list tenants\n\
+                virtualmachines           list virtualmachines\n\
                 roles                     list roles\n\
                 sites                     list sites\n\
                 ipranges                  list ip ranges\n\
@@ -136,6 +137,10 @@ def main():
     
     if args.action[0] == "tenants":
         print(netbox.get_tenants())
+        return 0
+    
+    if args.action[0] == "virtualmachines":
+        print(netbox.get_virtual_machines())
         return 0
     
     if args.action[0] == "roles":

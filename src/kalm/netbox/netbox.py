@@ -16,6 +16,8 @@ netbox_token = os.environ.get('NETBOX_TOKEN')
 NETBOX_URL = os.getenv("KALM_NETBOX_API_URL")
 NETBOX_TOKEN = os.getenv("KALM_NETBOX_TOKEN")
 
+
+
 ssh_config_template = """
 Host {hostname}
     HostName {full_hostname}
@@ -25,6 +27,29 @@ Host {hostname}
     Port 22
     {proxy_jump}
 """
+
+def get_virtualmachines():
+    env = {}
+    env['KALM_NETBOX_URL'] = os.environ.get("KALM_NETBOX_URL")
+    env['KALM_NETBOX_TOKEN'] = os.environ.get("KALM_NETBOX_TOKEN")
+    env['KALM_NETBOX_SSL'] = os.environ.get("KALM_NETBOX_SSL")
+                                              
+    url = env['KALM_NETBOX_URL'] + "/api/virtualization/virtual-machines/"
+    headers = { 'Authorization': 'Token ' + env['KALM_NETBOX_TOKEN'],
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+                }
+    r = requests.get(url, headers=headers, verify=env['KALM_NETBOX_SSL'])
+    if r.status_code == 200:
+        data = r.json()
+        if data['count'] == 1:
+            return data['results'][0]['id']
+        else:
+            return False
+    else:
+        return False
+    
+            
 
 
 def get_virtual_server_id(servername, env):
